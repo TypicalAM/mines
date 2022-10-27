@@ -13,9 +13,15 @@ const (
 	FontSmallTextSize  float32 = 16
 	FontMediumTextSize         = 24
 	FontBigTextSize            = 32
+	FontHugeTextSize           = 48
 )
 
 var AppSettings settings.Settings
+
+// Logo variables
+var LogoIcon rl.Texture2D
+var IconRect rl.Rectangle
+var TextRect rl.Rectangle
 
 const (
 	Logo int = iota
@@ -34,4 +40,9 @@ func LoadSharedAssets() {
 	rl.GenTextureMipmaps(&Font.Texture)
 	rl.SetTextureFilter(Font.Texture, rl.FilterAnisotropic4x)
 	AppSettings.LoadFromFile()
+
+	// Logo textures
+	LogoIcon = rl.LoadTexture("resources/icons/bomb_small_icon.png")
+	IconRect = rl.NewRectangle(25, 25, 50, 50)
+	TextRect = rl.NewRectangle(90, 25, 250, 50)
 }

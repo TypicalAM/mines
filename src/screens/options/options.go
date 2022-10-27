@@ -104,6 +104,8 @@ func DrawOptionsScreen() {
 
 	// Draw the background
 	rl.DrawRectangle(0, 0, int32(rl.GetScreenWidth()), int32(rl.GetScreenHeight()), rg.BackgroundColor())
+	// Draw the logo
+	gui.DrawLogoTopLeft(shared.LogoIcon, shared.Font, shared.IconRect, shared.TextRect, shared.FontHugeTextSize)
 
 	for key, opt := range options {
 		var textToDisplay string
@@ -122,9 +124,6 @@ func DrawOptionsScreen() {
 
 		rl.DrawTextEx(shared.Font, textToDisplay, rl.Vector2{X: opt.textRectangle.X, Y: opt.textRectangle.Y}, shared.FontSmallTextSize, 0, rg.GetStyleColor(rg.TextboxTextColor))
 	}
-
-	//entry := options["bombs"]
-	//rl.DrawRectangleRec(entry.optionRectangle, rl.White)
 
 	if saveWrongData {
 		gui.ButtonEx(shared.Font, saveOptionsRect, saveErrorMessage, shared.FontBigTextSize)

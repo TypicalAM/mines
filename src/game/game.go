@@ -8,10 +8,11 @@ import (
 	"example/raylib-game/src/screens/options"
 	"example/raylib-game/src/screens/title"
 	"fmt"
-	rg "github.com/gen2brain/raylib-go/raygui"
-	rl "github.com/gen2brain/raylib-go/raylib"
 	"math/rand"
 	"time"
+
+	rg "github.com/gen2brain/raylib-go/raygui"
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 // Local variables
@@ -189,19 +190,17 @@ func UpdateDrawFrame() {
 	// Draw
 	//----------------------------------------------------------------------------------
 	rl.BeginDrawing()
-
 	rl.ClearBackground(rl.RayWhite)
-
 	switch currentScreen {
-	case 0:
+	case shared.Logo:
 		logo.DrawLogoScreen()
-	case 1:
+	case shared.Title:
 		title.DrawTitleScreen()
-	case 2:
+	case shared.Options:
 		options.DrawOptionsScreen()
-	case 3:
+	case shared.Gameplay:
 		gameplay.DrawGameplayScreen()
-	case 4:
+	case shared.Ending:
 		ending.DrawEndingScreen()
 	}
 
