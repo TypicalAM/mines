@@ -43,8 +43,8 @@ func InitalizeGame() {
 	rg.LoadGuiStyle(fmt.Sprintf("resources/styles/%s.style", shared.AppSettings.Theme))
 
 	// Setup first screen
-	currentScreen = shared.Options
-	options.InitOptionsScreen()
+	currentScreen = shared.Title
+	title.InitTitleScreen()
 
 	rl.SetTargetFPS(60)
 
@@ -158,9 +158,13 @@ func UpdateDrawFrame() {
 		case shared.Title:
 			title.UpdateTitleScreen()
 
-			if title.FinishTitleScreen() == shared.Gameplay {
-				fmt.Println("Transitioning to the gameplay")
+			switch title.FinishTitleScreen() {
+			case shared.Gameplay:
 				TransitionToScreen(shared.Gameplay)
+			case shared.Leaderboard:
+				TransitionToScreen(shared.Leaderboard)
+			case shared.Options:
+				TransitionToScreen(shared.Options)
 			}
 		case shared.Options:
 			options.UpdateOptionsScreen()

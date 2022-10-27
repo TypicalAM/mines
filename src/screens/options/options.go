@@ -116,9 +116,6 @@ func UpdateOptionsScreen() {
 
 // Options screen draw logic
 func DrawOptionsScreen() {
-	//value, _ := strconv.ParseInt("0277bd", 16, 64)
-	//	color := rl.GetColor(uint(value))
-
 	// Draw the background
 	rl.DrawRectangle(0, 0, int32(rl.GetScreenWidth()), int32(rl.GetScreenHeight()), rg.BackgroundColor())
 	// Draw the logo

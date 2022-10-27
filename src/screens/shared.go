@@ -30,6 +30,7 @@ const (
 	Options
 	Gameplay
 	Ending
+	Leaderboard
 )
 
 const Unchanged int = -1
