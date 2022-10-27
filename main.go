@@ -1,8 +1,6 @@
 package main
 
-import (
-	"example/raylib-game/src/game"
-)
+import "example/raylib-game/src/game"
 
 // Initialize game
 func main() {
