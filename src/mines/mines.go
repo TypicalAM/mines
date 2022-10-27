@@ -24,7 +24,7 @@ type MineBoard struct {
 
 // Generate the mines board
 func GenerateBoard(width int, height int, bombsPercent int) (MineBoard, error) {
-	// Check if there are more s than we can put
+	// Check if there are more bombs than we can put
 	bombs := int(float32(bombsPercent*width*height)/100)
 	if bombs >= width*height {
 		return MineBoard{}, errors.New("there are more bombs than fields on the map")

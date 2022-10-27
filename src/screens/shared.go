@@ -7,13 +7,14 @@ import (
 )
 
 var Font rl.Font
+var SecondaryFont rl.Font
 var FxClick rl.Sound
 
 const (
 	FontSmallTextSize  float32 = 16
 	FontMediumTextSize         = 24
 	FontBigTextSize            = 32
-	FontHugeTextSize           = 48
+	FontHugeTextSize           = 42
 )
 
 var AppSettings settings.Settings
@@ -38,11 +39,15 @@ func LoadSharedAssets() {
 	// Set up the font
 	Font = rl.LoadFont("resources/fonts/montserrat_semibold.ttf")
 	rl.GenTextureMipmaps(&Font.Texture)
-	rl.SetTextureFilter(Font.Texture, rl.FilterAnisotropic4x)
+	rl.SetTextureFilter(Font.Texture, rl.FilterBilinear)
+
+	SecondaryFont = rl.LoadFont("resources/fonts/exo2_medium_italic.ttf")
+	rl.GenTextureMipmaps(&SecondaryFont.Texture)
+	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterBilinear)
 	AppSettings.LoadFromFile()
 
 	// Logo textures
-	LogoIcon = rl.LoadTexture("resources/icons/bomb_small_icon.png")
-	IconRect = rl.NewRectangle(25, 25, 50, 50)
-	TextRect = rl.NewRectangle(90, 25, 250, 50)
+	LogoIcon = rl.LoadTexture("resources/icons/logo_old.png")
+	IconRect = rl.NewRectangle(30, 25, 45, 45)
+	TextRect = rl.NewRectangle(82, 27, 250, 50)
 }

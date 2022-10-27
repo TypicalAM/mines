@@ -14,6 +14,7 @@ const filepath string = "data/settings.json"
 // The settings structure
 type Settings struct {
 	SettingsPath string `json:"settings_path"`
+	Theme        string `json:"theme"`
 	Width        int    `json:"width"`
 	Height       int    `json:"height"`
 	Bombs        int    `json:"bombs"`
@@ -22,6 +23,7 @@ type Settings struct {
 // The default settings for the app
 var DefaultSettings Settings = Settings{
 	SettingsPath: "data/settings.json",
+	Theme:        "hello_kitty",
 	Width:        30,
 	Height:       16,
 	Bombs:        50,
@@ -61,7 +63,7 @@ func (settings *Settings) LoadFromFile() error {
 func (settings *Settings) WriteToFile(newSettings Settings) error {
 	// Try to check if the settings are actually valid
 	_, err := mines.GenerateBoard(newSettings.Width, newSettings.Height, newSettings.Bombs)
-	if err!=nil {
+	if err != nil {
 		return err
 	}
 

@@ -40,7 +40,7 @@ func InitalizeGame() {
 	shared.LoadSharedAssets()
 
 	// Load the app-wide gui style
-	rg.LoadGuiStyle("resources/styles/zahnrad.style")
+	rg.LoadGuiStyle(fmt.Sprintf("resources/styles/%s.style", shared.AppSettings.Theme))
 
 	// Setup first screen
 	currentScreen = shared.Options
