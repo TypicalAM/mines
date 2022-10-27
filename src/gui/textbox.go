@@ -12,7 +12,7 @@ var nextBackspace = time.Now()
 var framesCounter = 0
 
 // TextBoxEx - TextBox element, but with custom fonting and case sensitivity
-func TextBoxEx(font rl.Font, bounds rl.Rectangle, text string, maxChars int) string {
+func TextBoxEx(font rl.Font, bounds rl.Rectangle, text string, size float32, maxChars int) string {
 	bound := bounds.ToInt32()
 	letter := int32(-1)
 
@@ -44,21 +44,16 @@ func TextBoxEx(font rl.Font, bounds rl.Rectangle, text string, maxChars int) str
 		}
 	}
 
-	rg.DrawBorderedRectangle(
-		bound,
-		rg.GetStyle32(rg.TextboxBorderWidth),
-		rg.GetStyleColor(borderColor),
-		rg.GetStyleColor(rg.TextboxInsideColor),
-	)
-
+	rg.DrawBorderedRectangle(bound, rg.GetStyle32(rg.TextboxBorderWidth), rg.GetStyleColor(borderColor), rg.GetStyleColor(rg.TextboxInsideColor))
+	textSize := rl.MeasureTextEx(font, text, size, 0)
 	rl.DrawTextEx(
 		font,
 		text,
 		rl.Vector2{
-			X: float32(bound.X + 2),
-			Y: float32(bound.Y + rg.GetStyle32(rg.TextboxBorderWidth) + bound.Height/2 - rg.GetStyle32(rg.TextboxTextFontsize)/2),
+			X: float32(bound.X+bound.Width/2) - textSize.X/2,
+			Y: float32(bound.Y+bound.Height/2) - textSize.Y/2,
 		},
-		float32(rg.GetStyle32(rg.TextboxTextFontsize)),
+		size,
 		0,
 		rg.GetStyleColor(rg.TextboxTextColor),
 	)
@@ -66,12 +61,11 @@ func TextBoxEx(font rl.Font, bounds rl.Rectangle, text string, maxChars int) str
 	if state == rg.Focused || state == rg.Pressed {
 		if (framesCounter/20)%2 == 0 {
 			rl.DrawRectangle(
-				bound.X+4+int32(rl.MeasureTextEx(font, text, float32(rg.GetStyle32(rg.TextboxTextFontsize)), 0).X),
+				bound.X+bound.Width/2 + int32(textSize.X)/2 + 4,
 				bound.Y+2,
 				2,
 				bound.Height-10,
-				rg.GetStyleColor(rg.TextboxLineColor),
-			)
+				rg.GetStyleColor(rg.TextboxLineColor))
 		}
 	}
 

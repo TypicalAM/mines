@@ -19,43 +19,16 @@ var buttonColors = map[rg.ControlState]buttonColoring{
 }
 
 // ButtonEx - Button element, but with support for custom fonts
-func ButtonEx(font rl.Font, bounds rl.Rectangle, text string, size float32) bool {
-	textSize := rl.MeasureTextEx(font, text, size, 0)
-	textHeight := int32(textSize.X)
-	textWidth := int32(textSize.Y)
-
-	rg.ConstrainRectangle(
-		&bounds,
-		textWidth,
-		textWidth+rg.GetStyle32(rg.ButtonTextPadding),
-		textHeight,
-		textHeight+rg.GetStyle32(rg.ButtonTextPadding)/2,
-	)
-
-	state := rg.GetInteractionState(bounds)
+func ButtonEx(font rl.Font, bound rl.Rectangle, text string, size float32) bool {
+	state := rg.GetInteractionState(bound)
 	colors, exist := buttonColors[state]
 	if !exist {
 		return false
 	}
 
-	bound := bounds.ToInt32()
-	rg.DrawBorderedRectangle(bound,
-		rg.GetStyle32(rg.ButtonBorderWidth),
-		rg.GetStyleColor(colors.Border),
-		rg.GetStyleColor(colors.Inside),
-	)
-
-	rl.DrawTextEx(
-		font,
-		text,
-		rl.Vector2{
-			X: float32(bound.X+int32(bounds.Width)/2-textWidth),
-			Y: float32(bound.Y)+bounds.Height/2-float32(textHeight/4),
-		},
-		size,
-		0,
-		rg.GetStyleColor(colors.Text),
-	)
+	textSize := rl.MeasureTextEx(font, text, size, 0)
+	rg.DrawBorderedRectangle(bound.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(colors.Border), rg.GetStyleColor(colors.Inside))
+	rl.DrawTextEx(font, text, rl.Vector2{X: bound.X + bound.Width/2 - textSize.X/2, Y: bound.Y + bound.Height/2 - textSize.Y/2}, size, 0, rg.GetStyleColor(colors.Text))
 
 	return state == rg.Clicked
 }
