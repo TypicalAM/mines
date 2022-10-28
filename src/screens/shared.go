@@ -44,7 +44,7 @@ func LoadSharedAssets() {
 
 	SecondaryFont = rl.LoadFont("resources/fonts/exo2_medium_italic.ttf")
 	rl.GenTextureMipmaps(&SecondaryFont.Texture)
-	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterBilinear)
+	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterAnisotropic4x)
 	AppSettings.LoadFromFile()
 
 	// Logo textures
