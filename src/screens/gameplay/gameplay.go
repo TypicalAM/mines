@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"time"
 
+	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 // Define local variables
 var framesCounter int32 // Frames counter
-var finishScreen int  // Determines if the screen should finish
+var finishScreen int    // Determines if the screen should finish
 
 const numsTextureSize float32 = 56 // The texture width and height (56x56)
 var numberTextures rl.Texture2D    // The textures of the numbres (1-8, flag, empty and uncovered)
@@ -59,8 +60,8 @@ func InitGameplayScreen() {
 	mineBoard, _ = mines.GenerateBoard(width, height, shared.AppSettings.Bombs)
 
 	// Determine the placement of the game grid
-	cellWidth := ((rl.GetScreenWidth() - 150) / width)
-	cellHeight := (rl.GetScreenHeight() - 150) / height
+	cellWidth := ((rl.GetScreenWidth()-120) / width)
+	cellHeight := (rl.GetScreenHeight()-120) / height
 
 	backGroundStartX := float32(rl.GetScreenWidth()-cellWidth*width) / 2
 	backGroundStartY := float32(rl.GetScreenHeight()-cellHeight*height) / 2
@@ -80,9 +81,9 @@ func InitGameplayScreen() {
 	}
 
 	// Load the appropriate textures
-	numberTextures = rl.LoadTexture("resources/iconsnew_flags_colors.png")
-	bombIconTexture = rl.LoadTexture("resources/icons/bomb_small_icon.png")
-	clockIconTexture = rl.LoadTexture("resources/icons/clock_small_icon.png")
+	numberTextures = loadThemeTextureNums("resources/icons/color_coded_flags.png")
+	bombIconTexture = loadThemeTextureIcons("resources/icons/bomb_small_icon.png")
+	clockIconTexture = loadThemeTextureIcons("resources/icons/clock_small_icon.png")
 
 	// Set the tile hover state
 	tileHoverState = hover{
@@ -93,11 +94,11 @@ func InitGameplayScreen() {
 
 	// Flags and clock text
 	flagsText = "0"
-	flagsTextXPos = float32(rl.GetScreenWidth()/2+85)
-	flagsIconXPos = int32(rl.GetScreenWidth()/2+40)
+	flagsTextXPos = float32(rl.GetScreenWidth()/2 + 85)
+	flagsIconXPos = int32(rl.GetScreenWidth()/2 + 40)
 	clockText = "00:00"
-	clockTextXPos = float32(rl.GetScreenWidth()/2-85)
-	clockIconXPos = int32(rl.GetScreenWidth()/2-125)
+	clockTextXPos = float32(rl.GetScreenWidth()/2 - 85)
+	clockIconXPos = int32(rl.GetScreenWidth()/2 - 125)
 }
 
 // Gameplay screen update logic
@@ -174,6 +175,9 @@ func UpdateGameplayScreen() {
 
 // Gameplay screen draw logic
 func DrawGameplayScreen() {
+	// Draw the background
+	rl.DrawRectangle(0, 0, int32(rl.GetScreenWidth()), int32(rl.GetScreenHeight()), rg.BackgroundColor())
+
 	// Draw the game board
 	for row := range boardRectangles {
 		for col, tile := range boardRectangles[row] {
@@ -211,11 +215,11 @@ func DrawGameplayScreen() {
 	}
 
 	// Draw the current flags and the icon
-	rl.DrawTextEx(shared.Font, flagsText, rl.Vector2{X: flagsTextXPos, Y: 25}, shared.FontMediumTextSize, 0, rl.Black)
+	rl.DrawTextEx(shared.Font, flagsText, rl.Vector2{X: flagsTextXPos, Y: 25}, shared.FontMediumTextSize, 0, rg.TextColor())
 	rl.DrawTexture(bombIconTexture, flagsIconXPos, 25, rl.White)
 
 	// Draw the current time playing amount and the clock icon
-	rl.DrawTextEx(shared.Font, clockText, rl.Vector2{X: clockTextXPos,Y: 25}, shared.FontMediumTextSize, 0, rl.Black)
+	rl.DrawTextEx(shared.Font, clockText, rl.Vector2{X: clockTextXPos, Y: 25}, shared.FontMediumTextSize, 0, rg.TextColor())
 	rl.DrawTexture(clockIconTexture, clockIconXPos, 25, rl.White)
 
 	if gameLost {

@@ -39,7 +39,7 @@ var saveOptionsRect rl.Rectangle
 
 // What theme are we using?
 var activeThemeIndex int
-var themes = []string{"default_dark", "default_light", "hello_kitty", "monokai", "obsidian", "solarized", "solarized_light", "zahnrad"}
+var themes = []string{"default_dark", "default_light", "candy","hello_kitty", "monokai", "obsidian", "solarized", "solarized_light", "zahnrad"}
 
 // Options screen initialization logic
 func InitOptionsScreen() {
