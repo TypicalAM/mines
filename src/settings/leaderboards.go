@@ -5,17 +5,16 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
-	"time"
 )
 
 const leaderboardsFilepath string = "data/scores.json"
 
 // Hold the data for one entry
 type Entry struct {
-	Date  time.Time `json:"date"`
-	Name  string    `json:"name"`
-	Score int       `json:"score"`
-	Time  int64     `json:"time"`
+	Date  int64  `json:"date"`
+	Name  string `json:"name"`
+	Score int    `json:"score"`
+	Time  int    `json:"time"`
 }
 
 // Hold the data for multiple entries

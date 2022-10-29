@@ -18,7 +18,7 @@ const (
 )
 
 var AppSettings settings.Settings
-var Leaderboards settings.Entries
+var Scores settings.Scores
 
 // Logo variables
 var LogoIcon rl.Texture2D
@@ -46,7 +46,10 @@ func LoadSharedAssets() {
 	SecondaryFont = rl.LoadFont("resources/fonts/exo2_medium_italic.ttf")
 	rl.GenTextureMipmaps(&SecondaryFont.Texture)
 	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterAnisotropic4x)
+
+	// Load the necessary settings and scores
 	AppSettings.LoadFromFile()
+	Scores.LoadFromFile()
 
 	// Logo textures
 	LogoIcon = rl.LoadTexture("resources/icons/logo_old.png")

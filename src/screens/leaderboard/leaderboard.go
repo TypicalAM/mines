@@ -17,15 +17,7 @@ var col3 []rl.Rectangle
 var col1Container rl.Rectangle
 var col2Container rl.Rectangle
 var col3Container rl.Rectangle
-var entries = []Entry{
-	{"Adam", 10, 213},
-	{"Maciek", 10, 220},
-	{"Marek", 23, 220},
-	{"test", 234, 240},
-	{"bobo", 20, 250},
-	{"testet2", 20, 260},
-}
-
+//var entries = []Entry{	{"Adam", 10, 213},	{"Maciek", 10, 220},	{"Marek", 23, 220},	{"test", 234, 240},	{"bobo", 20, 250},	{"testet2", 20, 260},}
 var doneRectButton rl.Rectangle
 var textVector rl.Vector2
 
@@ -40,9 +32,9 @@ func InitLeaderboardScreen() {
 		Y: float32(rl.GetScreenHeight()) / 35,
 	}
 
-	col1 = make([]rl.Rectangle, len(entries)+1)
-	col2 = make([]rl.Rectangle, len(entries)+1)
-	col3 = make([]rl.Rectangle, len(entries)+1)
+	col1 = make([]rl.Rectangle, len(shared.Scores.Entries)+1)
+	col2 = make([]rl.Rectangle, len(shared.Scores.Entries)+1)
+	col3 = make([]rl.Rectangle, len(shared.Scores.Entries)+1)
 
 	width := float32(rl.GetScreenWidth() / 6)
 
@@ -52,16 +44,16 @@ func InitLeaderboardScreen() {
 	col3[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2+width/2, 100, width, 60)
 
 	// Make the entry elements
-	for pos := range entries {
+	for pos := range shared.Scores.Entries {
 		col1[pos+1] = rl.NewRectangle(col1[pos].X, col1[pos].Y+col1[pos].Height, width, 60)
 		col2[pos+1] = rl.NewRectangle(col2[pos].X, col2[pos].Y+col2[pos].Height, width, 60)
 		col3[pos+1] = rl.NewRectangle(col3[pos].X, col3[pos].Y+col3[pos].Height, width, 60)
 	}
 
 	// Make the container elements
-	col1Container = rl.NewRectangle(col1[0].X, col1[0].Y, col1[0].Width, col1[0].Height*float32(len(entries)+1))
-	col2Container = rl.NewRectangle(col2[0].X, col2[0].Y, col2[0].Width, col2[0].Height*float32(len(entries)+1))
-	col3Container = rl.NewRectangle(col3[0].X, col3[0].Y, col3[0].Width, col3[0].Height*float32(len(entries)+1))
+	col1Container = rl.NewRectangle(col1[0].X, col1[0].Y, col1[0].Width, col1[0].Height*float32(len(shared.Scores.Entries)+1))
+	col2Container = rl.NewRectangle(col2[0].X, col2[0].Y, col2[0].Width, col2[0].Height*float32(len(shared.Scores.Entries)+1))
+	col3Container = rl.NewRectangle(col3[0].X, col3[0].Y, col3[0].Width, col3[0].Height*float32(len(shared.Scores.Entries)+1))
 
 	// Done rectangle
 	width = float32(rl.GetScreenWidth() / 3)
@@ -109,7 +101,7 @@ func DrawLeaderboardScreen() {
 			displayedText = "Name"
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 		} else {
-			displayedText = entries[pos-1].Name
+			displayedText = shared.Scores.Entries[pos-1].Name
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.BackgroundColor())
 		}
 
@@ -128,7 +120,7 @@ func DrawLeaderboardScreen() {
 			displayedText = "Score"
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 		} else {
-			displayedText = fmt.Sprint(entries[pos-1].Score)
+			displayedText = fmt.Sprint(shared.Scores.Entries[pos-1].Score)
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.BackgroundColor())
 		}
 
@@ -147,7 +139,7 @@ func DrawLeaderboardScreen() {
 			displayedText = "Time"
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 		} else {
-			displayedText = fmt.Sprintf("%d:%d", entries[pos-1].Time/60, entries[pos-1].Time%60)
+			displayedText = fmt.Sprintf("%d:%d", shared.Scores.Entries[pos-1].Time/60, shared.Scores.Entries[pos-1].Time%60)
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.BackgroundColor())
 		}
 
