@@ -9,7 +9,7 @@ import (
 )
 
 // The settings filepath
-const filepath string = "data/settings.json"
+const settingsFilepath string = "data/settings.json"
 
 // The settings structure
 type Settings struct {
@@ -32,10 +32,10 @@ var DefaultSettings Settings = Settings{
 // Load the settings from a file
 func (settings *Settings) LoadFromFile() error {
 	// Try to open the jsonFile
-	jsonFile, err := os.Open(filepath)
+	jsonFile, err := os.Open(settingsFilepath)
 	if err != nil {
 		// Try to create the file because it doesn't exist
-		jsonFile, err = os.Create(filepath)
+		jsonFile, err = os.Create(settingsFilepath)
 
 		if err != nil {
 			return errors.New("couldn't open the file for writing")
@@ -68,7 +68,7 @@ func (settings *Settings) WriteToFile(newSettings Settings) error {
 	}
 
 	// Open the jsonFile
-	jsonFile, err := os.OpenFile(filepath, os.O_WRONLY, os.ModeAppend)
+	jsonFile, err := os.OpenFile(settingsFilepath, os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		return errors.New("couldn't open the file")
 	}

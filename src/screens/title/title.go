@@ -39,7 +39,10 @@ func InitTitleScreen() {
 	optionsRect = rl.NewRectangle(rectangleXPos, float32(rl.GetScreenHeight()/2+baseRectY+4*baseOffsetY), rectangleWidths, 60)
 
 	// Make the logo
-	logoRectangle = rl.NewRectangle(float32(rl.GetScreenWidth())/4,50,float32(rl.GetScreenWidth()/2),175)
+	logoRectangle = rl.NewRectangle(
+		float32(rl.GetScreenWidth())/4,
+		50,
+	  float32(rl.GetScreenWidth()/2),175)
 }
 
 // Update title screen
@@ -52,7 +55,7 @@ func DrawTitleScreen() {
 
 	// Draw the logo
 	rl.DrawTexturePro(shared.LogoIcon, rl.NewRectangle(0, 0, 512, 512), rl.NewRectangle(logoRectangle.X, logoRectangle.Y, logoRectangle.Height, logoRectangle.Height), rl.Vector2{}, 0, rl.White)
-	rl.DrawTextEx(shared.SecondaryFont, "Mines-go", rl.Vector2{X: float32(rl.GetScreenWidth())/4 + logoRectangle.Height + 10, Y: 90}, 120, 3, rg.GetStyleColor(rg.LabelTextColor))
+	rl.DrawTextEx(shared.SecondaryFont, "Mines-go", rl.Vector2{X: float32(rl.GetScreenWidth())/4 + logoRectangle.Height + 10, Y: 90}, 140, 3, rg.GetStyleColor(rg.LabelTextColor))
 
 	// Draw the buttons
 	if gui.ButtonEx(shared.Font, startGameRect, "Start the game", shared.FontBigTextSize) {

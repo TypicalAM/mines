@@ -1,9 +1,10 @@
 package game
 
 import (
-	"example/raylib-game/src/screens"
+	shared "example/raylib-game/src/screens"
 	"example/raylib-game/src/screens/ending"
 	"example/raylib-game/src/screens/gameplay"
+	"example/raylib-game/src/screens/leaderboard"
 	"example/raylib-game/src/screens/logo"
 	"example/raylib-game/src/screens/options"
 	"example/raylib-game/src/screens/title"
@@ -16,8 +17,8 @@ import (
 )
 
 // Local variables
-const screenWidth int32 = 1280
-const screenHeight int32 = 720
+const screenWidth int32 = 1600
+const screenHeight int32 = 900
 
 var currentScreen int = shared.Unchanged
 var transAlpha float32
@@ -65,6 +66,8 @@ func InitalizeGame() {
 		gameplay.UnloadGameplayScreen()
 	case shared.Ending:
 		ending.UnloadEndingScreen()
+	case shared.Leaderboard:
+		leaderboard.UnloadLeaderboardScreen()
 	}
 
 	// Clean up after ourselves
@@ -87,6 +90,8 @@ func ChangeToScreen(screen int) {
 		gameplay.UnloadGameplayScreen()
 	case shared.Ending:
 		ending.UnloadEndingScreen()
+	case shared.Leaderboard:
+		leaderboard.UnloadLeaderboardScreen()
 	}
 
 	// Init next screen
@@ -101,6 +106,8 @@ func ChangeToScreen(screen int) {
 		gameplay.InitGameplayScreen()
 	case shared.Ending:
 		ending.InitEndingScreen()
+	case shared.Leaderboard:
+		leaderboard.InitLeaderboardScreen()
 	}
 
 	currentScreen = screen
@@ -182,6 +189,12 @@ func UpdateDrawFrame() {
 			}
 		case shared.Ending:
 			ending.UpdateEndingScreen()
+			if ending.FinishEndingScreen() == shared.Title {
+				TransitionToScreen(shared.Title)
+			}
+		case shared.Leaderboard:
+			ending.UpdateEndingScreen()
+
 			if ending.FinishEndingScreen() == shared.Title {
 				TransitionToScreen(shared.Title)
 			}

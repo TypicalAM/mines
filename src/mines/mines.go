@@ -14,12 +14,12 @@ const Flagged int = 2
 
 // A mine field
 type MineBoard struct {
-	Board     [][]int
-	TileState [][]int
-	Flags     int
-	Mines     int
-	Width     int
-	Height    int
+	Board     [][]int `json:"board"`
+	TileState [][]int `json:"tile_state"`
+	Flags     int     `json:"flags"`
+	Mines     int     `json:"mines"`
+	Width     int     `json:"width"`
+	Height    int     `json:"height"`
 }
 
 // Generate the mines board
