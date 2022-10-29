@@ -18,6 +18,7 @@ const (
 )
 
 var AppSettings settings.Settings
+var Leaderboards settings.Entries
 
 // Logo variables
 var LogoIcon rl.Texture2D

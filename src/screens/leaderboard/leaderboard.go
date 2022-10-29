@@ -17,13 +17,6 @@ var col3 []rl.Rectangle
 var col1Container rl.Rectangle
 var col2Container rl.Rectangle
 var col3Container rl.Rectangle
-
-type Entry struct {
-	Name  string `json:"name"`
-	Score int    `json:"score"`
-	Time  int    `json:"time"`
-}
-
 var entries = []Entry{
 	{"Adam", 10, 213},
 	{"Maciek", 10, 220},
@@ -114,9 +107,10 @@ func DrawLeaderboardScreen() {
 		if pos == 0 {
 			rl.DrawRectangleRec(entry, rl.Maroon)
 			displayedText = "Name"
+			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 		} else {
 			displayedText = entries[pos-1].Name
-			rl.DrawRectangleRec(entry, rl.Red)
+			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.BackgroundColor())
 		}
 
 		entryTextSize := rl.MeasureTextEx(shared.Font, displayedText, shared.FontBigTextSize, 0)
@@ -131,11 +125,11 @@ func DrawLeaderboardScreen() {
 	for pos, entry := range col2 {
 		var displayedText string
 		if pos == 0 {
-			rl.DrawRectangleRec(entry, rl.Beige)
 			displayedText = "Score"
+			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 		} else {
 			displayedText = fmt.Sprint(entries[pos-1].Score)
-			rl.DrawRectangleRec(entry, rl.Yellow)
+			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.BackgroundColor())
 		}
 
 		entryTextSize := rl.MeasureTextEx(shared.Font, displayedText, shared.FontBigTextSize, 0)
@@ -150,11 +144,11 @@ func DrawLeaderboardScreen() {
 	for pos, entry := range col3 {
 		var displayedText string
 		if pos == 0 {
-			rl.DrawRectangleRec(entry, rl.DarkGreen)
 			displayedText = "Time"
+			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 		} else {
-			displayedText = fmt.Sprint(entries[pos-1].Time)
-			rl.DrawRectangleRec(entry, rl.Green)
+			displayedText = fmt.Sprintf("%d:%d", entries[pos-1].Time/60, entries[pos-1].Time%60)
+			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.BackgroundColor())
 		}
 
 		entryTextSize := rl.MeasureTextEx(shared.Font, displayedText, shared.FontBigTextSize, 0)
