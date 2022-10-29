@@ -2,7 +2,7 @@ package gameplay
 
 import (
 	"example/raylib-game/src/mines"
-	"example/raylib-game/src/screens"
+	shared "example/raylib-game/src/screens"
 	"fmt"
 	"time"
 
@@ -60,8 +60,8 @@ func InitGameplayScreen() {
 	mineBoard, _ = mines.GenerateBoard(width, height, shared.AppSettings.Bombs)
 
 	// Determine the placement of the game grid
-	cellWidth := ((rl.GetScreenWidth()-120) / width)
-	cellHeight := (rl.GetScreenHeight()-120) / height
+	cellWidth := ((rl.GetScreenWidth() - 120) / width)
+	cellHeight := (rl.GetScreenHeight() - 120) / height
 
 	backGroundStartX := float32(rl.GetScreenWidth()-cellWidth*width) / 2
 	backGroundStartY := float32(rl.GetScreenHeight()-cellHeight*height) / 2
@@ -103,7 +103,6 @@ func InitGameplayScreen() {
 
 // Gameplay screen update logic
 func UpdateGameplayScreen() {
-
 	if mineBoard.Flags == mineBoard.Mines && mineBoard.CheckIfWon() {
 		finishScreen = shared.Ending
 	}
@@ -171,6 +170,10 @@ func UpdateGameplayScreen() {
 			}
 		}
 	}
+	if rl.IsKeyPressed(rl.KeyEscape) {
+		finishScreen = shared.Title
+	}
+
 }
 
 // Gameplay screen draw logic

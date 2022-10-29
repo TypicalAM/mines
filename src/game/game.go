@@ -32,6 +32,9 @@ func InitalizeGame() {
 	// Init the window
 	rl.InitWindow(screenWidth, screenHeight, "Go mines")
 
+	// Set the exit key to q
+	rl.SetExitKey(rl.KeyQ)
+
 	// The random int sequences are deterministic, if we
 	// don't set a seed the mineboard will be the same
 	// every time
@@ -182,10 +185,13 @@ func UpdateDrawFrame() {
 		case shared.Gameplay:
 			gameplay.UpdateGameplayScreen()
 
-			if gameplay.FinishGameplayScreen() == shared.Ending {
+			switch gameplay.FinishGameplayScreen() {
+			case shared.Ending:
 				TransitionToScreen(shared.Ending)
-			} else if gameplay.FinishGameplayScreen() == shared.Gameplay {
+			case shared.Gameplay:
 				TransitionToScreen(shared.Gameplay)
+			case shared.Title:
+				TransitionToScreen(shared.Title)
 			}
 		case shared.Ending:
 			ending.UpdateEndingScreen()

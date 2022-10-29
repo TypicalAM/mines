@@ -65,7 +65,7 @@ func InitLeaderboardScreen() {
 
 // Update the screen
 func UpdateLeaderboardScreen() {
-	if rl.IsKeyPressed(rl.KeyEnter) {
+	if rl.IsKeyPressed(rl.KeyEscape) {
 		finishScreen = shared.Title
 	}
 }
