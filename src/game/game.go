@@ -74,8 +74,6 @@ func InitalizeGame() {
 	}
 
 	// Clean up after ourselves
-	// rl.UnloadSound(FxClick)
-	rl.CloseAudioDevice()
 	rl.CloseWindow()
 }
 

@@ -31,9 +31,9 @@ type hover struct {
 }
 
 var tileHoverState hover // If any tile was hovered, and which was hoverd
-
 var timePlaying time.Time // Time of the first meaningful mouse press
 var isPlaying bool        // If the player is in game
+var gameWon bool 					// If the game is won
 
 // Flags and bombs text placements
 var flagsText string
@@ -103,8 +103,14 @@ func InitGameplayScreen() {
 
 // Gameplay screen update logic
 func UpdateGameplayScreen() {
+	if gameWon {
+		updateWinningScreen()
+	}
+
 	if mineBoard.Flags == mineBoard.Mines && mineBoard.CheckIfWon() {
-		finishScreen = shared.Ending
+		gameWon = true
+		isPlaying = false
+		initWinningScreen()
 	}
 
 	if gameLost {

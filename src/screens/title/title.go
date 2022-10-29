@@ -2,7 +2,7 @@ package title
 
 import (
 	"example/raylib-game/src/gui"
-	"example/raylib-game/src/screens"
+	shared "example/raylib-game/src/screens"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -42,7 +42,7 @@ func InitTitleScreen() {
 	logoRectangle = rl.NewRectangle(
 		float32(rl.GetScreenWidth())/4,
 		50,
-	  float32(rl.GetScreenWidth()/2),175)
+		float32(rl.GetScreenWidth()/2), 175)
 }
 
 // Update title screen
