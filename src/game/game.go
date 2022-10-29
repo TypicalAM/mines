@@ -44,8 +44,8 @@ func InitalizeGame() {
 	rg.LoadGuiStyle(fmt.Sprintf("resources/styles/%s.style", shared.AppSettings.Theme))
 
 	// Setup first screen
-	currentScreen = shared.Title
-	title.InitTitleScreen()
+	currentScreen = shared.Leaderboard
+	leaderboard.InitLeaderboardScreen()
 
 	rl.SetTargetFPS(60)
 
@@ -193,19 +193,15 @@ func UpdateDrawFrame() {
 				TransitionToScreen(shared.Title)
 			}
 		case shared.Leaderboard:
-			ending.UpdateEndingScreen()
-
-			if ending.FinishEndingScreen() == shared.Title {
+			leaderboard.UpdateLeaderboardScreen()
+			if leaderboard.FinishLeaderboardScreen() == shared.Title {
 				TransitionToScreen(shared.Title)
 			}
 		}
 	} else {
 		UpdateTransition() // Update transition (fade-in, fade-out)
 	}
-	//----------------------------------------------------------------------------------
 
-	// Draw
-	//----------------------------------------------------------------------------------
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.RayWhite)
 	switch currentScreen {
@@ -219,15 +215,13 @@ func UpdateDrawFrame() {
 		gameplay.DrawGameplayScreen()
 	case shared.Ending:
 		ending.DrawEndingScreen()
+	case shared.Leaderboard:
+		leaderboard.DrawLeaderboardScreen()
 	}
 
-	// Draw full screen rectangle in front of everything
 	if onTransition {
 		DrawTransition()
 	}
 
-	//DrawFPS(10, 10);
-
 	rl.EndDrawing()
-	//----------------------------------------------------------------------------------
 }
