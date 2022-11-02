@@ -9,7 +9,7 @@ import (
 // Local variables
 
 var framesCounter int32
-var finishScreen int
+var ScreenState int
 var logoPositionX int32
 var logoPositionY int32
 var lettersCount int32
@@ -21,8 +21,8 @@ var state int32 = 0
 var alpha float32 = 1.0
 
 // Logo screen functions
-func InitLogoScreen() {
-	finishScreen = shared.Unchanged
+func Init() {
+	ScreenState = shared.Unchanged
 	framesCounter = 0
 	lettersCount = 0
 
@@ -39,7 +39,7 @@ func InitLogoScreen() {
 }
 
 // Logo screen update
-func UpdateLogoScreen() {
+func Update() {
 	if state == 0 {
 		framesCounter++
 
@@ -74,7 +74,7 @@ func UpdateLogoScreen() {
 				alpha -= 0.02
 				if alpha <= 0.0 {
 					alpha = 0.0
-					finishScreen = shared.Title
+					ScreenState = shared.Title
 				}
 			}
 		}
@@ -82,7 +82,7 @@ func UpdateLogoScreen() {
 }
 
 // Logo Screen Draw Logic
-func DrawLogoScreen() {
+func Draw() {
 	if state == 0 { // Draw blinking top-left square corner
 		if (framesCounter/10)%2 == 1 {
 			rl.DrawRectangle(logoPositionX, logoPositionY, 16, 16, rl.Black)
@@ -114,9 +114,4 @@ func DrawLogoScreen() {
 }
 
 // Logo Screen Unload logic
-func UnloadLogoScreen() {}
-
-// Logo Screen should finish?
-func FinishLogoScreen() int {
-	return finishScreen
-}
+func Unload() {}

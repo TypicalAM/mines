@@ -52,7 +52,9 @@ func (settings *Settings) LoadFromFile() error {
 		// Write the default settings into the file
 		*settings = DefaultSettings
 		jsonData, _ := json.MarshalIndent(settings, "", "")
-		jsonFile.Write(jsonData)
+		if _, err := jsonFile.Write(jsonData); err != nil {
+			return err
+		}
 	}
 
 	// Return no errors
@@ -81,7 +83,7 @@ func (settings *Settings) WriteToFile(newSettings Settings) error {
 	}
 
 	// Make the newsettings be the new settings
-	settings = &newSettings
+	*settings = newSettings
 
 	// Return no errors
 	return nil

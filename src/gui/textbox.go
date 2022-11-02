@@ -7,14 +7,13 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-var backspaceHeld = false
+var letter int32 = -1
 var nextBackspace = time.Now()
 var framesCounter = 0
 
 // TextBoxEx - TextBox element, but with custom fonting and case sensitivity
 func TextBoxEx(font rl.Font, bounds rl.Rectangle, text string, size float32, maxChars int) string {
 	bound := bounds.ToInt32()
-	letter := int32(-1)
 
 	state := rg.GetInteractionState(bounds)
 	borderColor := rg.TextboxBorderColor

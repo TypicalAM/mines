@@ -20,11 +20,11 @@ import (
 const screenWidth int32 = 1600
 const screenHeight int32 = 900
 
-var currentScreen int = shared.Unchanged
 var transAlpha float32
 var onTransition bool
 var transFadeOut bool
-var transFromScreen int = shared.Unchanged
+
+var currentScreen int = shared.Unchanged
 var transToScreen int = shared.Unchanged
 
 // Main entry point to the game
@@ -33,7 +33,7 @@ func InitalizeGame() {
 	rl.InitWindow(screenWidth, screenHeight, "Go mines")
 
 	// Set the exit key to q
-	rl.SetExitKey(rl.KeyQ)
+	rl.SetExitKey(rl.KeyEscape)
 
 	// The random int sequences are deterministic, if we
 	// don't set a seed the mineboard will be the same
@@ -41,14 +41,16 @@ func InitalizeGame() {
 	rand.Seed(time.Now().UnixNano())
 
 	// Load the shared assets
-	shared.LoadSharedAssets()
+	if err := shared.LoadSharedAssets(); err != nil {
+		rl.TraceLog(rl.LogFatal, "Failed to load the share assets: ", err)
+	}
 
 	// Load the app-wide gui style
 	rg.LoadGuiStyle(fmt.Sprintf("resources/styles/%s.style", shared.AppSettings.Theme))
 
 	// Setup first screen
-	currentScreen = shared.Title
-	title.InitTitleScreen()
+	currentScreen = shared.Gameplay
+	gameplay.Init()
 
 	rl.SetTargetFPS(60)
 
@@ -60,17 +62,17 @@ func InitalizeGame() {
 	// Unload screen
 	switch currentScreen {
 	case shared.Logo:
-		logo.UnloadLogoScreen()
+		logo.Unload()
 	case shared.Title:
-		title.UnloadTitleScreen()
+		title.Unload()
 	case shared.Options:
-		options.UnloadOptionsScreen()
+		options.Unload()
 	case shared.Gameplay:
-		gameplay.UnloadGameplayScreen()
+		gameplay.Unload()
 	case shared.Ending:
-		ending.UnloadEndingScreen()
+		ending.Unload()
 	case shared.Leaderboard:
-		leaderboard.UnloadLeaderboardScreen()
+		leaderboard.Unload()
 	}
 
 	// Clean up after ourselves
@@ -82,43 +84,41 @@ func ChangeToScreen(screen int) {
 	// Unload current screen
 	switch currentScreen {
 	case shared.Logo:
-		logo.UnloadLogoScreen()
+		logo.Unload()
 	case shared.Title:
-		title.UnloadTitleScreen()
+		title.Unload()
 	case shared.Options:
-		options.UnloadOptionsScreen()
+		options.Unload()
 	case shared.Gameplay:
-		gameplay.UnloadGameplayScreen()
+		gameplay.Unload()
 	case shared.Ending:
-		ending.UnloadEndingScreen()
+		ending.Unload()
 	case shared.Leaderboard:
-		leaderboard.UnloadLeaderboardScreen()
+		leaderboard.Unload()
 	}
 
 	// Init next screen
 	switch screen {
 	case shared.Logo:
-		logo.InitLogoScreen()
+		logo.Init()
 	case shared.Title:
-		title.InitTitleScreen()
+		title.Init()
 	case shared.Options:
-		options.InitOptionsScreen()
+		options.Init()
 	case shared.Gameplay:
-		gameplay.InitGameplayScreen()
+		gameplay.Init()
 	case shared.Ending:
-		ending.InitEndingScreen()
+		ending.Init()
 	case shared.Leaderboard:
-		leaderboard.InitLeaderboardScreen()
+		leaderboard.Init()
 	}
-
 	currentScreen = screen
 }
 
 // Request transition to the next screen
-func TransitionToScreen(screen int) {
+func Transition(screen int) {
 	onTransition = true
 	transFadeOut = false
-	transFromScreen = currentScreen
 	transToScreen = screen
 	transAlpha = 0.0
 }
@@ -141,7 +141,6 @@ func UpdateTransition() {
 			transAlpha = 0.0
 			transFadeOut = false
 			onTransition = false
-			transFromScreen = shared.Unchanged
 			transToScreen = shared.Unchanged
 		}
 	}
@@ -158,48 +157,50 @@ func UpdateDrawFrame() {
 	if !onTransition {
 		switch currentScreen {
 		case shared.Logo:
-			logo.UpdateLogoScreen()
+			logo.Update()
 
-			if logo.FinishLogoScreen() == shared.Title {
-				TransitionToScreen(shared.Title)
+			if logo.ScreenState == shared.Title {
+				Transition(shared.Title)
 			}
 		case shared.Title:
-			title.UpdateTitleScreen()
+			title.Update()
 
-			switch title.FinishTitleScreen() {
+			switch title.ScreenState {
 			case shared.Gameplay:
-				TransitionToScreen(shared.Gameplay)
+				Transition(shared.Gameplay)
 			case shared.Leaderboard:
-				TransitionToScreen(shared.Leaderboard)
+				Transition(shared.Leaderboard)
 			case shared.Options:
-				TransitionToScreen(shared.Options)
+				Transition(shared.Options)
 			}
 		case shared.Options:
-			options.UpdateOptionsScreen()
+			options.Update()
 
-			if options.FinishOptionsScreen() == shared.Title {
-				TransitionToScreen(shared.Title)
+			if options.ScreenState == shared.Title {
+				Transition(shared.Title)
 			}
 		case shared.Gameplay:
-			gameplay.UpdateGameplayScreen()
+			gameplay.Update()
 
-			switch gameplay.FinishGameplayScreen() {
+			switch gameplay.ScreenState {
 			case shared.Ending:
-				TransitionToScreen(shared.Ending)
+				Transition(shared.Ending)
 			case shared.Gameplay:
-				TransitionToScreen(shared.Gameplay)
+				Transition(shared.Gameplay)
 			case shared.Title:
-				TransitionToScreen(shared.Title)
+				Transition(shared.Title)
 			}
 		case shared.Ending:
-			ending.UpdateEndingScreen()
-			if ending.FinishEndingScreen() == shared.Title {
-				TransitionToScreen(shared.Title)
+			ending.Update()
+
+			if ending.ScreenState == shared.Title {
+				Transition(shared.Title)
 			}
 		case shared.Leaderboard:
-			leaderboard.UpdateLeaderboardScreen()
-			if leaderboard.FinishLeaderboardScreen() == shared.Title {
-				TransitionToScreen(shared.Title)
+			leaderboard.Update()
+
+			if leaderboard.ScreenState == shared.Title {
+				Transition(shared.Title)
 			}
 		}
 	} else {
@@ -207,20 +208,20 @@ func UpdateDrawFrame() {
 	}
 
 	rl.BeginDrawing()
-	rl.ClearBackground(rl.RayWhite)
+
 	switch currentScreen {
 	case shared.Logo:
-		logo.DrawLogoScreen()
+		logo.Draw()
 	case shared.Title:
-		title.DrawTitleScreen()
+		title.Draw()
 	case shared.Options:
-		options.DrawOptionsScreen()
+		options.Draw()
 	case shared.Gameplay:
-		gameplay.DrawGameplayScreen()
+		gameplay.Draw()
 	case shared.Ending:
-		ending.DrawEndingScreen()
+		ending.Draw()
 	case shared.Leaderboard:
-		leaderboard.DrawLeaderboardScreen()
+		leaderboard.Draw()
 	}
 
 	if onTransition {

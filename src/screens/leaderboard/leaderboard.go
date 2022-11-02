@@ -9,7 +9,7 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-var finishScreen = shared.Unchanged
+var ScreenState = shared.Unchanged
 var col1 []rl.Rectangle
 var col2 []rl.Rectangle
 var col3 []rl.Rectangle
@@ -22,8 +22,8 @@ var doneRectButton rl.Rectangle
 var textVector rl.Vector2
 
 // Init leaderboard screen
-func InitLeaderboardScreen() {
-	finishScreen = shared.Unchanged
+func Init() {
+	ScreenState = shared.Unchanged
 
 	// Leaderboard logo
 	titleSize := rl.MeasureTextEx(shared.Font, "Leaderboard", shared.FontHugeTextSize*1.5, 0)
@@ -64,14 +64,14 @@ func InitLeaderboardScreen() {
 }
 
 // Update the screen
-func UpdateLeaderboardScreen() {
-	if rl.IsKeyPressed(rl.KeyEnter) {
-		finishScreen = shared.Title
+func Update() {
+	if rl.IsKeyPressed(rl.KeyEscape) {
+		ScreenState = shared.Title
 	}
 }
 
 // Draw the screen
-func DrawLeaderboardScreen() {
+func Draw() {
 	// Draw the background
 	rl.DrawRectangle(0, 0, int32(rl.GetScreenWidth()), int32(rl.GetScreenHeight()), rg.BackgroundColor())
 	// Draw the logo
@@ -84,7 +84,7 @@ func DrawLeaderboardScreen() {
 
 	// Draw the "we are done" button
 	if gui.ButtonEx(shared.Font, doneRectButton, "Done", shared.FontBigTextSize) {
-		finishScreen = shared.Title
+		ScreenState = shared.Title
 	}
 
 	rg.DrawBorderedRectangle(col1Container.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
@@ -154,9 +154,4 @@ func DrawLeaderboardScreen() {
 }
 
 // Unload textures
-func UnloadLeaderboardScreen() {}
-
-// Do we finish?
-func FinishLeaderboardScreen() int {
-	return finishScreen
-}
+func Unload() {}

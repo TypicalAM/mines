@@ -12,9 +12,9 @@ var FxClick rl.Sound
 
 const (
 	FontSmallTextSize  float32 = 16
-	FontMediumTextSize         = 24
-	FontBigTextSize            = 32
-	FontHugeTextSize           = 42
+	FontMediumTextSize float32 = 24
+	FontBigTextSize    float32 = 32
+	FontHugeTextSize   float32 = 42
 )
 
 var AppSettings settings.Settings
@@ -37,7 +37,7 @@ const (
 const Unchanged int = -1
 
 // Load the shared assets
-func LoadSharedAssets() {
+func LoadSharedAssets() error {
 	// Set up the font
 	Font = rl.LoadFont("resources/fonts/montserrat_semibold.ttf")
 	rl.GenTextureMipmaps(&Font.Texture)
@@ -48,11 +48,18 @@ func LoadSharedAssets() {
 	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterAnisotropic4x)
 
 	// Load the necessary settings and scores
-	AppSettings.LoadFromFile()
-	Scores.LoadFromFile()
+	if err := AppSettings.LoadFromFile(); err != nil {
+		return err
+	}
+
+	if err := Scores.LoadFromFile(); err != nil {
+		return err
+	}
 
 	// Logo textures
 	LogoIcon = rl.LoadTexture("resources/icons/logo_old.png")
 	IconRect = rl.NewRectangle(30, 25, 45, 45)
 	TextRect = rl.NewRectangle(82, 27, 250, 50)
+
+	return nil
 }

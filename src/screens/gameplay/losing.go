@@ -41,7 +41,8 @@ func initFinishScreen() {
 	}
 }
 
-func unloadFinishScreen() {
+// Unload the used files
+func UnloadLose() {
 	for i := range bombExplosion {
 		rl.UnloadTexture(bombExplosion[i])
 	}

@@ -44,7 +44,9 @@ func (scores *Scores) LoadFromFile() error {
 	if err != nil {
 		// Write the default leaderboard into the file
 		jsonData, _ := json.MarshalIndent(scores, "", "")
-		jsonFile.Write(jsonData)
+		if _, err = jsonFile.Write(jsonData); err != nil {
+			return err
+		}
 	}
 
 	// Return no errors

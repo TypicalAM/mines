@@ -12,8 +12,7 @@ import (
 )
 
 // Local variables
-var framesCounter int32
-var finishScreen int
+var ScreenState int
 
 const (
 	FilePicker int = iota
@@ -42,10 +41,9 @@ var activeThemeIndex int
 var themes = []string{"default_dark", "default_light", "candy","hello_kitty", "monokai", "obsidian", "solarized", "solarized_light", "zahnrad"}
 
 // Options screen initialization logic
-func InitOptionsScreen() {
+func Init() {
 	// Basic variables
-	framesCounter = 0
-	finishScreen = shared.Unchanged
+	ScreenState = shared.Unchanged
 
 	// Make the buttons take up 1/3rd of the screen
 	rectangleWidths := float32(rl.GetScreenWidth()) / 3
@@ -104,9 +102,9 @@ func InitOptionsScreen() {
 }
 
 // Update Options screen
-func UpdateOptionsScreen() {
+func Update() {
 	if rl.IsKeyPressed(rl.KeyEscape) {
-		finishScreen = shared.Title
+		ScreenState = shared.Title
 	}
 
 	if saveAndExit {
@@ -115,7 +113,7 @@ func UpdateOptionsScreen() {
 }
 
 // Options screen draw logic
-func DrawOptionsScreen() {
+func Draw() {
 	// Draw the background
 	rl.DrawRectangle(0, 0, int32(rl.GetScreenWidth()), int32(rl.GetScreenHeight()), rg.BackgroundColor())
 	// Draw the logo
@@ -150,14 +148,6 @@ func DrawOptionsScreen() {
 	}
 }
 
-// Options screen unload logic
-func UnloadOptionsScreen() {}
-
-// Options screens should finish?
-func FinishOptionsScreen() int {
-	return finishScreen
-}
-
 // Get all the fields and save it
 func saveResults() {
 	width, _ := strconv.Atoi(options["Width of the map"].value)
@@ -176,9 +166,12 @@ func saveResults() {
 
 	err := shared.AppSettings.WriteToFile(newSettings)
 	if err == nil {
-		finishScreen = shared.Title
+		ScreenState = shared.Title
 	} else {
 		saveWrongData = true
 		saveAndExit = false
 	}
 }
+
+// Options screen unload logic
+func Unload() {}

@@ -9,8 +9,7 @@ import (
 )
 
 // Local variables
-var framesCounter int32
-var finishScreen int = shared.Unchanged
+var ScreenState int = shared.Unchanged
 
 // Rectangles for buttons
 var startGameRect rl.Rectangle
@@ -21,10 +20,9 @@ var optionsRect rl.Rectangle
 var logoRectangle rl.Rectangle
 
 // Title screen initialization logic
-func InitTitleScreen() {
+func Init() {
 	// Basic variables
-	framesCounter = 0
-	finishScreen = shared.Unchanged
+	ScreenState = shared.Unchanged
 
 	// Make the buttons take up 1/3rd of the screen
 	rectangleWidths := float32(rl.GetScreenWidth()) / 3
@@ -46,10 +44,10 @@ func InitTitleScreen() {
 }
 
 // Update title screen
-func UpdateTitleScreen() {}
+func Update() {}
 
 // Title screen draw logic
-func DrawTitleScreen() {
+func Draw() {
 	// Draw the background
 	rl.DrawRectangle(0, 0, int32(rl.GetScreenWidth()), int32(rl.GetScreenHeight()), rg.BackgroundColor())
 
@@ -59,20 +57,15 @@ func DrawTitleScreen() {
 
 	// Draw the buttons
 	if gui.ButtonEx(shared.Font, startGameRect, "Start the game", shared.FontBigTextSize) {
-		finishScreen = shared.Gameplay
+		ScreenState = shared.Gameplay
 	}
 	if gui.ButtonEx(shared.Font, leaderboardRect, "Leaderboards", shared.FontBigTextSize) {
-		finishScreen = shared.Leaderboard
+		ScreenState = shared.Leaderboard
 	}
 	if gui.ButtonEx(shared.Font, optionsRect, "Options", shared.FontBigTextSize) {
-		finishScreen = shared.Options
+		ScreenState = shared.Options
 	}
 }
 
 // Title screen unload logic
-func UnloadTitleScreen() {}
-
-// Title shared hould finish
-func FinishTitleScreen() int {
-	return finishScreen
-}
+func Unload() {}

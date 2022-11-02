@@ -12,7 +12,7 @@ import (
 
 // Define local variables
 var framesCounter int32 // Frames counter
-var finishScreen int    // Determines if the screen should finish
+var ScreenState int    // Determines if the screen should finish
 
 const numsTextureSize float32 = 56 // The texture width and height (56x56)
 var numberTextures rl.Texture2D    // The textures of the numbres (1-8, flag, empty and uncovered)
@@ -30,10 +30,10 @@ type hover struct {
 	col       int
 }
 
-var tileHoverState hover // If any tile was hovered, and which was hoverd
+var tileHoverState hover  // If any tile was hovered, and which was hoverd
 var timePlaying time.Time // Time of the first meaningful mouse press
 var isPlaying bool        // If the player is in game
-var gameWon bool 					// If the game is won
+var gameWon bool          // If the game is won
 
 // Flags and bombs text placements
 var flagsText string
@@ -44,10 +44,10 @@ var clockTextXPos float32
 var clockIconXPos int32
 
 // Gameplay screen initialization logic
-func InitGameplayScreen() {
+func Init() {
 	// Init basic variables
 	framesCounter = 0
-	finishScreen = shared.Unchanged
+	ScreenState = shared.Unchanged
 	gameLost = false
 
 	// Init timing variables
@@ -99,10 +99,15 @@ func InitGameplayScreen() {
 	clockText = "00:00"
 	clockTextXPos = float32(rl.GetScreenWidth()/2 - 85)
 	clockIconXPos = int32(rl.GetScreenWidth()/2 - 125)
+
+	gameWon = true
+	isPlaying = false
+	initWinningScreen()
+
 }
 
 // Gameplay screen update logic
-func UpdateGameplayScreen() {
+func Update() {
 	if gameWon {
 		updateWinningScreen()
 	}
@@ -177,13 +182,13 @@ func UpdateGameplayScreen() {
 		}
 	}
 	if rl.IsKeyPressed(rl.KeyEscape) {
-		finishScreen = shared.Title
+		ScreenState = shared.Title
 	}
 
 }
 
 // Gameplay screen draw logic
-func DrawGameplayScreen() {
+func Draw() {
 	// Draw the background
 	rl.DrawRectangle(0, 0, int32(rl.GetScreenWidth()), int32(rl.GetScreenHeight()), rg.BackgroundColor())
 
@@ -233,18 +238,18 @@ func DrawGameplayScreen() {
 
 	if gameLost {
 		drawGameLostScreen()
+	} else if gameWon {
+		drawWinningScreen()
 	}
 }
 
 // Gameplay screen unload logic
-func UnloadGameplayScreen() {
+func Unload() {
 	// Unload the appropriate textures
 	rl.UnloadTexture(numberTextures)
 	rl.UnloadTexture(bombIconTexture)
 	rl.UnloadTexture(clockIconTexture)
-}
 
-// Gameplay screen should finish
-func FinishGameplayScreen() int {
-	return finishScreen
+	// Unload the winning or losing screens
+	UnloadLose()
 }
