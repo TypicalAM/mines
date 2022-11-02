@@ -110,14 +110,19 @@ func Init() {
 
 	isPlaying = false
 	// InitWinning()
+	//for row := range mineBoard.TileState {
+	//	for col := range mineBoard.TileState {
+	//		if mineBoard.Board[row][col] != mines.Bomb {
+	//			mineBoard.TileState[row][col] = mines.Uncovered
+	//		} else {
+	//			mineBoard.TileState[row][col] = mines.Flagged
+	//		}
+	//	}
+	//}
 }
 
 // Gameplay screen update logic
 func Update() {
-	if mineBoard.Flags == mineBoard.Mines && mineBoard.CheckIfWon() {
-		InitWinning()
-	}
-
 	// Increase the timer if we are playing
 	if isPlaying {
 		// Change the time and the flags text
@@ -176,10 +181,14 @@ func Update() {
 			}
 		}
 	}
+
+	if mineBoard.CheckIfWon() && GameState == Playing {
+		InitWinning()
+	}
+
 	if rl.IsKeyPressed(rl.KeyEscape) {
 		ScreenState = shared.Title
 	}
-
 }
 
 // Gameplay screen draw logic

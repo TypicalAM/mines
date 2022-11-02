@@ -180,7 +180,9 @@ func UpdateDrawFrame() {
 				Transition(shared.Title)
 			}
 		case shared.Gameplay:
-			gameplay.Update()
+			if gameplay.GameState == gameplay.Playing {
+				gameplay.Update()
+			}
 
 			switch gameplay.GameState {
 			case gameplay.Winning:

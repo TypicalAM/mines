@@ -3,7 +3,6 @@ package gameplay
 import (
 	"fmt"
 
-	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -23,7 +22,7 @@ func InitWinning() {
 func UpdateWinning() {
 	if animation {
 		alpha += 0.01
-		if alpha >= 0.5 {
+		if alpha >= 0.1 {
 			animation = false
 		}
 	}
@@ -32,8 +31,9 @@ func UpdateWinning() {
 // Draw the game winning screen
 func DrawWinning() {
 	rl.DrawRectangle(0, 0, int32(rl.GetScreenWidth()), int32(rl.GetScreenHeight()),
-		rl.Fade(rg.BackgroundColor(), float32(alpha)),
+		rl.Fade(rl.White, float32(alpha)),
 	)
+	fmt.Println(alpha)
 }
 
 // Unload the winning files

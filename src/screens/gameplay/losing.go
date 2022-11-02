@@ -9,7 +9,6 @@ import (
 )
 
 // Define local variables
-var gameLost bool // Is the game lost?
 var score float32 // What is the final score of the player
 
 var bombTile rl.Rectangle // The tile which lost the user his game

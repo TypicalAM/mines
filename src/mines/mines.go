@@ -25,7 +25,7 @@ type MineBoard struct {
 // Generate the mines board
 func GenerateBoard(width int, height int, bombsPercent int) (MineBoard, error) {
 	// Check if there are more bombs than we can put
-	bombs := int(float32(bombsPercent*width*height)/100)
+	bombs := int(float32(bombsPercent*width*height) / 100)
 	if bombs >= width*height {
 		return MineBoard{}, errors.New("there are more bombs than fields on the map")
 	}
@@ -150,23 +150,24 @@ func (board *MineBoard) UncoverValues(firstRun bool, x int, y int) (isLost bool)
 
 // Check if the game is won
 func (board *MineBoard) CheckIfWon() bool {
-	var totalValid int
-	var coveredTiles int
 	boardValue := *board
 
-	// Check if every mine tile is covered or flagged
-	for row := range boardValue.Board {
-		for col := range boardValue.Board[row] {
-			if boardValue.Board[row][col] == Bomb && boardValue.TileState[row][col] == Flagged {
-				totalValid++
-			} else if boardValue.TileState[row][col] == Covered {
-				coveredTiles++
+	var uncoveredGood int
+	var coveredBad int
+
+	// Check for covered bomb tiles and uncovered good tiles
+	for row := range boardValue.TileState {
+		for col := range boardValue.TileState[row] {
+			if boardValue.TileState[row][col] != Uncovered && boardValue.Board[row][col] == Bomb {
+				coveredBad++
+			} else if boardValue.TileState[row][col] == Uncovered {
+				uncoveredGood++
 			}
 		}
 	}
 
-	// If every mine is flagged and we have no uncovered tiles, we win
-	if totalValid == board.Mines && coveredTiles == 0 {
+	// Check if the game is won
+	if board.Width*board.Height-board.Mines == uncoveredGood && coveredBad == board.Mines {
 		return true
 	} else {
 		return false
