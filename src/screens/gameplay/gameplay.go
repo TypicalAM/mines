@@ -109,25 +109,13 @@ func Init() {
 	clockIconXPos = int32(rl.GetScreenWidth()/2 - 125)
 
 	isPlaying = false
-	InitWinning()
-
+	// InitWinning()
 }
 
 // Gameplay screen update logic
 func Update() {
-	if gameWon {
-		updateWinningScreen()
-	}
-
 	if mineBoard.Flags == mineBoard.Mines && mineBoard.CheckIfWon() {
-		gameWon = true
-		isPlaying = false
 		InitWinning()
-	}
-
-	if gameLost {
-		UpdateLosing()
-		return
 	}
 
 	// Increase the timer if we are playing
@@ -158,7 +146,7 @@ func Update() {
 					mineBoard.TileState[row][col] = mines.Uncovered
 					if mineBoard.UncoverValues(true, row, col) {
 						bombTile = tile
-						initFinishScreen()
+						InitLosing()
 					}
 
 					// Start the game timer
@@ -243,11 +231,6 @@ func Draw() {
 	rl.DrawTextEx(shared.Font, clockText, rl.Vector2{X: clockTextXPos, Y: 25}, shared.FontMediumTextSize, 0, rg.TextColor())
 	rl.DrawTexture(clockIconTexture, clockIconXPos, 25, rl.White)
 
-	if gameLost {
-		DrawLosing()
-	} else if gameWon {
-		DrawWinning()
-	}
 }
 
 // Gameplay screen unload logic
@@ -258,5 +241,6 @@ func Unload() {
 	rl.UnloadTexture(clockIconTexture)
 
 	// Unload the winning or losing screens
-	UnloadLose()
+	UnloadWinning()
+	UnloadLosing()
 }

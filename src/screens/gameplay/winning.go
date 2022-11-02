@@ -14,7 +14,9 @@ var animation = false
 // Initialize the game losing screen
 func InitWinning() {
 	fmt.Println("We have won the game")
+	GameState = Winning
 	animation = true
+	isPlaying = false
 }
 
 // Update the game winning screen

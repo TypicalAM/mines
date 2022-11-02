@@ -182,6 +182,13 @@ func UpdateDrawFrame() {
 		case shared.Gameplay:
 			gameplay.Update()
 
+			switch gameplay.GameState {
+			case gameplay.Winning:
+				gameplay.UpdateWinning()
+			case gameplay.Losing:
+				gameplay.UpdateLosing()
+			}
+
 			switch gameplay.ScreenState {
 			case shared.Ending:
 				Transition(shared.Ending)
@@ -218,6 +225,13 @@ func UpdateDrawFrame() {
 		options.Draw()
 	case shared.Gameplay:
 		gameplay.Draw()
+
+		switch gameplay.GameState {
+		case gameplay.Winning:
+			gameplay.DrawWinning()
+		case gameplay.Losing:
+			gameplay.DrawLosing()
+		}
 	case shared.Ending:
 		ending.Draw()
 	case shared.Leaderboard:

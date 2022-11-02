@@ -20,7 +20,7 @@ var explosionFrame int32 // Which explosion frame are we on?
 func InitLosing() {
 	// Finish the game and calculate the score
 	isPlaying = false
-	gameLost = true
+	GameState = Losing
 	score = mineBoard.CalculateScore()
 
 	// Load the bomb explosion texutres
