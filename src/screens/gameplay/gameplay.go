@@ -10,9 +10,19 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+// Define the states that the game can be in
+const (
+	Playing int = iota
+	Winning
+	Losing
+)
+
+// Define exported variables
+var ScreenState int // Determines the screen state
+var GameState int   // Determines the game state (playing, winning, losing)
+
 // Define local variables
 var framesCounter int32 // Frames counter
-var ScreenState int    // Determines if the screen should finish
 
 const numsTextureSize float32 = 56 // The texture width and height (56x56)
 var numberTextures rl.Texture2D    // The textures of the numbres (1-8, flag, empty and uncovered)
@@ -33,7 +43,6 @@ type hover struct {
 var tileHoverState hover  // If any tile was hovered, and which was hoverd
 var timePlaying time.Time // Time of the first meaningful mouse press
 var isPlaying bool        // If the player is in game
-var gameWon bool          // If the game is won
 
 // Flags and bombs text placements
 var flagsText string
@@ -48,7 +57,6 @@ func Init() {
 	// Init basic variables
 	framesCounter = 0
 	ScreenState = shared.Unchanged
-	gameLost = false
 
 	// Init timing variables
 	timePlaying = time.Time{}
@@ -100,9 +108,8 @@ func Init() {
 	clockTextXPos = float32(rl.GetScreenWidth()/2 - 85)
 	clockIconXPos = int32(rl.GetScreenWidth()/2 - 125)
 
-	gameWon = true
 	isPlaying = false
-	initWinningScreen()
+	InitWinning()
 
 }
 
@@ -115,11 +122,11 @@ func Update() {
 	if mineBoard.Flags == mineBoard.Mines && mineBoard.CheckIfWon() {
 		gameWon = true
 		isPlaying = false
-		initWinningScreen()
+		InitWinning()
 	}
 
 	if gameLost {
-		updateGameLostScreen()
+		UpdateLosing()
 		return
 	}
 
@@ -237,9 +244,9 @@ func Draw() {
 	rl.DrawTexture(clockIconTexture, clockIconXPos, 25, rl.White)
 
 	if gameLost {
-		drawGameLostScreen()
+		DrawLosing()
 	} else if gameWon {
-		drawWinningScreen()
+		DrawWinning()
 	}
 }
 

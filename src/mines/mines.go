@@ -172,3 +172,20 @@ func (board *MineBoard) CheckIfWon() bool {
 		return false
 	}
 }
+
+// Calculate the score that the user had
+func (board *MineBoard) CalculateScore() float32 {
+	var bombsCaught int
+
+	// Count the bombs caught (flagged or covered)
+	for row := range board.TileState {
+		for col := range board.TileState[row] {
+			if board.TileState[row][col] == Flagged && board.Board[row][col] == Bomb {
+				bombsCaught += 1
+			}
+		}
+	}
+
+	// Return the percentage of bombs caught
+	return float32(bombsCaught) / float32(board.Mines)
+}
