@@ -52,3 +52,23 @@ func (scores *Scores) LoadFromFile() error {
 	// Return no errors
 	return nil
 }
+
+// Should the new score be at the scoreboard
+func (scores *Scores) CanItBeInTheScoreboard(time int) (bool, int) {
+	// If our time is bigger than the last entry, we can be in the scoreboard
+	if time > scores.Entries[len(scores.Entries)-1].Time {
+		return false, 0
+	}
+
+	// Get the place where the element should be
+	var place int
+	for pos, entry := range scores.Entries {
+		if time < entry.Time {
+			place = pos
+			break
+		}
+	}
+
+	// We can be in the scoreboard, for example in the 3rd place
+	return true, place
+}
