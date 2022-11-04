@@ -18,10 +18,15 @@ var bgAnimation = false
 var textAnimation = false
 var newRecord bool = false
 var scoreboardPlace int = 0
+var scoresRect [5]rl.Rectangle
+var saveRect rl.Rectangle
+var scoreSaved bool
+var newScoreName string
+var displayedScores []string
+var gameTime int
 
 // Initialize the game losing screen
 func InitWinning() {
-	fmt.Println("We have won the game")
 	GameState = Winning
 	bgAnimation = true
 
@@ -30,12 +35,74 @@ func InitWinning() {
 
 	textAlpha = 0.0
 	bgAlpha = 0.0
+	scoreSaved = false
 
 	timeSplit := strings.Split(clockText, ":")
 	minutes, _ := strconv.Atoi(timeSplit[0])
 	seconds, _ := strconv.Atoi(timeSplit[1])
+	gameTime = minutes*60 + seconds
 
-	newRecord, scoreboardPlace = shared.Scores.CanItBeInTheScoreboard(minutes*60 + seconds)
+	newRecord, scoreboardPlace = shared.Scores.CanItBeInTheScoreboard(gameTime)
+	newScoreName = ""
+
+	rectangleWidths := float32(rl.GetScreenWidth()) / 3
+	rectangleXPos := (float32(rl.GetScreenWidth()) - rectangleWidths) / 2
+
+	saveRect = rl.NewRectangle(
+		rectangleXPos+rectangleWidths/4,
+		float32(rl.GetScreenHeight()/2+250),
+		rectangleWidths/2, 60,
+	)
+
+	baseRectY := -250
+	baseOffsetY := 100
+
+	for i := range scoresRect {
+		scoresRect[i] = rl.NewRectangle(rectangleXPos, float32(rl.GetScreenHeight()/2+baseRectY+i*baseOffsetY), rectangleWidths, 80)
+	}
+
+	switch scoreboardPlace {
+	case 0:
+		displayedScores = []string{
+			"mine",
+			fmt.Sprint(shared.Scores.Entries[0].Time),
+			fmt.Sprint(shared.Scores.Entries[1].Time),
+			fmt.Sprint(shared.Scores.Entries[2].Time),
+			fmt.Sprint(shared.Scores.Entries[3].Time),
+		}
+	case 1:
+		displayedScores = []string{
+			fmt.Sprint(shared.Scores.Entries[0].Time),
+			"mine",
+			fmt.Sprint(shared.Scores.Entries[1].Time),
+			fmt.Sprint(shared.Scores.Entries[2].Time),
+			fmt.Sprint(shared.Scores.Entries[3].Time),
+		}
+	case len(shared.Scores.Entries) - 2:
+		displayedScores = []string{
+			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-4].Time),
+			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-3].Time),
+			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-2].Time),
+			"mine",
+			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-1].Time),
+		}
+	case len(shared.Scores.Entries) - 1:
+		displayedScores = []string{
+			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-4]),
+			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-3]),
+			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-2]),
+			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-1]),
+			"mine",
+		}
+	default:
+		displayedScores = []string{
+			fmt.Sprint(shared.Scores.Entries[scoreboardPlace-2].Time),
+			fmt.Sprint(shared.Scores.Entries[scoreboardPlace-1].Time),
+			"mine",
+			fmt.Sprint(shared.Scores.Entries[scoreboardPlace].Time),
+			fmt.Sprint(shared.Scores.Entries[scoreboardPlace+1].Time),
+		}
+	}
 }
 
 // Update the game winning screen
@@ -56,6 +123,15 @@ func UpdateWinning() {
 			textAnimation = false
 		}
 	}
+
+	if scoreSaved {
+		newScoreName = strings.Join(strings.Fields(newScoreName), " ")
+		if err := shared.Scores.InsertNewScore(newScoreName, gameTime, scoreboardPlace); err != nil {
+			rl.TraceLog(rl.LogFatal, "Couldn't save the new score")
+		} else {
+			ScreenState = shared.Title
+		}
+	}
 }
 
 // Draw the game winning screen
@@ -72,40 +148,21 @@ func DrawWinning() {
 	rl.DrawTextEx(shared.Font, "You have won the game", rl.Vector2{
 		X: float32(rl.GetScreenWidth())/2 - measure.X/2,
 		Y: float32(rl.GetScreenHeight())/2 - measure.Y/2 - 330,
-	}, shared.FontHugeTextSize*2, 0, rl.Fade(rl.Red, float32(textAlpha)))
+	}, shared.FontHugeTextSize*2, 0, rl.Fade(rg.TextColor(), float32(textAlpha)))
 
 	if textAnimation || bgAnimation || !newRecord {
 		return
 	}
 
-	rectangleWidths := float32(rl.GetScreenWidth()) / 3
-	rectangleXPos := (float32(rl.GetScreenWidth()) - rectangleWidths) / 2
-
-	textboxRect := rl.NewRectangle(
-		rectangleXPos+rectangleWidths/4,
-		float32(rl.GetScreenHeight()/2+250),
-		rectangleWidths/2, 60,
-	)
-
-	baseRectY := -250
-	baseOffsetY := 100
-
-	textboxesBounds := make([]rl.Rectangle, 5)
-	for i := range textboxesBounds {
-		textboxesBounds[i] = rl.NewRectangle(rectangleXPos, float32(rl.GetScreenHeight()/2+baseRectY+i*baseOffsetY), rectangleWidths, 80)
+	for pos, rect := range scoresRect {
+		if displayedScores[pos] == "mine" {
+			newScoreName = gui.TextBoxEx(shared.Font, rect, newScoreName, shared.FontBigTextSize, 20)
+		} else {
+			gui.ButtonEx(shared.Font, rect, displayedScores[pos], shared.FontBigTextSize)
+		}
 	}
 
-	switch scoreboardPlace {
-	case 0:
-	// Our score on top, and then 4 below
-	case 1:
-	// First score, then ours, then 3 below
-	case len(shared.Scores.Entries) - 1:
-	// Three scores on top, then ours, then 1 below
-	case len(shared.Scores.Entries):
-	// Our score is the last score
-	}
-	gui.TextBoxEx(shared.Font, textboxRect, "text", shared.FontBigTextSize, 10)
+	scoreSaved = gui.ButtonEx(shared.Font, saveRect, "SAVE", shared.FontBigTextSize)
 }
 
 // Unload the winning files

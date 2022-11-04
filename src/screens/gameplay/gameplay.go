@@ -109,16 +109,6 @@ func Init() {
 	clockIconXPos = int32(rl.GetScreenWidth()/2 - 125)
 
 	isPlaying = false
-	// InitWinning()
-	//for row := range mineBoard.TileState {
-	//	for col := range mineBoard.TileState {
-	//		if mineBoard.Board[row][col] != mines.Bomb {
-	//			mineBoard.TileState[row][col] = mines.Uncovered
-	//		} else {
-	//			mineBoard.TileState[row][col] = mines.Flagged
-	//		}
-	//	}
-	//}
 }
 
 // Gameplay screen update logic

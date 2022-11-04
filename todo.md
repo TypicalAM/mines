@@ -1,8 +1,6 @@
-Timer when losing, screen fade when winning
-
-Game winning/game losing screen logic
-Writing the winners' data into the leaderboard
-Calculatign the boards' CPM (or what was it called)
+Game winning logic:
+- Calculatign the boards' CPM (or what was it called)
+- Tests for inserting new scores
 
 Tab navigation for the options screen
 Fix title big res
