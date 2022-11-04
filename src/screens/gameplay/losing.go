@@ -2,24 +2,31 @@ package gameplay
 
 import (
 	"example/raylib-game/src/mines"
-	"example/raylib-game/src/screens"
+	shared "example/raylib-game/src/screens"
 	"fmt"
 
+	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 // Define local variables
 var score float32 // What is the final score of the player
 
-var bombTile rl.Rectangle // The tile which lost the user his game
+var bombTile rl.Rectangle          // The tile which lost the user his game
 var bombExplosion [11]rl.Texture2D // The bomb explosion animation frames
-var explosionFrame int32 // Which explosion frame are we on?
+var explosionFrame int32           // Which explosion frame are we on?
 
 // Initialize the game finish screen variables
 func InitLosing() {
 	// Finish the game and calculate the score
 	isPlaying = false
 	GameState = Losing
+
+	bgAnimation = true
+	textAnimation = false
+	textAlpha = 0.0
+	bgAlpha = 0.0
+
 	score = mineBoard.CalculateScore()
 
 	// Load the bomb explosion texutres
@@ -42,44 +49,53 @@ func InitLosing() {
 
 // Game lost update logic
 func UpdateLosing() {
+	// Fade in the background
+	if bgAnimation {
+		bgAlpha += 0.01
+		if bgAlpha >= 0.5 {
+			bgAnimation = false
+			textAnimation = true
+		}
+	}
+
+	// Fade in the text
+	if textAnimation {
+		textAlpha += 0.03
+		if textAlpha >= 1.0 {
+			textAnimation = false
+		}
+	}
+
 	framesCounter++
 
 	if framesCounter > 5 {
 		explosionFrame++
 		framesCounter = 0
-	}
 
-	if explosionFrame > 10 {
-		explosionFrame = 0
+		if explosionFrame > 10 {
+			explosionFrame = 0
+		}
 	}
 }
 
 // Draw the game over screen
 func DrawLosing() {
-	text := fmt.Sprintf("Your score is: %d", int(score*100))
-	textSize := rl.MeasureTextEx(
-		shared.Font,
-		text,
-		shared.FontBigTextSize,
-		0,
-	)
+	// Draw the bomb explosion texture
+	rl.DrawTexture(bombExplosion[explosionFrame], bombTile.ToInt32().X-23, bombTile.ToInt32().Y-25, rl.White)
 
-	rl.DrawTextEx(
-		shared.Font,
-		text,
-		rl.Vector2{
-			X: (float32(rl.GetScreenWidth()) - textSize.X) / 2,
-			Y: float32(rl.GetScreenHeight()/2) - textSize.Y,
-		},
-		shared.FontBigTextSize,
-		0, rl.Maroon,
-	)
+	// The fade in background
+	rl.DrawRectangle(0, 0, int32(rl.GetScreenWidth()), int32(rl.GetScreenHeight()), rl.Fade(
+		rg.BackgroundColor(),
+		float32(bgAlpha),
+	))
 
-	rl.DrawTexture(
-		bombExplosion[explosionFrame],
-		bombTile.ToInt32().X-23, bombTile.ToInt32().Y-25,
-		rl.White,
-	)
+	measure := rl.MeasureTextEx(shared.Font, fmt.Sprintf("You lost, score - %.01f!", score), shared.FontHugeTextSize*2, 0)
+
+	// The fade in text
+	rl.DrawTextEx(shared.Font, fmt.Sprintf("You lost, score - %.01f!", score), rl.Vector2{
+		X: float32(rl.GetScreenWidth())/2 - measure.X/2,
+		Y: float32(rl.GetScreenHeight())/2 - measure.Y/2,
+	}, shared.FontHugeTextSize*2, 0, rl.Fade(rg.TextColor(), float32(textAlpha)))
 }
 
 // Unload the losing files

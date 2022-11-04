@@ -34,6 +34,11 @@ var height int
 var boardRectangles [][]rl.Rectangle // Rectangles making the playing board on screen
 var mineBoard mines.MineBoard        // The mines playing board
 
+var bgAlpha = 0.0
+var textAlpha = 0.0
+var bgAnimation = false
+var textAnimation = false
+
 type hover struct {
 	isHovered bool
 	row       int

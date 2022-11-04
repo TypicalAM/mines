@@ -12,10 +12,6 @@ import (
 )
 
 // Local variables
-var bgAlpha = 0.0
-var textAlpha = 0.0
-var bgAnimation = false
-var textAnimation = false
 var newRecord bool = false
 var scoreboardPlace int = 0
 var scoresRect [5]rl.Rectangle
@@ -28,11 +24,9 @@ var gameTime int
 // Initialize the game losing screen
 func InitWinning() {
 	GameState = Winning
-	bgAnimation = true
-
-	textAnimation = false
 	isPlaying = false
-
+	bgAnimation = true
+	textAnimation = false
 	textAlpha = 0.0
 	bgAlpha = 0.0
 	scoreSaved = false
