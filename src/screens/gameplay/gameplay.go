@@ -62,6 +62,7 @@ func Init() {
 	// Init basic variables
 	framesCounter = 0
 	ScreenState = shared.Unchanged
+	GameState = Playing
 
 	// Init timing variables
 	timePlaying = time.Time{}
@@ -183,6 +184,8 @@ func Update() {
 
 	if rl.IsKeyPressed(rl.KeyEscape) {
 		ScreenState = shared.Title
+	} else if rl.IsKeyPressed(rl.KeyR) {
+		ScreenState = shared.Gameplay
 	}
 }
 

@@ -76,6 +76,12 @@ func UpdateLosing() {
 			explosionFrame = 0
 		}
 	}
+
+	if rl.IsKeyPressed(rl.KeyEnter) {
+		ScreenState = shared.Title
+	} else if rl.IsKeyPressed(rl.KeyR) {
+		ScreenState = shared.Gameplay
+	}
 }
 
 // Draw the game over screen
@@ -89,13 +95,19 @@ func DrawLosing() {
 		float32(bgAlpha),
 	))
 
-	measure := rl.MeasureTextEx(shared.Font, fmt.Sprintf("You lost, score - %.01f!", score), shared.FontHugeTextSize*2, 0)
+	youLostSize := rl.MeasureTextEx(shared.Font, fmt.Sprintf("You lost, your time is %s", clockText), shared.FontHugeTextSize*2, 0)
+	continueSize := rl.MeasureTextEx(shared.Font, "Press ENTER to continue or R to try again", shared.FontBigTextSize, 0)
 
 	// The fade in text
-	rl.DrawTextEx(shared.Font, fmt.Sprintf("You lost, score - %.01f!", score), rl.Vector2{
-		X: float32(rl.GetScreenWidth())/2 - measure.X/2,
-		Y: float32(rl.GetScreenHeight())/2 - measure.Y/2,
+	rl.DrawTextEx(shared.Font, fmt.Sprintf("You lost, your time is %s!", clockText), rl.Vector2{
+		X: float32(rl.GetScreenWidth())/2 - youLostSize.X/2,
+		Y: float32(rl.GetScreenHeight())/2 - youLostSize.Y/2,
 	}, shared.FontHugeTextSize*2, 0, rl.Fade(rg.TextColor(), float32(textAlpha)))
+
+	rl.DrawTextEx(shared.Font, "Press ENTER to continue or R to try again", rl.Vector2{
+		X: float32(rl.GetScreenWidth())/2 - continueSize.X/2,
+		Y: float32(rl.GetScreenHeight())/2 - continueSize.Y/2 + youLostSize.Y,
+	}, shared.FontBigTextSize, 0, rl.Fade(rg.TextColor(), float32(textAlpha)))
 }
 
 // Unload the losing files

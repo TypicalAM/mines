@@ -3,12 +3,11 @@ Game winning logic:
 	- Tests for inserting new scores
   - Making leaderboards when there are less than 5 people on it
 
-Options screen:
-	 - Tab navigation
+Game losing logic:
+	- Press enter to continue
 
 Gameplay screen:
 	- The restart button on the gameplay screen (maybe a fancy animation)
-	- Make loading gifs instead of frames
 	- Make the first click be not a bomb (move it to a different place)
 
 Scoreboard screen:

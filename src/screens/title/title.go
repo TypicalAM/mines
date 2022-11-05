@@ -44,7 +44,11 @@ func Init() {
 }
 
 // Update title screen
-func Update() {}
+func Update() {
+	if rl.IsKeyPressed(rl.KeyEnter) {
+		ScreenState = shared.Gameplay
+	}
+}
 
 // Title screen draw logic
 func Draw() {
