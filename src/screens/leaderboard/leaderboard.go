@@ -37,7 +37,7 @@ func Init() {
 
 	// Scoreboard categories
 	activeCategory = 0
-	availableScores = shared.Scores.Entries
+	availableScores = shared.Scores.FilterScores(1)
 	activeCategoryChanged = false
 
 	// Make the categories bounds
@@ -80,6 +80,13 @@ func Update() {
 	if activeCategoryChanged {
 		availableScores = shared.Scores.FilterScores(activeCategory + 1)
 		activeCategoryChanged = false
+		col1 = make([]rl.Rectangle, len(availableScores)+1)
+		col2 = make([]rl.Rectangle, len(availableScores)+1)
+		col3 = make([]rl.Rectangle, len(availableScores)+1)
+		col1[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2-width*3/2, 100+70, width, 60)
+		col2[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2-width/2, 100+70, width, 60)
+		col3[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2+width/2, 100+70, width, 60)
+
 	}
 
 	if rl.IsKeyPressed(rl.KeyEscape) {
@@ -154,7 +161,7 @@ func Draw() {
 			displayedText = "Time"
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 		} else {
-			displayedText = fmt.Sprintf("%d:%d", availableScores[pos-1].Time/60, availableScores[pos-1].Time%60)
+			displayedText = fmt.Sprintf("%d:%02d", availableScores[pos-1].Time/60, availableScores[pos-1].Time%60)
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.BackgroundColor())
 		}
 

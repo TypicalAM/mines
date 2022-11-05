@@ -1,0 +1,58 @@
+{
+"Entries": [
+{
+"date": 1667563173,
+"name": "My new score",
+"score": 0,
+"time": 1
+},
+{
+"date": 1667052855,
+"name": "Adam",
+"score": 10,
+"time": 213
+},
+{
+"date": 1667052855,
+"name": "Maciek",
+"score": 10,
+"time": 220
+},
+{
+"date": 1667052855,
+"name": "Marek",
+"score": 23,
+"time": 220
+},
+{
+"date": 1667052855,
+"name": "test",
+"score": 234,
+"time": 240
+},
+{
+"date": 1667052855,
+"name": "bobo",
+"score": 20,
+"time": 250
+},
+{
+"date": 1667563007,
+"name": "Adam",
+"score": 0,
+"time": 260
+},
+{
+"date": 1667052855,
+"name": "testet2",
+"score": 20,
+"time": 260
+},
+{
+"date": 1667052855,
+"name": "testet3",
+"score": 22,
+"time": 270
+}
+]
+}

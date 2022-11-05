@@ -1,58 +1,84 @@
 {
 "Entries": [
 {
-"date": 1667563173,
-"name": "My new score",
-"score": 0,
-"time": 1
+"date": 1667670062,
+"name": "Adamos",
+"time": 0,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 21
 },
 {
-"date": 1667052855,
-"name": "Adam",
-"score": 10,
-"time": 213
+"date": 1667669797,
+"name": "Adamson",
+"time": 0,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 100
 },
 {
-"date": 1667052855,
-"name": "Maciek",
-"score": 10,
-"time": 220
+"date": 1667669717,
+"name": "Adamson",
+"time": 10,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 100
 },
 {
-"date": 1667052855,
-"name": "Marek",
-"score": 23,
-"time": 220
+"date": 1667669680,
+"name": "Adamson",
+"time": 10,
+"board_width": 7,
+"board_height": 7,
+"board_mines": 6
 },
 {
-"date": 1667052855,
-"name": "test",
-"score": 234,
-"time": 240
+"date": 1667668808,
+"name": "Liam",
+"time": 220,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 21
 },
 {
-"date": 1667052855,
-"name": "bobo",
-"score": 20,
-"time": 250
+"date": 1667670945,
+"name": "Noah",
+"time": 230,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 21
 },
 {
-"date": 1667563007,
-"name": "Adam",
-"score": 0,
-"time": 260
+"date": 1667668931,
+"name": "Oliver",
+"time": 240,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 21
 },
 {
-"date": 1667052855,
-"name": "testet2",
-"score": 20,
-"time": 260
+"date": 1667668808,
+"name": "Liam",
+"time": 140,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
 },
 {
-"date": 1667052855,
-"name": "testet3",
-"score": 22,
-"time": 270
+"date": 1667670945,
+"name": "Noah",
+"time": 150,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
+},
+{
+"date": 1667668931,
+"name": "Oliver",
+"time": 160,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
 }
 ]
 }

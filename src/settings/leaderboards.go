@@ -3,7 +3,6 @@ package settings
 import (
 	"encoding/json"
 	"errors"
-	"example/raylib-game/src/mines"
 	"io/ioutil"
 	"os"
 	"time"
@@ -32,6 +31,54 @@ type Scores struct {
 	Entries []Entry
 }
 
+var defaultScores Scores = Scores{
+	Entries: []Entry{
+		{
+			Date:        time.Now().Unix(),
+			Name:        "Liam",
+			Time:        220,
+			BoardWidth:  30,
+			BoardHeight: 16,
+			BoardMines:  21,
+		}, {
+			Date:        time.Now().Unix() + 2137,
+			Name:        "Noah",
+			Time:        230,
+			BoardWidth:  30,
+			BoardHeight: 16,
+			BoardMines:  21,
+		}, {
+			Date:        time.Now().Unix() + 123,
+			Name:        "Oliver",
+			Time:        240,
+			BoardWidth:  30,
+			BoardHeight: 16,
+			BoardMines:  21,
+		}, {
+			Date:        time.Now().Unix(),
+			Name:        "Liam",
+			Time:        140,
+			BoardWidth:  8,
+			BoardHeight: 8,
+			BoardMines:  15,
+		}, {
+			Date:        time.Now().Unix() + 2137,
+			Name:        "Noah",
+			Time:        150,
+			BoardWidth:  8,
+			BoardHeight: 8,
+			BoardMines:  15,
+		}, {
+			Date:        time.Now().Unix() + 123,
+			Name:        "Oliver",
+			Time:        160,
+			BoardWidth:  8,
+			BoardHeight: 8,
+			BoardMines:  15,
+		},
+	},
+}
+
 // Load the entires data from a file
 func (scores *Scores) LoadFromFile() error {
 	// Try to open the jsonFile
@@ -52,8 +99,8 @@ func (scores *Scores) LoadFromFile() error {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	err = json.Unmarshal(byteValue, scores)
 	if err != nil {
-		// Write the default leaderboard into the file
-		jsonData, _ := json.MarshalIndent(scores, "", "")
+		// If we cant the scores, write the default ones to the file
+		jsonData, _ := json.MarshalIndent(defaultScores, "", "")
 		if _, err = jsonFile.Write(jsonData); err != nil {
 			return err
 		}
@@ -103,16 +150,16 @@ func (scores *Scores) CanItBeInTheScoreboard(time int) (bool, int) {
 }
 
 // Insert the new score to the scoreboard
-func (scores *Scores) InsertNewScore(board mines.MineBoard, newScoreName string, gameTime int, scoreboardPlace int) error {
+func (scores *Scores) InsertNewScore(settings Settings, newScoreName string, gameTime int, scoreboardPlace int) error {
 	// Add the new entry to the scoreboard and shfit its contents
 	scores.Entries = append(scores.Entries[:scoreboardPlace+1], scores.Entries[scoreboardPlace:]...)
 	scores.Entries[scoreboardPlace] = Entry{
 		Date:        time.Now().Unix(),
 		Name:        newScoreName,
 		Time:        gameTime,
-		BoardWidth:  board.Width,
-		BoardHeight: board.Height,
-		BoardMines:  board.Mines,
+		BoardWidth:  settings.Width,
+		BoardHeight: settings.Height,
+		BoardMines:  settings.Bombs,
 	}
 
 	// Save the new score table

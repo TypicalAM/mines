@@ -1,6 +1,7 @@
 Game winning logic:
 	- Calculatign the boards' CPM (or what was it called)
 	- Tests for inserting new scores
+	- Different scoreboards for different categories
 
 Options screen:
 	 - Tab navigation
@@ -11,8 +12,7 @@ Gameplay screen:
 	- Make the first click be not a bomb (move it to a different place)
 
 Scoreboard screen:
-	- Make the scores for different categories
 
-General:
+General / Codestyle:
 	- Window icon?
 	- Maps don't allow for direct attribute assignment (!)
