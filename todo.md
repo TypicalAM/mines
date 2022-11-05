@@ -1,6 +1,5 @@
 Game winning logic:
 	- Calculatign the boards' CPM (or what was it called)
-	- Tests for inserting new scores
   - Making leaderboards when there are less than 5 people on it
 
 Game losing logic:
@@ -12,10 +11,12 @@ Gameplay screen:
 
 Options screen:
 	- (maybe) Tab navigation
-	- Max and min values for width/height
 
 Scoreboard screen:
 	- Frame skipping (loading animation)
+
+Title screen:
+	- Weird deletion of the bomb icon
 
 General / Codestyle:
 	- Window icon?

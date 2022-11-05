@@ -47,3 +47,6 @@ And you're good to *go*!
 <p align="center">
     <img src="assets/lost.png" />
 </p>
+<p align="center">
+    <img src="assets/leaderboards.png" />
+</p>

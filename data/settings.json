@@ -1,8 +1,7 @@
 {
 "settings_path": "data/settings.json",
-"theme": "zahnrad",
+"theme": "default_dark",
 "width": 30,
 "height": 16,
-"bombs": 50
-}s": 4
-}}
+"bombs": 21
+}
