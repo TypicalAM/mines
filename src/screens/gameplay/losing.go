@@ -10,15 +10,13 @@ import (
 )
 
 // Define local variables
-var score float32 // What is the final score of the player
-
 var bombTile rl.Rectangle          // The tile which lost the user his game
 var bombExplosion [11]rl.Texture2D // The bomb explosion animation frames
 var explosionFrame int32           // Which explosion frame are we on?
 
 // Initialize the game finish screen variables
 func InitLosing() {
-	// Finish the game and calculate the score
+	// Finish the game
 	isPlaying = false
 	GameState = Losing
 
@@ -26,8 +24,6 @@ func InitLosing() {
 	textAnimation = false
 	textAlpha = 0.0
 	bgAlpha = 0.0
-
-	score = mineBoard.CalculateScore()
 
 	// Load the bomb explosion texutres
 	for i := range bombExplosion {

@@ -43,7 +43,7 @@ func LoadSharedAssets() error {
 	rl.GenTextureMipmaps(&Font.Texture)
 	rl.SetTextureFilter(Font.Texture, rl.FilterBilinear)
 
-	SecondaryFont = rl.LoadFont("resources/fonts/exo2_medium_italic.ttf")
+	SecondaryFont = rl.LoadFont("resources/fonts/cartograph_cf_italic.ttf")
 	rl.GenTextureMipmaps(&SecondaryFont.Texture)
 	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterAnisotropic4x)
 

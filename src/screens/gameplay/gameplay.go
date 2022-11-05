@@ -45,9 +45,9 @@ type hover struct {
 	col       int
 }
 
-var tileHoverState hover  // If any tile was hovered, and which was hoverd
+var tileHoverState hover // If any tile was hovered, and which was hoverd
 var timePlaying time.Time // Time of the first meaningful mouse press
-var isPlaying bool        // If the player is in game
+var isPlaying bool // If the player is in game
 
 // Flags and bombs text placements
 var flagsText string

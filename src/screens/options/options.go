@@ -26,6 +26,8 @@ type option struct {
 	textBounds rl.Rectangle
 	value      string
 	valType    int
+	minValue   float32
+	maxValue   float32
 }
 
 // A map for all our options with described key names
@@ -104,18 +106,24 @@ func Init() {
 			textBounds: rl.NewRectangle(rectangleXPos+rectangleWidths/2-rl.MeasureTextEx(shared.Font, "Width of the map - 100", shared.FontSmallTextSize, 0).X/2, float32(rl.GetScreenHeight()/2+baseTextY), rectangleWidths, 60),
 			value:      fmt.Sprint(shared.AppSettings.Width),
 			valType:    Slider,
+			minValue:   4,
+			maxValue:   30,
 		},
 		keyHeight: {
 			bounds:     rl.NewRectangle(rectangleXPos, float32(rl.GetScreenHeight()/2+baseRectY+baseOffsetY), rectangleWidths, 60),
 			textBounds: rl.NewRectangle(rectangleXPos+rectangleWidths/2-rl.MeasureTextEx(shared.Font, "Height of the map - 100", shared.FontSmallTextSize, 0).X/2, float32(rl.GetScreenHeight()/2+baseTextY+baseOffsetY), rectangleWidths, 60),
 			value:      fmt.Sprint(shared.AppSettings.Height),
 			valType:    Slider,
+			minValue:   4,
+			maxValue:   30,
 		},
 		keyBombs: {
 			bounds:     rl.NewRectangle(rectangleXPos, float32(rl.GetScreenHeight()/2+baseRectY+2*baseOffsetY), rectangleWidths, 60),
 			textBounds: rl.NewRectangle(rectangleXPos+rectangleWidths/2-rl.MeasureTextEx(shared.Font, "Bombs count percentage - 100", shared.FontSmallTextSize, 0).X/2, float32(rl.GetScreenHeight()/2+baseTextY+2*baseOffsetY), rectangleWidths, 60),
 			value:      fmt.Sprint(shared.AppSettings.Bombs),
 			valType:    Slider,
+			minValue:   4,
+			maxValue:   100,
 		},
 		"Path to the settings file": {
 			value:      shared.AppSettings.SettingsPath,
@@ -193,7 +201,7 @@ func Draw() {
 		case Slider:
 			currentValue, _ := strconv.Atoi(opt.value)
 			textToDisplay = fmt.Sprintf("%s : %d", key, currentValue)
-			opt.value = fmt.Sprintf("%d", int(rg.Slider(opt.bounds, float32(currentValue), 1, 100)))
+			opt.value = fmt.Sprintf("%d", int(rg.Slider(opt.bounds, float32(currentValue), opt.minValue, opt.maxValue)))
 		case FilePicker:
 			textToDisplay = fmt.Sprint(key)
 			opt.value = gui.FilePicker(shared.LogoIcon, shared.Font, opt.bounds, opt.value, shared.FontBigTextSize)
