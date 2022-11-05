@@ -18,7 +18,15 @@ var col1Container rl.Rectangle
 var col2Container rl.Rectangle
 var col3Container rl.Rectangle
 
-//var entries = []Entry{	{"Adam", 10, 213},	{"Maciek", 10, 220},	{"Marek", 23, 220},	{"test", 234, 240},	{"bobo", 20, 250},	{"testet2", 20, 260},}
+type categorie struct {
+	buttonBounds rl.Rectangle
+	isPressed    bool
+	name         string
+}
+
+var categories [4]categorie
+var currentCategory categorie
+
 var doneRectButton rl.Rectangle
 var textVector rl.Vector2
 
@@ -33,16 +41,43 @@ func Init() {
 		Y: float32(rl.GetScreenHeight()) / 35,
 	}
 
+	width := float32(rl.GetScreenWidth() / 6)
+	categoryXPos := float32(rl.GetScreenWidth())/2 - width*3/2
+
+	// Scoreboard categories
+	categories = [4]categorie{
+		{
+			buttonBounds: rl.NewRectangle(categoryXPos, 120, width*6/8, 50),
+			name:         "Beginner",
+			isPressed:    false,
+		},
+		{
+			buttonBounds: rl.NewRectangle(categoryXPos+width*6/8, 120, width*6/8, 50),
+			name:         "Intermediate",
+			isPressed:    false,
+		},
+		{
+			buttonBounds: rl.NewRectangle(categoryXPos+width*12/8, 120, width*6/8, 50),
+			name:         "Expert",
+			isPressed:    false,
+		},
+		{
+			buttonBounds: rl.NewRectangle(categoryXPos+width*18/8, 120, width*6/8, 50),
+			name:         "Custom",
+			isPressed:    false,
+		},
+	}
+
+	currentCategory = categories[0]
+
 	col1 = make([]rl.Rectangle, len(shared.Scores.Entries)+1)
 	col2 = make([]rl.Rectangle, len(shared.Scores.Entries)+1)
 	col3 = make([]rl.Rectangle, len(shared.Scores.Entries)+1)
 
-	width := float32(rl.GetScreenWidth() / 6)
-
 	// Make the header elements
-	col1[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2-width*3/2, 100, width, 60)
-	col2[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2-width/2, 100, width, 60)
-	col3[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2+width/2, 100, width, 60)
+	col1[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2-width*3/2, 100+70, width, 60)
+	col2[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2-width/2, 100+70, width, 60)
+	col3[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2+width/2, 100+70, width, 60)
 
 	// Make the entry elements
 	for pos := range shared.Scores.Entries {
@@ -66,6 +101,13 @@ func Init() {
 
 // Update the screen
 func Update() {
+	// Check the current categorie
+	for _, categorie := range categories {
+		if categorie.isPressed {
+			currentCategory = categorie
+		}
+	}
+
 	if rl.IsKeyPressed(rl.KeyEscape) {
 		ScreenState = shared.Title
 	}
@@ -77,15 +119,16 @@ func Draw() {
 	rl.DrawRectangle(0, 0, int32(rl.GetScreenWidth()), int32(rl.GetScreenHeight()), rg.BackgroundColor())
 	// Draw the logo
 	gui.DrawLogoTopLeft(shared.LogoIcon, shared.SecondaryFont, shared.IconRect, shared.TextRect, shared.FontHugeTextSize)
-
-	//rl.DrawRectangle(int32(rl.GetScreenWidth()/2), 0, 1, int32(rl.GetScreenHeight()), rl.White)
-
 	// Draw the title
 	rl.DrawTextEx(shared.Font, "Leaderboard", textVector, shared.FontHugeTextSize*1.5, 0, rg.TextColor())
 
-	// Draw the "we are done" button
-	if gui.ButtonEx(shared.Font, doneRectButton, "Done", shared.FontBigTextSize) {
-		ScreenState = shared.Title
+	// Draw the categories
+	for pos, category := range categories {
+		if category.name == currentCategory.name {
+			categories[pos].isPressed = gui.ButtonEx(shared.Font, category.buttonBounds, "|"+category.name+"|", shared.FontBigTextSize)
+		} else {
+			categories[pos].isPressed = gui.ButtonEx(shared.Font, category.buttonBounds, category.name, shared.FontBigTextSize)
+		}
 	}
 
 	rg.DrawBorderedRectangle(col1Container.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
@@ -114,7 +157,6 @@ func Draw() {
 			}, shared.FontBigTextSize, 0, rg.TextColor(),
 		)
 	}
-
 	for pos, entry := range col2 {
 		var displayedText string
 		if pos == 0 {
@@ -137,7 +179,6 @@ func Draw() {
 			}, shared.FontBigTextSize, 0, rg.TextColor(),
 		)
 	}
-
 	for pos, entry := range col3 {
 		var displayedText string
 		if pos == 0 {
@@ -155,6 +196,10 @@ func Draw() {
 				Y: entry.Y + entry.Height/2 - entryTextSize.Y/2,
 			}, shared.FontBigTextSize, 0, rg.TextColor(),
 		)
+	}
+	// Draw the "we are done" button
+	if gui.ButtonEx(shared.Font, doneRectButton, "Done", shared.FontBigTextSize) {
+		ScreenState = shared.Title
 	}
 }
 
