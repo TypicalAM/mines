@@ -9,7 +9,13 @@ import (
 	"time"
 )
 
-const leaderboardsFilepath string = "data/scores.json"
+const (
+	leaderboardsFilepath string = "data/scores.json"
+	Beginner             int    = iota
+	Intermediate
+	Expert
+	Custom
+)
 
 // Hold the data for one entry
 type Entry struct {
@@ -111,4 +117,35 @@ func (scores *Scores) InsertNewScore(board mines.MineBoard, newScoreName string,
 
 	// Save the new score table
 	return scores.WriteToFile()
+}
+
+// Filter the scores according to the category that they're in
+func (scores *Scores) FilterScores(category int) []Entry {
+	var entries []Entry
+
+	// Loop over entries and add them to the shown ones
+	for _, entry := range scores.Entries {
+		switch category {
+		case Beginner:
+			if entry.BoardWidth == 8 && entry.BoardHeight == 8 && entry.BoardMines == 15 {
+				entries = append(entries, entry)
+			}
+		case Intermediate:
+			if entry.BoardWidth == 16 && entry.BoardHeight == 16 && entry.BoardMines == 15 {
+				entries = append(entries, entry)
+			}
+		case Expert:
+			if entry.BoardWidth == 30 && entry.BoardHeight == 16 && entry.BoardMines == 21 {
+				entries = append(entries, entry)
+			}
+		case Custom:
+			if entry.BoardWidth != 8 && entry.BoardWidth != 16 && entry.BoardWidth != 30 &&
+				entry.BoardHeight != 8 && entry.BoardHeight != 16 &&
+				entry.BoardMines != 15 && entry.BoardMines != 21 {
+				entries = append(entries, entry)
+			}
+		}
+	}
+
+	return entries
 }

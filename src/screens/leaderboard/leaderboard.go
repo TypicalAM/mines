@@ -3,6 +3,7 @@ package leaderboard
 import (
 	"example/raylib-game/src/gui"
 	shared "example/raylib-game/src/screens"
+	"example/raylib-game/src/settings"
 	"fmt"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
@@ -14,18 +15,11 @@ var col1 []rl.Rectangle
 var col2 []rl.Rectangle
 var col3 []rl.Rectangle
 
-var col1Container rl.Rectangle
-var col2Container rl.Rectangle
-var col3Container rl.Rectangle
-
-type categorie struct {
-	buttonBounds rl.Rectangle
-	isPressed    bool
-	name         string
-}
-
-var categories [4]categorie
-var currentCategory categorie
+var categories = []string{"Beginner", "Intemediate", "Expert", "Custom"}
+var categoriesBounds rl.Rectangle
+var activeCategory int
+var availableScores []settings.Entry
+var activeCategoryChanged bool
 
 var doneRectButton rl.Rectangle
 var textVector rl.Vector2
@@ -41,55 +35,26 @@ func Init() {
 		Y: float32(rl.GetScreenHeight()) / 35,
 	}
 
-	width := float32(rl.GetScreenWidth() / 6)
-	categoryXPos := float32(rl.GetScreenWidth())/2 - width*3/2
-
 	// Scoreboard categories
-	categories = [4]categorie{
-		{
-			buttonBounds: rl.NewRectangle(categoryXPos, 120, width*6/8, 50),
-			name:         "Beginner",
-			isPressed:    false,
-		},
-		{
-			buttonBounds: rl.NewRectangle(categoryXPos+width*6/8, 120, width*6/8, 50),
-			name:         "Intermediate",
-			isPressed:    false,
-		},
-		{
-			buttonBounds: rl.NewRectangle(categoryXPos+width*12/8, 120, width*6/8, 50),
-			name:         "Expert",
-			isPressed:    false,
-		},
-		{
-			buttonBounds: rl.NewRectangle(categoryXPos+width*18/8, 120, width*6/8, 50),
-			name:         "Custom",
-			isPressed:    false,
-		},
-	}
+	activeCategory = 0
+	availableScores = shared.Scores.Entries
+	activeCategoryChanged = false
 
-	currentCategory = categories[0]
+	// Make the categories bounds
+	categoryWidth := float32(rl.GetScreenWidth() / 8)
+	categoryXPos := float32(rl.GetScreenWidth())/2 - categoryWidth*2
+	categoriesBounds = rl.NewRectangle(categoryXPos, 100, categoryWidth, 50)
 
-	col1 = make([]rl.Rectangle, len(shared.Scores.Entries)+1)
-	col2 = make([]rl.Rectangle, len(shared.Scores.Entries)+1)
-	col3 = make([]rl.Rectangle, len(shared.Scores.Entries)+1)
+	col1 = make([]rl.Rectangle, len(availableScores)+1)
+	col2 = make([]rl.Rectangle, len(availableScores)+1)
+	col3 = make([]rl.Rectangle, len(availableScores)+1)
+
+	width := float32(rl.GetScreenWidth() / 6)
 
 	// Make the header elements
 	col1[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2-width*3/2, 100+70, width, 60)
 	col2[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2-width/2, 100+70, width, 60)
 	col3[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2+width/2, 100+70, width, 60)
-
-	// Make the entry elements
-	for pos := range shared.Scores.Entries {
-		col1[pos+1] = rl.NewRectangle(col1[pos].X, col1[pos].Y+col1[pos].Height, width, 60)
-		col2[pos+1] = rl.NewRectangle(col2[pos].X, col2[pos].Y+col2[pos].Height, width, 60)
-		col3[pos+1] = rl.NewRectangle(col3[pos].X, col3[pos].Y+col3[pos].Height, width, 60)
-	}
-
-	// Make the container elements
-	col1Container = rl.NewRectangle(col1[0].X, col1[0].Y, col1[0].Width, col1[0].Height*float32(len(shared.Scores.Entries)+1))
-	col2Container = rl.NewRectangle(col2[0].X, col2[0].Y, col2[0].Width, col2[0].Height*float32(len(shared.Scores.Entries)+1))
-	col3Container = rl.NewRectangle(col3[0].X, col3[0].Y, col3[0].Width, col3[0].Height*float32(len(shared.Scores.Entries)+1))
 
 	// Done rectangle
 	width = float32(rl.GetScreenWidth() / 3)
@@ -101,11 +66,20 @@ func Init() {
 
 // Update the screen
 func Update() {
+	// Make the width of the elements
+	width := float32(rl.GetScreenWidth() / 6)
+
+	// Make the entry elements
+	for pos := range availableScores {
+		col1[pos+1] = rl.NewRectangle(col1[pos].X, col1[pos].Y+col1[pos].Height, width, 60)
+		col2[pos+1] = rl.NewRectangle(col2[pos].X, col2[pos].Y+col2[pos].Height, width, 60)
+		col3[pos+1] = rl.NewRectangle(col3[pos].X, col3[pos].Y+col3[pos].Height, width, 60)
+	}
+
 	// Check the current categorie
-	for _, categorie := range categories {
-		if categorie.isPressed {
-			currentCategory = categorie
-		}
+	if activeCategoryChanged {
+		availableScores = shared.Scores.FilterScores(activeCategory + 1)
+		activeCategoryChanged = false
 	}
 
 	if rl.IsKeyPressed(rl.KeyEscape) {
@@ -122,18 +96,13 @@ func Draw() {
 	// Draw the title
 	rl.DrawTextEx(shared.Font, "Leaderboard", textVector, shared.FontHugeTextSize*1.5, 0, rg.TextColor())
 
-	// Draw the categories
-	for pos, category := range categories {
-		if category.name == currentCategory.name {
-			categories[pos].isPressed = gui.ButtonEx(shared.Font, category.buttonBounds, "|"+category.name+"|", shared.FontBigTextSize)
-		} else {
-			categories[pos].isPressed = gui.ButtonEx(shared.Font, category.buttonBounds, category.name, shared.FontBigTextSize)
-		}
+	// Get the active category and check if it has changed
+	newActiveCategory := gui.ToggleGroupEx(shared.Font, categoriesBounds, categories, activeCategory, shared.FontBigTextSize)
+	if newActiveCategory != activeCategory {
+		activeCategory = newActiveCategory
+		activeCategoryChanged = true
 	}
 
-	rg.DrawBorderedRectangle(col1Container.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
-	rg.DrawBorderedRectangle(col2Container.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
-	rg.DrawBorderedRectangle(col3Container.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 	rl.DrawRectangleRec(col1[0], rl.Maroon)
 	rl.DrawRectangleRec(col2[0], rl.Gray)
 	rl.DrawRectangleRec(col3[0], rl.Beige)
@@ -145,7 +114,7 @@ func Draw() {
 			displayedText = "Name"
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 		} else {
-			displayedText = shared.Scores.Entries[pos-1].Name
+			displayedText = availableScores[pos-1].Name
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.BackgroundColor())
 		}
 
@@ -164,9 +133,9 @@ func Draw() {
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 		} else {
 			displayedText = fmt.Sprintf("%dx%d (%d%% mines)",
-				shared.Scores.Entries[pos-1].BoardWidth,
-				shared.Scores.Entries[pos-1].BoardHeight,
-				shared.Scores.Entries[pos-1].BoardMines,
+				availableScores[pos-1].BoardWidth,
+				availableScores[pos-1].BoardHeight,
+				availableScores[pos-1].BoardMines,
 			)
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.BackgroundColor())
 		}
@@ -185,7 +154,7 @@ func Draw() {
 			displayedText = "Time"
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 		} else {
-			displayedText = fmt.Sprintf("%d:%d", shared.Scores.Entries[pos-1].Time/60, shared.Scores.Entries[pos-1].Time%60)
+			displayedText = fmt.Sprintf("%d:%d", availableScores[pos-1].Time/60, availableScores[pos-1].Time%60)
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.BackgroundColor())
 		}
 

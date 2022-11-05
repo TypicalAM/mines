@@ -91,7 +91,7 @@ func Init() {
 	presets[2] = preset{
 		bounds:    rl.NewRectangle(rectangleXPos+float32(2*int(rectangleWidths)/3), float32(rl.GetScreenHeight()/2+baseRectY-baseOffsetY), rectangleWidths/3, 60),
 		isPressed: false,
-		name:      "Advanced",
+		name:      "Expert",
 		width:     30,
 		height:    16,
 		bombs:     21,
