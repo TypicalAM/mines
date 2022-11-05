@@ -17,6 +17,7 @@ var col3 []rl.Rectangle
 var col1Container rl.Rectangle
 var col2Container rl.Rectangle
 var col3Container rl.Rectangle
+
 //var entries = []Entry{	{"Adam", 10, 213},	{"Maciek", 10, 220},	{"Marek", 23, 220},	{"test", 234, 240},	{"bobo", 20, 250},	{"testet2", 20, 260},}
 var doneRectButton rl.Rectangle
 var textVector rl.Vector2
@@ -117,10 +118,14 @@ func Draw() {
 	for pos, entry := range col2 {
 		var displayedText string
 		if pos == 0 {
-			displayedText = "Score"
+			displayedText = "Board"
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.GetStyleColor(rg.ButtonDefaultInsideColor))
 		} else {
-			displayedText = fmt.Sprint(shared.Scores.Entries[pos-1].Score)
+			displayedText = fmt.Sprintf("%dx%d (%d%% mines)",
+				shared.Scores.Entries[pos-1].BoardWidth,
+				shared.Scores.Entries[pos-1].BoardHeight,
+				shared.Scores.Entries[pos-1].BoardMines,
+			)
 			rg.DrawBorderedRectangle(entry.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(rg.ButtonDefaultBorderColor), rg.BackgroundColor())
 		}
 

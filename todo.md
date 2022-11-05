@@ -15,3 +15,4 @@ Scoreboard screen:
 
 General:
 	- Window icon?
+	- Maps don't allow for direct attribute assignment (!)

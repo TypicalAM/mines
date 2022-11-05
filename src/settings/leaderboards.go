@@ -3,6 +3,7 @@ package settings
 import (
 	"encoding/json"
 	"errors"
+	"example/raylib-game/src/mines"
 	"io/ioutil"
 	"os"
 	"time"
@@ -12,10 +13,12 @@ const leaderboardsFilepath string = "data/scores.json"
 
 // Hold the data for one entry
 type Entry struct {
-	Date  int64  `json:"date"`
-	Name  string `json:"name"`
-	Score int    `json:"score"`
-	Time  int    `json:"time"`
+	Date        int64  `json:"date"`
+	Name        string `json:"name"`
+	Time        int    `json:"time"`
+	BoardWidth  int    `json:"board_width"`
+	BoardHeight int    `json:"board_height"`
+	BoardMines  int    `json:"board_mines"`
 }
 
 // Hold the data for multiple entries
@@ -94,14 +97,16 @@ func (scores *Scores) CanItBeInTheScoreboard(time int) (bool, int) {
 }
 
 // Insert the new score to the scoreboard
-func (scores *Scores) InsertNewScore(newScoreName string, gameTime int, scoreboardPlace int) error {
+func (scores *Scores) InsertNewScore(board mines.MineBoard, newScoreName string, gameTime int, scoreboardPlace int) error {
 	// Add the new entry to the scoreboard and shfit its contents
 	scores.Entries = append(scores.Entries[:scoreboardPlace+1], scores.Entries[scoreboardPlace:]...)
 	scores.Entries[scoreboardPlace] = Entry{
-		Date:  time.Now().Unix(),
-		Name:  newScoreName,
-		Time:  gameTime,
-		Score: 0,
+		Date:        time.Now().Unix(),
+		Name:        newScoreName,
+		Time:        gameTime,
+		BoardWidth:  board.Width,
+		BoardHeight: board.Height,
+		BoardMines:  board.Mines,
 	}
 
 	// Save the new score table

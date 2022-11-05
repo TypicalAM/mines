@@ -120,7 +120,7 @@ func UpdateWinning() {
 
 	if scoreSaved {
 		newScoreName = strings.Join(strings.Fields(newScoreName), " ")
-		if err := shared.Scores.InsertNewScore(newScoreName, gameTime, scoreboardPlace); err != nil {
+		if err := shared.Scores.InsertNewScore(mineBoard, newScoreName, gameTime, scoreboardPlace); err != nil {
 			rl.TraceLog(rl.LogFatal, "Couldn't save the new score")
 		} else {
 			ScreenState = shared.Title
