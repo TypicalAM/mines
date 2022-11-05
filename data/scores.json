@@ -1,39 +1,15 @@
 {
 "Entries": [
 {
-"date": 1667670062,
-"name": "Adamos",
+"date": 1667671409,
+"name": "My new score",
 "time": 0,
-"board_width": 30,
+"board_width": 16,
 "board_height": 16,
-"board_mines": 21
+"board_mines": 15
 },
 {
-"date": 1667669797,
-"name": "Adamson",
-"time": 0,
-"board_width": 30,
-"board_height": 16,
-"board_mines": 100
-},
-{
-"date": 1667669717,
-"name": "Adamson",
-"time": 10,
-"board_width": 30,
-"board_height": 16,
-"board_mines": 100
-},
-{
-"date": 1667669680,
-"name": "Adamson",
-"time": 10,
-"board_width": 7,
-"board_height": 7,
-"board_mines": 6
-},
-{
-"date": 1667668808,
+"date": 1667671370,
 "name": "Liam",
 "time": 220,
 "board_width": 30,
@@ -41,7 +17,7 @@
 "board_mines": 21
 },
 {
-"date": 1667670945,
+"date": 1667673507,
 "name": "Noah",
 "time": 230,
 "board_width": 30,
@@ -49,7 +25,7 @@
 "board_mines": 21
 },
 {
-"date": 1667668931,
+"date": 1667671493,
 "name": "Oliver",
 "time": 240,
 "board_width": 30,
@@ -57,7 +33,63 @@
 "board_mines": 21
 },
 {
-"date": 1667668808,
+"date": 1667671493,
+"name": "Elijah",
+"time": 250,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 21
+},
+{
+"date": 1667671493,
+"name": "James",
+"time": 260,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 21
+},
+{
+"date": 1667671370,
+"name": "Liam",
+"time": 200,
+"board_width": 16,
+"board_height": 16,
+"board_mines": 15
+},
+{
+"date": 1667673507,
+"name": "Noah",
+"time": 210,
+"board_width": 16,
+"board_height": 16,
+"board_mines": 15
+},
+{
+"date": 1667671493,
+"name": "Oliver",
+"time": 220,
+"board_width": 16,
+"board_height": 16,
+"board_mines": 15
+},
+{
+"date": 1667671493,
+"name": "Elijah",
+"time": 230,
+"board_width": 16,
+"board_height": 16,
+"board_mines": 15
+},
+{
+"date": 1667671493,
+"name": "James",
+"time": 240,
+"board_width": 16,
+"board_height": 16,
+"board_mines": 15
+},
+{
+"date": 1667671370,
 "name": "Liam",
 "time": 140,
 "board_width": 8,
@@ -65,7 +97,7 @@
 "board_mines": 15
 },
 {
-"date": 1667670945,
+"date": 1667673507,
 "name": "Noah",
 "time": 150,
 "board_width": 8,
@@ -73,9 +105,25 @@
 "board_mines": 15
 },
 {
-"date": 1667668931,
+"date": 1667671493,
 "name": "Oliver",
 "time": 160,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
+},
+{
+"date": 1667671493,
+"name": "Elijah",
+"time": 170,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
+},
+{
+"date": 1667671493,
+"name": "James",
+"time": 180,
 "board_width": 8,
 "board_height": 8,
 "board_mines": 15

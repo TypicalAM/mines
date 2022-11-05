@@ -1,7 +1,7 @@
 Game winning logic:
 	- Calculatign the boards' CPM (or what was it called)
 	- Tests for inserting new scores
-	- Different scoreboards for different categories
+  - Making leaderboards when there are less than 5 people on it
 
 Options screen:
 	 - Tab navigation

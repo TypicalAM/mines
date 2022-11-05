@@ -55,6 +55,55 @@ var defaultScores Scores = Scores{
 			BoardHeight: 16,
 			BoardMines:  21,
 		}, {
+			Date:        time.Now().Unix() + 123,
+			Name:        "Elijah",
+			Time:        250,
+			BoardWidth:  30,
+			BoardHeight: 16,
+			BoardMines:  21,
+		}, {
+			Date:        time.Now().Unix() + 123,
+			Name:        "James",
+			Time:        260,
+			BoardWidth:  30,
+			BoardHeight: 16,
+			BoardMines:  21,
+		}, {
+			Date:        time.Now().Unix(),
+			Name:        "Liam",
+			Time:        200,
+			BoardWidth:  16,
+			BoardHeight: 16,
+			BoardMines:  15,
+		}, {
+			Date:        time.Now().Unix() + 2137,
+			Name:        "Noah",
+			Time:        210,
+			BoardWidth:  16,
+			BoardHeight: 16,
+			BoardMines:  15,
+		}, {
+			Date:        time.Now().Unix() + 123,
+			Name:        "Oliver",
+			Time:        220,
+			BoardWidth:  16,
+			BoardHeight: 16,
+			BoardMines:  15,
+		}, {
+			Date:        time.Now().Unix() + 123,
+			Name:        "Elijah",
+			Time:        230,
+			BoardWidth:  16,
+			BoardHeight: 16,
+			BoardMines:  15,
+		}, {
+			Date:        time.Now().Unix() + 123,
+			Name:        "James",
+			Time:        240,
+			BoardWidth:  16,
+			BoardHeight: 16,
+			BoardMines:  15,
+		}, {
 			Date:        time.Now().Unix(),
 			Name:        "Liam",
 			Time:        140,
@@ -72,6 +121,20 @@ var defaultScores Scores = Scores{
 			Date:        time.Now().Unix() + 123,
 			Name:        "Oliver",
 			Time:        160,
+			BoardWidth:  8,
+			BoardHeight: 8,
+			BoardMines:  15,
+		}, {
+			Date:        time.Now().Unix() + 123,
+			Name:        "Elijah",
+			Time:        170,
+			BoardWidth:  8,
+			BoardHeight: 8,
+			BoardMines:  15,
+		}, {
+			Date:        time.Now().Unix() + 123,
+			Name:        "James",
+			Time:        180,
 			BoardWidth:  8,
 			BoardHeight: 8,
 			BoardMines:  15,
@@ -130,15 +193,30 @@ func (scores *Scores) WriteToFile() error {
 }
 
 // Should the new score be at the scoreboard
-func (scores *Scores) CanItBeInTheScoreboard(time int) (bool, int) {
+func (scores *Scores) CanItBeInTheScoreboard(settings Settings, time int) (bool, int) {
+	// Filter the scores by the settings
+	var filter int
+
+	if settings.Width == 8 && settings.Height == 8 && settings.Bombs == 15 {
+		filter = Beginner
+	} else if settings.Width == 16 && settings.Height == 16 && settings.Bombs == 15 {
+		filter = Intermediate
+	} else if settings.Width == 30 && settings.Height == 16 && settings.Bombs == 21 {
+		filter = Expert
+	} else {
+		filter = Custom
+	}
+
+	entries := scores.FilterScores(filter)
+
 	// If our time is bigger than the last entry, we can be in the scoreboard
-	if time > scores.Entries[len(scores.Entries)-1].Time {
+	if time > entries[len(entries)-1].Time {
 		return false, 0
 	}
 
 	// Get the place where the element should be
 	var place int
-	for pos, entry := range scores.Entries {
+	for pos, entry := range entries {
 		if time <= entry.Time {
 			place = pos
 			break

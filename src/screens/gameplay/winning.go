@@ -3,6 +3,7 @@ package gameplay
 import (
 	"example/raylib-game/src/gui"
 	shared "example/raylib-game/src/screens"
+	"example/raylib-game/src/settings"
 	"fmt"
 	"strconv"
 	"strings"
@@ -20,6 +21,7 @@ var scoreSaved bool
 var newScoreName string
 var displayedScores []string
 var gameTime int
+var scoreboardEntries []settings.Entry
 
 // Initialize the game losing screen
 func InitWinning() {
@@ -36,8 +38,23 @@ func InitWinning() {
 	seconds, _ := strconv.Atoi(timeSplit[1])
 	gameTime = minutes*60 + seconds
 
-	newRecord, scoreboardPlace = shared.Scores.CanItBeInTheScoreboard(gameTime)
+	newRecord, scoreboardPlace = shared.Scores.CanItBeInTheScoreboard(shared.AppSettings, gameTime)
 	newScoreName = ""
+
+	// Filter the scores by the settings
+	var filter int
+
+	if shared.AppSettings.Width == 8 && shared.AppSettings.Height == 8 && shared.AppSettings.Bombs == 15 {
+		filter = settings.Beginner
+	} else if shared.AppSettings.Width == 16 && shared.AppSettings.Height == 16 && shared.AppSettings.Bombs == 15 {
+		filter = settings.Intermediate
+	} else if shared.AppSettings.Width == 30 && shared.AppSettings.Height == 16 && shared.AppSettings.Bombs == 21 {
+		filter = settings.Expert
+	} else {
+		filter = settings.Custom
+	}
+
+	scoreboardEntries = shared.Scores.FilterScores(filter)
 
 	rectangleWidths := float32(rl.GetScreenWidth()) / 3
 	rectangleXPos := (float32(rl.GetScreenWidth()) - rectangleWidths) / 2
@@ -59,42 +76,42 @@ func InitWinning() {
 	case 0:
 		displayedScores = []string{
 			"mine",
-			fmt.Sprint(shared.Scores.Entries[0].Time),
-			fmt.Sprint(shared.Scores.Entries[1].Time),
-			fmt.Sprint(shared.Scores.Entries[2].Time),
-			fmt.Sprint(shared.Scores.Entries[3].Time),
+			fmt.Sprint(scoreboardEntries[0].Time),
+			fmt.Sprint(scoreboardEntries[1].Time),
+			fmt.Sprint(scoreboardEntries[2].Time),
+			fmt.Sprint(scoreboardEntries[3].Time),
 		}
 	case 1:
 		displayedScores = []string{
-			fmt.Sprint(shared.Scores.Entries[0].Time),
+			fmt.Sprint(scoreboardEntries[0].Time),
 			"mine",
-			fmt.Sprint(shared.Scores.Entries[1].Time),
-			fmt.Sprint(shared.Scores.Entries[2].Time),
-			fmt.Sprint(shared.Scores.Entries[3].Time),
+			fmt.Sprint(scoreboardEntries[1].Time),
+			fmt.Sprint(scoreboardEntries[2].Time),
+			fmt.Sprint(scoreboardEntries[3].Time),
 		}
-	case len(shared.Scores.Entries) - 2:
+	case len(scoreboardEntries) - 2:
 		displayedScores = []string{
-			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-4].Time),
-			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-3].Time),
-			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-2].Time),
+			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-4].Time),
+			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-3].Time),
+			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-2].Time),
 			"mine",
-			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-1].Time),
+			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-1].Time),
 		}
-	case len(shared.Scores.Entries) - 1:
+	case len(scoreboardEntries) - 1:
 		displayedScores = []string{
-			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-4]),
-			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-3]),
-			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-2]),
-			fmt.Sprint(shared.Scores.Entries[len(shared.Scores.Entries)-1]),
+			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-4]),
+			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-3]),
+			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-2]),
+			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-1]),
 			"mine",
 		}
 	default:
 		displayedScores = []string{
-			fmt.Sprint(shared.Scores.Entries[scoreboardPlace-2].Time),
-			fmt.Sprint(shared.Scores.Entries[scoreboardPlace-1].Time),
+			fmt.Sprint(scoreboardEntries[scoreboardPlace-2].Time),
+			fmt.Sprint(scoreboardEntries[scoreboardPlace-1].Time),
 			"mine",
-			fmt.Sprint(shared.Scores.Entries[scoreboardPlace].Time),
-			fmt.Sprint(shared.Scores.Entries[scoreboardPlace+1].Time),
+			fmt.Sprint(scoreboardEntries[scoreboardPlace].Time),
+			fmt.Sprint(scoreboardEntries[scoreboardPlace+1].Time),
 		}
 	}
 }
