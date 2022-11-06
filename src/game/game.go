@@ -33,7 +33,7 @@ func InitalizeGame() {
 	rl.InitWindow(screenWidth, screenHeight, "Go mines")
 
 	// Set the exit key to q
-	rl.SetExitKey(rl.KeyEscape)
+	rl.SetExitKey(rl.KeyQ)
 
 	// The random int sequences are deterministic, if we
 	// don't set a seed the mineboard will be the same

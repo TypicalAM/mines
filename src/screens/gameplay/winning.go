@@ -15,7 +15,7 @@ import (
 // Local variables
 var newRecord bool = false
 var scoreboardPlace int = 0
-var scoresRect [5]rl.Rectangle
+var scoresRect []rl.Rectangle
 var saveRect rl.Rectangle
 var scoreSaved bool
 var newScoreName string
@@ -38,9 +38,6 @@ func InitWinning() {
 	seconds, _ := strconv.Atoi(timeSplit[1])
 	gameTime = minutes*60 + seconds
 
-	newRecord, scoreboardPlace = shared.Scores.CanItBeInTheScoreboard(shared.AppSettings, gameTime)
-	newScoreName = ""
-
 	// Filter the scores by the settings
 	var filter int
 
@@ -54,7 +51,39 @@ func InitWinning() {
 		filter = settings.Custom
 	}
 
+	newScoreName = "Anonymous"
+	newRecord, scoreboardPlace = shared.Scores.CanItBeInTheScoreboard(filter, gameTime)
+	shared.Scores.InsertNewScore(shared.AppSettings, newScoreName, gameTime)
+
 	scoreboardEntries = shared.Scores.FilterScores(filter)
+	if len(scoreboardEntries) >= 5 {
+		displayedScores = make([]string, 5)
+
+		slice := scoreboardEntries
+		switch scoreboardPlace {
+		case 0, 1:
+			slice = scoreboardEntries[:5]
+		case len(scoreboardEntries) - 2, len(scoreboardEntries) - 1:
+			slice = scoreboardEntries[5:]
+		default:
+			slice = scoreboardEntries[scoreboardPlace-2 : scoreboardPlace+3]
+		}
+
+		// Iterate over the slice and add the results to the displayed scores
+		for pos, entry := range slice {
+			displayedScores[pos] = fmt.Sprintf("%s - %d", entry.Name, entry.Time)
+		}
+	} else {
+		// Crewate the displayedscores array and add the only results that we have
+		displayedScores = make([]string, len(scoreboardEntries))
+
+		for pos, entry := range scoreboardEntries {
+			displayedScores[pos] = fmt.Sprintf("%s - %d", entry.Name, entry.Time)
+		}
+	}
+	fmt.Println(scoreboardEntries)
+
+	newScoreName = ""
 
 	rectangleWidths := float32(rl.GetScreenWidth()) / 3
 	rectangleXPos := (float32(rl.GetScreenWidth()) - rectangleWidths) / 2
@@ -68,52 +97,13 @@ func InitWinning() {
 	baseRectY := -250
 	baseOffsetY := 100
 
+	// Make the scores rectangles
+	scoresRect = make([]rl.Rectangle, len(displayedScores))
 	for i := range scoresRect {
 		scoresRect[i] = rl.NewRectangle(rectangleXPos, float32(rl.GetScreenHeight()/2+baseRectY+i*baseOffsetY), rectangleWidths, 80)
 	}
 
-	switch scoreboardPlace {
-	case 0:
-		displayedScores = []string{
-			"mine",
-			fmt.Sprint(scoreboardEntries[0].Time),
-			fmt.Sprint(scoreboardEntries[1].Time),
-			fmt.Sprint(scoreboardEntries[2].Time),
-			fmt.Sprint(scoreboardEntries[3].Time),
-		}
-	case 1:
-		displayedScores = []string{
-			fmt.Sprint(scoreboardEntries[0].Time),
-			"mine",
-			fmt.Sprint(scoreboardEntries[1].Time),
-			fmt.Sprint(scoreboardEntries[2].Time),
-			fmt.Sprint(scoreboardEntries[3].Time),
-		}
-	case len(scoreboardEntries) - 2:
-		displayedScores = []string{
-			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-4].Time),
-			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-3].Time),
-			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-2].Time),
-			"mine",
-			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-1].Time),
-		}
-	case len(scoreboardEntries) - 1:
-		displayedScores = []string{
-			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-4]),
-			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-3]),
-			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-2]),
-			fmt.Sprint(scoreboardEntries[len(scoreboardEntries)-1]),
-			"mine",
-		}
-	default:
-		displayedScores = []string{
-			fmt.Sprint(scoreboardEntries[scoreboardPlace-2].Time),
-			fmt.Sprint(scoreboardEntries[scoreboardPlace-1].Time),
-			"mine",
-			fmt.Sprint(scoreboardEntries[scoreboardPlace].Time),
-			fmt.Sprint(scoreboardEntries[scoreboardPlace+1].Time),
-		}
-	}
+	rl.SetExitKey(rl.KeyEscape)
 }
 
 // Update the game winning screen
@@ -136,12 +126,15 @@ func UpdateWinning() {
 	}
 
 	if scoreSaved {
-		newScoreName = strings.Join(strings.Fields(newScoreName), " ")
-		if err := shared.Scores.InsertNewScore(shared.AppSettings, newScoreName, gameTime, scoreboardPlace); err != nil {
-			rl.TraceLog(rl.LogFatal, "Couldn't save the new score")
-		} else {
-			ScreenState = shared.Title
+		// If there is an anonymous score, change its name to the new one
+		for pos, entry := range shared.Scores.Entries {
+			if entry.Name == "Anonymous" {
+				shared.Scores.Entries[pos].Name = strings.Join(strings.Fields(newScoreName), " ")
+			}
 		}
+
+		// Change to the title screen (the unload function will save the results) 
+		ScreenState = shared.Title
 	}
 }
 
@@ -153,20 +146,19 @@ func DrawWinning() {
 		float32(bgAlpha),
 	))
 
-	measure := rl.MeasureTextEx(shared.Font, "You have won the game!", shared.FontHugeTextSize*2, 0)
-
 	// The fade in text
+	measure := rl.MeasureTextEx(shared.Font, "You have won the game!", shared.FontHugeTextSize, 0)
 	rl.DrawTextEx(shared.Font, "You have won the game", rl.Vector2{
 		X: float32(rl.GetScreenWidth())/2 - measure.X/2,
 		Y: float32(rl.GetScreenHeight())/2 - measure.Y/2 - 330,
-	}, shared.FontHugeTextSize*2, 0, rl.Fade(rg.TextColor(), float32(textAlpha)))
+	}, shared.FontHugeTextSize, 0, rl.Fade(rg.TextColor(), float32(textAlpha)))
 
 	if textAnimation || bgAnimation || !newRecord {
 		return
 	}
 
 	for pos, rect := range scoresRect {
-		if displayedScores[pos] == "mine" {
+		if strings.Split(displayedScores[pos], " - ")[0] == "Anonymous" {
 			newScoreName = gui.TextBoxEx(shared.Font, rect, newScoreName, shared.FontBigTextSize, 20)
 		} else {
 			gui.ButtonEx(shared.Font, rect, displayedScores[pos], shared.FontBigTextSize)
@@ -177,4 +169,18 @@ func DrawWinning() {
 }
 
 // Unload the winning files
-func UnloadWinning() {}
+func UnloadWinning() {
+	// If there is an anonymous score, delete it from the scores slice
+	for pos, entry := range shared.Scores.Entries {
+		if entry.Name == "Anonymous" {
+			shared.Scores.Entries = append(shared.Scores.Entries[:pos], shared.Scores.Entries[pos+1:]...)
+		}
+	}
+
+	// Write the scores
+	if err := shared.Scores.WriteToFile(); err != nil {
+		rl.TraceLog(rl.LogFatal, "Couldn't save the new score")
+	}
+
+	rl.SetExitKey(rl.KeyQ)
+}

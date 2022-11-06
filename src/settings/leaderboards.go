@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
+	"sort"
 	"time"
 )
 
@@ -193,21 +194,14 @@ func (scores *Scores) WriteToFile() error {
 }
 
 // Should the new score be at the scoreboard
-func (scores *Scores) CanItBeInTheScoreboard(settings Settings, time int) (bool, int) {
+func (scores *Scores) CanItBeInTheScoreboard(filter int, time int) (bool, int) {
 	// Filter the scores by the settings
-	var filter int
-
-	if settings.Width == 8 && settings.Height == 8 && settings.Bombs == 15 {
-		filter = Beginner
-	} else if settings.Width == 16 && settings.Height == 16 && settings.Bombs == 15 {
-		filter = Intermediate
-	} else if settings.Width == 30 && settings.Height == 16 && settings.Bombs == 21 {
-		filter = Expert
-	} else {
-		filter = Custom
-	}
-
 	entries := scores.FilterScores(filter)
+
+	// If there are no entries we are the first one
+	if len(entries) == 0 {
+		return true, 0
+	}
 
 	// If our time is bigger than the last entry, we can be in the scoreboard
 	if time > entries[len(entries)-1].Time {
@@ -228,10 +222,9 @@ func (scores *Scores) CanItBeInTheScoreboard(settings Settings, time int) (bool,
 }
 
 // Insert the new score to the scoreboard
-func (scores *Scores) InsertNewScore(settings Settings, newScoreName string, gameTime int, scoreboardPlace int) error {
-	// Add the new entry to the scoreboard and shfit its contents
-	scores.Entries = append(scores.Entries[:scoreboardPlace+1], scores.Entries[scoreboardPlace:]...)
-	scores.Entries[scoreboardPlace] = Entry{
+func (scores *Scores) InsertNewScore(settings Settings, newScoreName string, gameTime int) {
+	// Make the entry for the score
+	entry := Entry{
 		Date:        time.Now().Unix(),
 		Name:        newScoreName,
 		Time:        gameTime,
@@ -240,8 +233,8 @@ func (scores *Scores) InsertNewScore(settings Settings, newScoreName string, gam
 		BoardMines:  settings.Bombs,
 	}
 
-	// Save the new score table
-	return scores.WriteToFile()
+	// Add the new entry to the scoreboard
+	scores.Entries = append(scores.Entries, entry)
 }
 
 // Filter the scores according to the category that they're in
@@ -264,13 +257,19 @@ func (scores *Scores) FilterScores(category int) []Entry {
 				entries = append(entries, entry)
 			}
 		case Custom:
-			if entry.BoardWidth != 8 && entry.BoardWidth != 16 && entry.BoardWidth != 30 &&
-				entry.BoardHeight != 8 && entry.BoardHeight != 16 &&
-				entry.BoardMines != 15 && entry.BoardMines != 21 {
+			if !(entry.BoardWidth == 8 && entry.BoardHeight == 8 && entry.BoardMines == 15) &&
+				!(entry.BoardWidth == 16 && entry.BoardHeight == 16 && entry.BoardMines == 15) &&
+				!(entry.BoardWidth == 30 && entry.BoardHeight == 16 && entry.BoardMines == 21) {
 				entries = append(entries, entry)
 			}
 		}
 	}
 
+	// Sort the slice by time
+	sort.Slice(entries, func(i, j int) bool {
+		return entries[i].Time < entries[j].Time
+	})
+
+	// Return the sorted entries
 	return entries
 }

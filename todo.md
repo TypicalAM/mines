@@ -1,7 +1,3 @@
-Game winning logic:
-	- Don't crash when there are no scores
-  - Making leaderboards when there are less than 5 people on it
-
 Gameplay screen:
 	- The restart button on the gameplay screen (maybe a fancy animation)
 	- Better bomb discovery
@@ -13,10 +9,8 @@ Title screen:
 	- Bomb icon sometimes doesn't appear correctly
 	- Fonts issue
 
-General / Codestyle:
-	- Window icon?
-
 Optional:
+	- Window icon 
 	- Catpuccin theme for the game
 	- Calculatign the boards' CPM (or what was it called)
 	- Gamepad support along with tab navigation
