@@ -109,16 +109,17 @@ func WriteMineBoard(filepath string, board *MineBoard) error {
 	return nil
 }
 
-// Check the clicked value, if the player has lost, bool is true
+// Check the clicked value, return true if the player has lost.
 func (board *MineBoard) UncoverValues(firstRun bool, x int, y int) (isLost bool) {
 	boardValue := *board
 	value := boardValue.Board[x][y]
 
-	// If we have a bomb, we lost the game
+	// If we have clicked bomb, we lost the game
 	if value == Bomb {
 		return true
 	}
 
+	// Don't uncover the entire board in one click
 	if value != 0 && !firstRun {
 		return false
 	}
@@ -174,19 +175,54 @@ func (board *MineBoard) CheckIfWon() bool {
 	}
 }
 
-// Calculate the score that the user had
-func (board *MineBoard) CalculateScore() float32 {
-	var bombsCaught int
+// If the first click was a bomb, move it
+func (board *MineBoard) CheckAndMove(x int, y int) {
+	// If it is not a bomb, return
+	if board.Board[x][y] != Bomb {
+		return
+	}
 
-	// Count the bombs caught (flagged or covered)
-	for row := range board.TileState {
-		for col := range board.TileState[row] {
-			if board.TileState[row][col] == Flagged && board.Board[row][col] == Bomb {
-				bombsCaught += 1
+	// Declare the positions around a tile
+	positions := []struct {
+		X int
+		Y int
+	}{{-1, -1}, {-1, 0}, {-1, 1}, {1, -1}, {1, 0}, {1, 1}, {0, -1}, {0, 1}}
+	var bombsAroundMe int
+
+	// Decrement values near where the bomb was
+	for _, pos := range positions {
+		// Check if the position is valid
+		if x+pos.X < len(board.Board) && x+pos.X >= 0 && y+pos.Y < len(board.Board[0]) && y+pos.Y >= 0 {
+			// Decrement the value if it isn't a bomb
+			if board.Board[x+pos.X][y+pos.Y] != Bomb {
+				board.Board[x+pos.X][y+pos.Y]--
+			} else {
+				bombsAroundMe++
 			}
 		}
 	}
 
-	// Return the percentage of bombs caught
-	return float32(bombsCaught) / float32(board.Mines)
+	// Set the new value for the clicked tile
+	board.Board[x][y] = bombsAroundMe
+
+	// Move the bomb
+	posX := rand.Intn(board.Height)
+	posY := rand.Intn(board.Width)
+	for board.Board[posX][posY] == Bomb {
+		posX = rand.Intn(board.Height)
+		posY = rand.Intn(board.Width)
+	}
+
+	board.Board[posX][posY] = Bomb
+
+	// Increment values where the new bomb is
+	for _, pos := range positions {
+		// Check if the position is valid
+		if posX+pos.X < len(board.Board) && posX+pos.X >= 0 && posY+pos.Y < len(board.Board[0]) && posY+pos.Y >= 0 {
+			// Increment the value if it isn't a bomb
+			if board.Board[posX+pos.X][posY+pos.Y] != Bomb {
+				board.Board[x+pos.X][y+pos.Y]++
+			}
+		}
+	}
 }

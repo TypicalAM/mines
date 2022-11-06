@@ -1,24 +1,24 @@
 Game winning logic:
-	- Calculatign the boards' CPM (or what was it called)
+	- Don't crash when there are no scores
   - Making leaderboards when there are less than 5 people on it
-
-Game losing logic:
-	- Press enter to continue
 
 Gameplay screen:
 	- The restart button on the gameplay screen (maybe a fancy animation)
-	- Make the first click be not a bomb (move it to a different place)
-
-Options screen:
-	- (maybe) Tab navigation
+	- Better bomb discovery
 
 Scoreboard screen:
 	- Frame skipping (loading animation)
 
 Title screen:
-	- Weird deletion of the bomb icon
+	- Bomb icon sometimes doesn't appear correctly
+	- Fonts issue
 
 General / Codestyle:
 	- Window icon?
+
+Optional:
+	- Catpuccin theme for the game
+	- Calculatign the boards' CPM (or what was it called)
+	- Gamepad support along with tab navigation
 	- Maps don't allow for direct attribute assignment (!)
-	- Gamepad support
+

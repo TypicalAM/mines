@@ -144,16 +144,19 @@ func Update() {
 
 				// If we detect the left click then uncover the tile if its not flagged
 				if rl.IsMouseButtonPressed(rl.MouseLeftButton) && mineBoard.TileState[row][col] != mines.Flagged {
-					mineBoard.TileState[row][col] = mines.Uncovered
-					if mineBoard.UncoverValues(true, row, col) {
-						bombTile = tile
-						InitLosing()
-					}
-
 					// Start the game timer
 					if !isPlaying {
 						isPlaying = true
 						timePlaying = time.Now()
+						// Check if we are on a bomb, if yes move it
+						mineBoard.CheckAndMove(row, col)
+					}
+
+					// Uncover the values
+					mineBoard.TileState[row][col] = mines.Uncovered
+					if mineBoard.UncoverValues(true, row, col) {
+						bombTile = tile
+						InitLosing()
 					}
 				}
 
