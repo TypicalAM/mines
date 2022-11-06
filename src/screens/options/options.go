@@ -58,7 +58,7 @@ var saveOptionsRect rl.Rectangle
 
 // What theme are we using?
 var activeThemeIndex int
-var themes = []string{"default_dark", "default_light", "candy", "hello_kitty", "monokai", "obsidian", "solarized", "solarized_light", "zahnrad"}
+var themes = []string{"default_dark", "candy", "hello_kitty", "monokai", "obsidian", "solarized", "solarized_light", "zahnrad"}
 
 // Options screen initialization logic
 func Init() {
@@ -122,8 +122,8 @@ func Init() {
 			textBounds: rl.NewRectangle(rectangleXPos+rectangleWidths/2-rl.MeasureTextEx(shared.Font, "Bombs count percentage - 100", shared.FontSmallTextSize, 0).X/2, float32(rl.GetScreenHeight()/2+baseTextY+2*baseOffsetY), rectangleWidths, 60),
 			value:      fmt.Sprint(shared.AppSettings.Bombs),
 			valType:    Slider,
-			minValue:   4,
-			maxValue:   100,
+			minValue:   6,
+			maxValue:   38,
 		},
 		"Path to the settings file": {
 			value:      shared.AppSettings.SettingsPath,
