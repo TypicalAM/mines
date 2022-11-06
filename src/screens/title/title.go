@@ -41,6 +41,8 @@ func Init() {
 		float32(rl.GetScreenWidth())/4,
 		50,
 		float32(rl.GetScreenWidth()/2), 175)
+
+	rl.SetExitKey(rl.KeyEscape)
 }
 
 // Update title screen
@@ -72,4 +74,6 @@ func Draw() {
 }
 
 // Title screen unload logic
-func Unload() {}
+func Unload() {
+	rl.SetExitKey(rl.KeyQ)
+}

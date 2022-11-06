@@ -42,8 +42,12 @@ func InitalizeGame() {
 
 	// Load the shared assets
 	if err := shared.LoadSharedAssets(); err != nil {
-		rl.TraceLog(rl.LogFatal, "Failed to load the share assets: ", err)
+		rl.TraceLog(rl.LogError, fmt.Sprint("Failed to load the shared asseets: ", err))
+		return
 	}
+
+	// Set the window icon to the bomb
+	rl.SetWindowIcon(*rl.LoadImageFromTexture(shared.LogoIcon))
 
 	// Load the app-wide gui style
 	rg.LoadGuiStyle(fmt.Sprintf("resources/styles/%s.style", shared.AppSettings.Theme))

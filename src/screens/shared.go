@@ -45,7 +45,7 @@ func LoadSharedAssets() error {
 
 	SecondaryFont = rl.LoadFont("resources/fonts/cartograph_cf_italic.ttf")
 	rl.GenTextureMipmaps(&SecondaryFont.Texture)
-	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterAnisotropic4x)
+	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterBilinear)
 
 	// Load the necessary settings and scores
 	if err := AppSettings.LoadFromFile(); err != nil {
