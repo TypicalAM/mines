@@ -3,6 +3,7 @@ package title
 import (
 	"example/raylib-game/src/gui"
 	shared "example/raylib-game/src/screens"
+	"fmt"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -18,6 +19,10 @@ var optionsRect rl.Rectangle
 
 // Logo rectangle
 var logoRectangle rl.Rectangle
+
+// Var selected button index
+var selectedButton int
+var gamepadButtonCooldown float32
 
 // Title screen initialization logic
 func Init() {
@@ -47,8 +52,61 @@ func Init() {
 
 // Update title screen
 func Update() {
-	if rl.IsKeyPressed(rl.KeyEnter) {
-		ScreenState = shared.Gameplay
+	if gamepadButtonCooldown <=0.0 {
+		switch rl.GetGamepadButtonPressed() {
+		case 3: // PS3 gamepad down
+			selectedButton++
+			if selectedButton == 3 {
+				selectedButton = 0
+			}
+
+			gamepadButtonCooldown = 0.2
+		case 1: // PS3 gamepad up
+			selectedButton--
+			if selectedButton == -1 {
+				selectedButton = 2
+			}
+
+			gamepadButtonCooldown = 0.2
+		case 7: // PS3 gamepad confirm
+			switch selectedButton {
+			case 0:
+				ScreenState = shared.Gameplay
+			case 1:
+				ScreenState = shared.Leaderboard
+			case 2:
+				ScreenState = shared.Options
+			}
+		default:
+			fmt.Println(rl.GetGamepadButtonPressed())
+			fmt.Println(rl.GetGamepadName(0))
+		}
+	} else {
+		if gamepadButtonCooldown > 0 {
+			gamepadButtonCooldown -= 0.01
+		}
+	}
+
+	switch rl.GetKeyPressed() {
+	case rl.KeyDown, rl.KeyTab:
+		selectedButton++
+		if selectedButton == 3 {
+			selectedButton = 0
+		}
+	case rl.KeyUp:
+		selectedButton--
+		if selectedButton == -1 {
+			selectedButton = 2
+		}
+	case rl.KeyEnter:
+		switch selectedButton {
+		case 0:
+			ScreenState = shared.Gameplay
+		case 1:
+			ScreenState = shared.Leaderboard
+		case 2:
+			ScreenState = shared.Options
+		}
 	}
 }
 
@@ -70,6 +128,15 @@ func Draw() {
 	}
 	if gui.ButtonEx(shared.Font, optionsRect, "Options", shared.FontBigTextSize) {
 		ScreenState = shared.Options
+	}
+
+	switch selectedButton {
+	case 0:
+		rl.DrawRectangleLinesEx(startGameRect, 4, rg.TextColor())
+	case 1:
+		rl.DrawRectangleLinesEx(leaderboardRect, 4, rg.TextColor())
+	case 2:
+		rl.DrawRectangleLinesEx(optionsRect, 4, rg.TextColor())
 	}
 }
 
