@@ -17,7 +17,7 @@ var topRecWidth int32
 var leftRecHeight int32
 var bottomRecWidth int32
 var rightRecHeight int32
-var state int32 = 0
+var state int32
 var alpha float32 = 1.0
 
 // Logo screen functions

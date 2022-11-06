@@ -170,9 +170,9 @@ func (board *MineBoard) CheckIfWon() bool {
 	// Check if the game is won
 	if board.Width*board.Height-board.Mines == uncoveredGood && coveredBad == board.Mines {
 		return true
-	} else {
-		return false
 	}
+
+	return false
 }
 
 // If the first click was a bomb, move it

@@ -21,7 +21,7 @@ type Settings struct {
 }
 
 // The default settings for the app
-var DefaultSettings Settings = Settings{
+var DefaultSettings = Settings{
 	SettingsPath: "data/settings.json",
 	Theme:        "hello_kitty",
 	Width:        30,

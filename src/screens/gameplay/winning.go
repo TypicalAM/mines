@@ -13,8 +13,8 @@ import (
 )
 
 // Local variables
-var newRecord bool = false
-var scoreboardPlace int = 0
+var newRecord bool
+var scoreboardPlace int
 var scoresRect []rl.Rectangle
 var saveRect rl.Rectangle
 var scoreSaved bool
@@ -59,7 +59,7 @@ func InitWinning() {
 	if len(scoreboardEntries) >= 5 {
 		displayedScores = make([]string, 5)
 
-		slice := scoreboardEntries
+		var slice []settings.Entry
 		switch scoreboardPlace {
 		case 0, 1:
 			slice = scoreboardEntries[:5]
@@ -133,7 +133,7 @@ func UpdateWinning() {
 			}
 		}
 
-		// Change to the title screen (the unload function will save the results) 
+		// Change to the title screen (the unload function will save the results)
 		ScreenState = shared.Title
 	}
 }

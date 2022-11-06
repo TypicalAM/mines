@@ -9,6 +9,9 @@ Title screen:
 	- Bomb icon sometimes doesn't appear correctly
 	- Fonts issue
 
+General:
+	- Weird saving when marshalling (?)
+
 Optional:
 	- Window icon 
 	- Catpuccin theme for the game

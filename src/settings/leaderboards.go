@@ -32,7 +32,7 @@ type Scores struct {
 	Entries []Entry
 }
 
-var defaultScores Scores = Scores{
+var defaultScores = Scores{
 	Entries: []Entry{
 		{
 			Date:        time.Now().Unix(),
