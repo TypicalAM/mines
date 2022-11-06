@@ -24,6 +24,10 @@ var activeCategoryChanged bool
 var doneRectButton rl.Rectangle
 var textVector rl.Vector2
 
+// Keyboard & gamepad navtiation variables
+var selectedButton int
+var buttonPressed int
+
 // Init leaderboard screen
 func Init() {
 	ScreenState = shared.Unchanged
@@ -89,8 +93,12 @@ func Update() {
 
 	}
 
-	if rl.IsKeyPressed(rl.KeyEscape) {
+	selectedButton, buttonPressed = shared.UpdateMovement(selectedButton, 5)
+	if buttonPressed == shared.ButtonGoBack || buttonPressed == shared.ButtonConfirm && selectedButton == 4 {
 		ScreenState = shared.Title
+	} else if buttonPressed == shared.ButtonConfirm {
+		activeCategory = selectedButton
+		activeCategoryChanged = true
 	}
 }
 
@@ -176,6 +184,19 @@ func Draw() {
 	// Draw the "we are done" button
 	if gui.ButtonEx(shared.Font, doneRectButton, "Done", shared.FontBigTextSize) {
 		ScreenState = shared.Title
+	}
+
+	// Draw the selected button outline
+	switch selectedButton {
+	case 0, 1, 2, 3:
+		rl.DrawRectangleLinesEx(rl.NewRectangle(
+			categoriesBounds.X+float32(selectedButton)*categoriesBounds.Width,
+			categoriesBounds.Y,
+			categoriesBounds.Width,
+			categoriesBounds.Height,
+		), 4, rg.TextColor())
+	case 4:
+		rl.DrawRectangleLinesEx(doneRectButton, 4, rg.TextColor())
 	}
 }
 

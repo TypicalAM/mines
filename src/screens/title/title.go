@@ -3,7 +3,6 @@ package title
 import (
 	"example/raylib-game/src/gui"
 	shared "example/raylib-game/src/screens"
-	"fmt"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -20,9 +19,9 @@ var optionsRect rl.Rectangle
 // Logo rectangle
 var logoRectangle rl.Rectangle
 
-// Var selected button index
+// Keyboard & gamepad navtiation variables
 var selectedButton int
-var gamepadButtonCooldown float32
+var buttonPressed int
 
 // Title screen initialization logic
 func Init() {
@@ -52,53 +51,11 @@ func Init() {
 
 // Update title screen
 func Update() {
-	if gamepadButtonCooldown <=0.0 {
-		switch rl.GetGamepadButtonPressed() {
-		case 3: // PS3 gamepad down
-			selectedButton++
-			if selectedButton == 3 {
-				selectedButton = 0
-			}
+	// Check the movement (keyboard/gamepad)
+	selectedButton, buttonPressed = shared.UpdateMovement(selectedButton, 3)
 
-			gamepadButtonCooldown = 0.2
-		case 1: // PS3 gamepad up
-			selectedButton--
-			if selectedButton == -1 {
-				selectedButton = 2
-			}
-
-			gamepadButtonCooldown = 0.2
-		case 7: // PS3 gamepad confirm
-			switch selectedButton {
-			case 0:
-				ScreenState = shared.Gameplay
-			case 1:
-				ScreenState = shared.Leaderboard
-			case 2:
-				ScreenState = shared.Options
-			}
-		default:
-			fmt.Println(rl.GetGamepadButtonPressed())
-			fmt.Println(rl.GetGamepadName(0))
-		}
-	} else {
-		if gamepadButtonCooldown > 0 {
-			gamepadButtonCooldown -= 0.01
-		}
-	}
-
-	switch rl.GetKeyPressed() {
-	case rl.KeyDown, rl.KeyTab:
-		selectedButton++
-		if selectedButton == 3 {
-			selectedButton = 0
-		}
-	case rl.KeyUp:
-		selectedButton--
-		if selectedButton == -1 {
-			selectedButton = 2
-		}
-	case rl.KeyEnter:
+	// If the confirm button was pressed, we need to enter a new screen
+	if buttonPressed == shared.ButtonConfirm {
 		switch selectedButton {
 		case 0:
 			ScreenState = shared.Gameplay
@@ -108,6 +65,7 @@ func Update() {
 			ScreenState = shared.Options
 		}
 	}
+
 }
 
 // Title screen draw logic
@@ -130,6 +88,7 @@ func Draw() {
 		ScreenState = shared.Options
 	}
 
+	// Draw the selected button outline
 	switch selectedButton {
 	case 0:
 		rl.DrawRectangleLinesEx(startGameRect, 4, rg.TextColor())
