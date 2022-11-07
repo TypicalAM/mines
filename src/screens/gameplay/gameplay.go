@@ -45,9 +45,9 @@ type hover struct {
 	col       int
 }
 
-var tileHoverState hover // If any tile was hovered, and which was hoverd
+var tileHoverState hover  // If any tile was hovered, and which was hoverd
 var timePlaying time.Time // Time of the first meaningful mouse press
-var isPlaying bool // If the player is in game
+var isPlaying bool        // If the player is in game
 
 // Flags and bombs text placements
 var flagsText string
@@ -76,6 +76,17 @@ func Init() {
 	// Determine the placement of the game grid
 	cellWidth := ((rl.GetScreenWidth() - 120) / width)
 	cellHeight := (rl.GetScreenHeight() - 120) / height
+
+	// Adjust the cell size so that cells don't get stretched
+	cellRatio := float32(cellWidth) / float32(cellHeight)
+	for cellRatio < 0.9 || cellRatio > 1.1 {
+		if cellHeight > cellWidth {
+			cellHeight -= 4
+		} else {
+			cellWidth -= 4
+		}
+		cellRatio = float32(cellWidth) / float32(cellHeight)
+	}
 
 	backGroundStartX := float32(rl.GetScreenWidth()-cellWidth*width) / 2
 	backGroundStartY := float32(rl.GetScreenHeight()-cellHeight*height) / 2

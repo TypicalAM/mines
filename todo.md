@@ -3,9 +3,6 @@ Gameplay screen:
 	- Better bomb discovery
 	- Board absolute positioning
 
-Scoreboard screen:
-	- Frame skipping (loading animation)
-
 General:
 	- Weird saving when marshalling (?)
 
