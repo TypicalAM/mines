@@ -41,6 +41,8 @@ const (
 	ButtonUnchanged int = iota
 	ButtonConfirm
 	ButtonGoBack
+	ButtonRestart
+	ButtonFlag
 	ButtonUp
 	ButtonDown
 	ButtonLeft
@@ -91,6 +93,10 @@ func UpdateMovement(current int, availableButtons int) (int, int) {
 			if current == -1 {
 				current = availableButtons - 1
 			}
+		case 98: // PS3 gamepad flag
+			return current, ButtonFlag
+		case 99: // PS3 gamepad restart
+			return current, ButtonRestart
 		case 100: // PS3 gamepad left
 			return current, ButtonLeft
 		case 101: // PS3 gamepad right
@@ -121,6 +127,10 @@ func UpdateMovement(current int, availableButtons int) (int, int) {
 			current = availableButtons - 1
 		}
 		return current, ButtonUp
+	case rl.KeyF:
+		return current, ButtonFlag
+	case rl.KeyR:
+		return current, ButtonRestart
 	case rl.KeyLeft:
 		return current, ButtonLeft
 	case rl.KeyRight:

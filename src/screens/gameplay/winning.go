@@ -81,8 +81,6 @@ func InitWinning() {
 			displayedScores[pos] = fmt.Sprintf("%s - %d", entry.Name, entry.Time)
 		}
 	}
-	fmt.Println(scoreboardEntries)
-
 	newScoreName = ""
 
 	rectangleWidths := float32(rl.GetScreenWidth()) / 3
@@ -125,6 +123,15 @@ func UpdateWinning() {
 		}
 	}
 
+	// Check the movement (keyboard/gamepad)
+	selectedButton, buttonPressed = shared.UpdateMovement(selectedButton, 2)
+	switch buttonPressed {
+	case shared.ButtonConfirm:
+		scoreSaved = true
+	case shared.ButtonGoBack:
+		ScreenState = shared.Title
+	}
+
 	if scoreSaved {
 		// If there is an anonymous score, change its name to the new one
 		for pos, entry := range shared.Scores.Entries {
@@ -159,13 +166,21 @@ func DrawWinning() {
 
 	for pos, rect := range scoresRect {
 		if strings.Split(displayedScores[pos], " - ")[0] == "Anonymous" {
-			newScoreName = gui.TextBoxEx(shared.Font, rect, newScoreName, shared.FontBigTextSize, 20)
+			if selectedButton == 0 {
+				newScoreName = gui.TextBoxEx(shared.Font, rect, newScoreName, "Anonymous", true, shared.FontBigTextSize, 20)
+				rl.DrawRectangleLinesEx(rect, 4, rg.TextColor())
+			} else {
+				newScoreName = gui.TextBoxEx(shared.Font, rect, newScoreName, "Anonymous", false, shared.FontBigTextSize, 20)
+			}
 		} else {
 			gui.ButtonEx(shared.Font, rect, displayedScores[pos], shared.FontBigTextSize)
 		}
 	}
 
 	scoreSaved = gui.ButtonEx(shared.Font, saveRect, "SAVE", shared.FontBigTextSize)
+	if selectedButton == 1 {
+		rl.DrawRectangleLinesEx(saveRect, 4, rg.TextColor())
+	}
 }
 
 // Unload the winning files

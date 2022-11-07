@@ -57,6 +57,12 @@ var clockText string
 var clockTextXPos float32
 var clockIconXPos int32
 
+// Keyboard & gamepad navtiation variables
+var selectedButton int
+var buttonPressed int
+var cursorPosCol int
+var cursorPosRow int
+
 // Gameplay screen initialization logic
 func Init() {
 	// Init basic variables
@@ -126,6 +132,11 @@ func Init() {
 	clockIconXPos = int32(rl.GetScreenWidth()/2 - 125)
 
 	isPlaying = false
+
+	selectedButton = 0
+	buttonPressed = 0
+	cursorPosCol = 0
+	cursorPosRow = 0
 }
 
 // Gameplay screen update logic
@@ -155,51 +166,54 @@ func Update() {
 
 				// If we detect the left click then uncover the tile if its not flagged
 				if rl.IsMouseButtonPressed(rl.MouseLeftButton) && mineBoard.TileState[row][col] != mines.Flagged {
-					// Start the game timer
-					if !isPlaying {
-						isPlaying = true
-						timePlaying = time.Now()
-						// Check if we are on a bomb, if yes move it
-						mineBoard.CheckAndMove(row, col)
-					}
-
-					// Uncover the values
-					mineBoard.TileState[row][col] = mines.Uncovered
-					if mineBoard.UncoverValues(true, row, col) {
-						bombTile = tile
-						InitLosing()
-					}
+					uncoverTile(row, col)
 				}
 
 				// If we detect the right click then flag/unflag the tile
 				if rl.IsMouseButtonPressed(rl.MouseRightButton) {
-					// If the tile is flagged, unflag it and if it is covered, flag it
-					if mineBoard.TileState[row][col] == mines.Flagged {
-						mineBoard.TileState[row][col] = mines.Covered
-						mineBoard.Flags--
-					} else if mineBoard.TileState[row][col] == mines.Covered {
-						mineBoard.TileState[row][col] = mines.Flagged
-						mineBoard.Flags++
-					}
-
-					// Start the game timer
-					if !isPlaying {
-						isPlaying = true
-						timePlaying = time.Now()
-					}
+					flagTile(row, col)
 				}
 			}
 		}
 	}
 
-	if mineBoard.CheckIfWon() && GameState == Playing {
+	//if mineBoard.CheckIfWon() && GameState == Playing {
+	if true {
 		InitWinning()
 	}
 
-	if rl.IsKeyPressed(rl.KeyEscape) {
-		ScreenState = shared.Title
-	} else if rl.IsKeyPressed(rl.KeyR) {
+	_, buttonPressed = shared.UpdateMovement(0, 0)
+	switch buttonPressed {
+	case shared.ButtonUp:
+		cursorPosRow--
+		if cursorPosRow == -1 {
+			cursorPosRow = mineBoard.Height
+		}
+	case shared.ButtonDown:
+		cursorPosRow++
+		if cursorPosRow == mineBoard.Height {
+			cursorPosRow = 0
+		}
+	case shared.ButtonLeft:
+		cursorPosCol--
+		if cursorPosCol == -1 {
+			cursorPosCol = mineBoard.Width
+		}
+	case shared.ButtonRight:
+		cursorPosCol++
+		if cursorPosCol == mineBoard.Width {
+			cursorPosCol = 0
+		}
+	case shared.ButtonConfirm:
+		if mineBoard.TileState[cursorPosRow][cursorPosCol] != mines.Flagged {
+			uncoverTile(cursorPosRow, cursorPosCol)
+		}
+	case shared.ButtonFlag:
+		flagTile(cursorPosRow, cursorPosCol)
+	case shared.ButtonRestart:
 		ScreenState = shared.Gameplay
+	case shared.ButtonGoBack:
+		ScreenState = shared.Title
 	}
 }
 
@@ -211,7 +225,6 @@ func Draw() {
 	// Draw the game board
 	for row := range boardRectangles {
 		for col, tile := range boardRectangles[row] {
-
 			if tileHoverState.isHovered && tileHoverState.row == row && tileHoverState.col == col && mineBoard.TileState[row][col] == mines.Covered {
 				// Draw the hover effect
 				rl.DrawRectangleRec(tile, rl.Fade(rl.LightGray, 0.65))
@@ -237,10 +250,15 @@ func Draw() {
 			rl.DrawTexturePro(
 				numberTextures,
 				rl.NewRectangle(rectPosition, 0, numsTextureSize, numsTextureSize),
-				boardRectangles[row][col],
+				tile,
 				rl.Vector2{X: 0, Y: 0},
 				0, rl.White,
 			)
+
+			// Draw the cursor if on this tile
+			if row == cursorPosRow && col == cursorPosCol {
+				rl.DrawRectangleLinesEx(tile, 4, rg.TextColor())
+			}
 		}
 	}
 
@@ -264,4 +282,40 @@ func Unload() {
 	// Unload the winning or losing screens
 	UnloadWinning()
 	UnloadLosing()
+}
+
+// Uncover the hovered tile
+func uncoverTile(row int, col int) {
+	// Start the game timer
+	if !isPlaying {
+		isPlaying = true
+		timePlaying = time.Now()
+		// Check if we are on a bomb, if yes move it
+		mineBoard.CheckAndMove(row, col)
+	}
+
+	// Uncover the values
+	mineBoard.TileState[row][col] = mines.Uncovered
+	if mineBoard.UncoverValues(true, row, col) {
+		bombTile = boardRectangles[row][col]
+		InitLosing()
+	}
+}
+
+// Flag the tile
+func flagTile(row int, col int) {
+	// If the tile is flagged, unflag it and if it is covered, flag it
+	if mineBoard.TileState[row][col] == mines.Flagged {
+		mineBoard.TileState[row][col] = mines.Covered
+		mineBoard.Flags--
+	} else if mineBoard.TileState[row][col] == mines.Covered {
+		mineBoard.TileState[row][col] = mines.Flagged
+		mineBoard.Flags++
+	}
+
+	// Start the game timer
+	if !isPlaying {
+		isPlaying = true
+		timePlaying = time.Now()
+	}
 }

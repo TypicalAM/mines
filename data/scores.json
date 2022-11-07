@@ -119,6 +119,38 @@
 "board_width": 8,
 "board_height": 8,
 "board_mines": 15
+},
+{
+"date": 1667787636,
+"name": "Adamos'",
+"time": 18,
+"board_width": 15,
+"board_height": 15,
+"board_mines": 6
+},
+{
+"date": 1667787992,
+"name": "Crazy person",
+"time": 17,
+"board_width": 15,
+"board_height": 15,
+"board_mines": 6
+},
+{
+"date": 1667788981,
+"name": "My sweet sweet name",
+"time": 0,
+"board_width": 15,
+"board_height": 15,
+"board_mines": 6
+},
+{
+"date": 1667788994,
+"name": "My new name",
+"time": 0,
+"board_width": 15,
+"board_height": 15,
+"board_mines": 6
 }
 ]
 }
