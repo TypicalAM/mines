@@ -25,6 +25,7 @@ var doneRectButton rl.Rectangle
 var textVector rl.Vector2
 
 // Keyboard & gamepad navtiation variables
+var keyboardMode bool
 var selectedButton int
 var buttonPressed int
 
@@ -66,6 +67,11 @@ func Init() {
 	doneRectButton = rl.NewRectangle(
 		xPos+width/4, float32(rl.GetScreenHeight()-100), width/2, 60,
 	)
+
+	// Keyboard & gamepad variables
+	keyboardMode = false
+	selectedButton = 0
+	buttonPressed = 0
 }
 
 // Update the screen
@@ -94,9 +100,12 @@ func Update() {
 	}
 
 	selectedButton, buttonPressed = shared.UpdateMovement(selectedButton, 5)
+	if buttonPressed != shared.ButtonUnchanged {
+		keyboardMode = true
+	}
 	if buttonPressed == shared.ButtonGoBack || buttonPressed == shared.ButtonConfirm && selectedButton == 4 {
 		ScreenState = shared.Title
-	} else if buttonPressed == shared.ButtonConfirm {
+	} else if keyboardMode && buttonPressed == shared.ButtonConfirm {
 		activeCategory = selectedButton
 		activeCategoryChanged = true
 	}
@@ -187,16 +196,18 @@ func Draw() {
 	}
 
 	// Draw the selected button outline
-	switch selectedButton {
-	case 0, 1, 2, 3:
-		rl.DrawRectangleLinesEx(rl.NewRectangle(
-			categoriesBounds.X+float32(selectedButton)*categoriesBounds.Width,
-			categoriesBounds.Y,
-			categoriesBounds.Width,
-			categoriesBounds.Height,
-		), 4, rg.TextColor())
-	case 4:
-		rl.DrawRectangleLinesEx(doneRectButton, 4, rg.TextColor())
+	if keyboardMode {
+		switch selectedButton {
+		case 0, 1, 2, 3:
+			rl.DrawRectangleLinesEx(rl.NewRectangle(
+				categoriesBounds.X+float32(selectedButton)*categoriesBounds.Width,
+				categoriesBounds.Y,
+				categoriesBounds.Width,
+				categoriesBounds.Height,
+			), 4, rg.TextColor())
+		case 4:
+			rl.DrawRectangleLinesEx(doneRectButton, 4, rg.TextColor())
+		}
 	}
 }
 

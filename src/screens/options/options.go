@@ -61,6 +61,7 @@ var activeThemeIndex int
 var themes = []string{"default_dark", "candy", "hello_kitty", "monokai", "obsidian", "solarized", "solarized_light", "zahnrad"}
 
 // Keyboard & gamepad navtiation variables
+var keyboardMode bool
 var selectedButton int
 var buttonPressed int
 
@@ -156,6 +157,11 @@ func Init() {
 			activeThemeIndex = ind
 		}
 	}
+
+	// Keyboard & gamepad variables
+	keyboardMode = false
+	selectedButton = 0
+	buttonPressed = 0
 }
 
 // Update Options screen
@@ -180,9 +186,12 @@ func Update() {
 	if buttonPressed == shared.ButtonGoBack {
 		ScreenState = shared.Title
 	}
+	if buttonPressed != shared.ButtonUnchanged {
+		keyboardMode = true
+	}
 
 	// Move the slider if hovered over slider options
-	if buttonPressed == shared.ButtonLeft || buttonPressed == shared.ButtonRight {
+	if keyboardMode && buttonPressed == shared.ButtonLeft || buttonPressed == shared.ButtonRight {
 		var key string
 
 		switch selectedButton {
@@ -207,7 +216,7 @@ func Update() {
 	}
 
 	// Check the confirmed button action
-	if buttonPressed == shared.ButtonConfirm {
+	if keyboardMode && buttonPressed == shared.ButtonConfirm {
 		switch selectedButton {
 		case 0, 1, 2:
 			widthEntry := options[keyWidth]
@@ -274,21 +283,23 @@ func Draw() {
 	saveAndExit = gui.ButtonEx(shared.Font, saveOptionsRect, "SAVE", shared.FontBigTextSize)
 
 	// Draw the selection box
-	switch selectedButton {
-	case 0, 1, 2:
-		rl.DrawRectangleLinesEx(presets[selectedButton].bounds, 4, rg.TextColor())
-	case 3:
-		rl.DrawRectangleLinesEx(options[keyWidth].bounds, 4, rg.TextColor())
-	case 4:
-		rl.DrawRectangleLinesEx(options[keyHeight].bounds, 4, rg.TextColor())
-	case 5:
-		rl.DrawRectangleLinesEx(options[keyBombs].bounds, 4, rg.TextColor())
-	case 6:
-		rl.DrawRectangleLinesEx(options[keySettingsPath].bounds, 4, rg.TextColor())
-	case 7:
-		rl.DrawRectangleLinesEx(options[keyColorscheme].bounds, 4, rg.TextColor())
-	case 8:
-		rl.DrawRectangleLinesEx(saveOptionsRect, 4, rg.TextColor())
+	if keyboardMode {
+		switch selectedButton {
+		case 0, 1, 2:
+			rl.DrawRectangleLinesEx(presets[selectedButton].bounds, 4, rg.TextColor())
+		case 3:
+			rl.DrawRectangleLinesEx(options[keyWidth].bounds, 4, rg.TextColor())
+		case 4:
+			rl.DrawRectangleLinesEx(options[keyHeight].bounds, 4, rg.TextColor())
+		case 5:
+			rl.DrawRectangleLinesEx(options[keyBombs].bounds, 4, rg.TextColor())
+		case 6:
+			rl.DrawRectangleLinesEx(options[keySettingsPath].bounds, 4, rg.TextColor())
+		case 7:
+			rl.DrawRectangleLinesEx(options[keyColorscheme].bounds, 4, rg.TextColor())
+		case 8:
+			rl.DrawRectangleLinesEx(saveOptionsRect, 4, rg.TextColor())
+		}
 	}
 
 	if saveWrongData {

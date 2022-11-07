@@ -125,6 +125,9 @@ func UpdateWinning() {
 
 	// Check the movement (keyboard/gamepad)
 	selectedButton, buttonPressed = shared.UpdateMovement(selectedButton, 2)
+	if buttonPressed != shared.ButtonUnchanged {
+		keyboardMode = true
+	}
 	switch buttonPressed {
 	case shared.ButtonConfirm:
 		scoreSaved = true
@@ -133,10 +136,14 @@ func UpdateWinning() {
 	}
 
 	if scoreSaved {
+		newScoreName = strings.Join(strings.Fields(newScoreName), " ")
+		if newScoreName == "" {
+			newScoreName = "Anonymous"
+		}
 		// If there is an anonymous score, change its name to the new one
 		for pos, entry := range shared.Scores.Entries {
 			if entry.Name == "Anonymous" {
-				shared.Scores.Entries[pos].Name = strings.Join(strings.Fields(newScoreName), " ")
+				shared.Scores.Entries[pos].Name = newScoreName
 			}
 		}
 
@@ -166,7 +173,7 @@ func DrawWinning() {
 
 	for pos, rect := range scoresRect {
 		if strings.Split(displayedScores[pos], " - ")[0] == "Anonymous" {
-			if selectedButton == 0 {
+			if selectedButton == 0 && keyboardMode {
 				newScoreName = gui.TextBoxEx(shared.Font, rect, newScoreName, "Anonymous", true, shared.FontBigTextSize, 20)
 				rl.DrawRectangleLinesEx(rect, 4, rg.TextColor())
 			} else {
@@ -178,7 +185,7 @@ func DrawWinning() {
 	}
 
 	scoreSaved = gui.ButtonEx(shared.Font, saveRect, "SAVE", shared.FontBigTextSize)
-	if selectedButton == 1 {
+	if keyboardMode && selectedButton == 1 {
 		rl.DrawRectangleLinesEx(saveRect, 4, rg.TextColor())
 	}
 }

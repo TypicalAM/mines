@@ -151,6 +151,14 @@
 "board_width": 15,
 "board_height": 15,
 "board_mines": 6
+},
+{
+"date": 1667789808,
+"name": "welp",
+"time": 1,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 6
 }
 ]
 }

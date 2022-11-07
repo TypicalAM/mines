@@ -4,6 +4,8 @@ import (
 	"example/raylib-game/src/mines"
 	shared "example/raylib-game/src/screens"
 	"fmt"
+	"strconv"
+	"strings"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -73,9 +75,11 @@ func UpdateLosing() {
 		}
 	}
 
-	if rl.IsKeyPressed(rl.KeyEnter) {
+	// Check the movement (keyboard/gamepad)
+	_, buttonPressed = shared.UpdateMovement(selectedButton, 0)
+	if buttonPressed == shared.ButtonGoBack {
 		ScreenState = shared.Title
-	} else if rl.IsKeyPressed(rl.KeyR) {
+	} else if buttonPressed == shared.ButtonRestart {
 		ScreenState = shared.Gameplay
 	}
 }
@@ -91,16 +95,18 @@ func DrawLosing() {
 		float32(bgAlpha),
 	))
 
-	youLostSize := rl.MeasureTextEx(shared.Font, fmt.Sprintf("You lost, your time is %s", clockText), shared.FontHugeTextSize*2, 0)
-	continueSize := rl.MeasureTextEx(shared.Font, "Press ENTER to continue or R to try again", shared.FontBigTextSize, 0)
+	minutes, _ := strconv.Atoi(strings.Split(clockText, ":")[0])
+	seconds, _ := strconv.Atoi(strings.Split(clockText, ":")[1])
+	youLostSize := rl.MeasureTextEx(shared.Font, fmt.Sprintf("You lost, your time is %d minutes %d seconds", minutes, seconds), shared.FontHugeTextSize*1.5, 0)
+	continueSize := rl.MeasureTextEx(shared.Font, "Press ESC to continue to title or R to try again", shared.FontBigTextSize, 0)
 
 	// The fade in text
-	rl.DrawTextEx(shared.Font, fmt.Sprintf("You lost, your time is %s!", clockText), rl.Vector2{
+	rl.DrawTextEx(shared.Font, fmt.Sprintf("You lost, your time is %d minutes %d seconds", minutes, seconds), rl.Vector2{
 		X: float32(rl.GetScreenWidth())/2 - youLostSize.X/2,
 		Y: float32(rl.GetScreenHeight())/2 - youLostSize.Y/2,
-	}, shared.FontHugeTextSize*2, 0, rl.Fade(rg.TextColor(), float32(textAlpha)))
+	}, shared.FontHugeTextSize*1.5, 0, rl.Fade(rg.TextColor(), float32(textAlpha)))
 
-	rl.DrawTextEx(shared.Font, "Press ENTER to continue or R to try again", rl.Vector2{
+	rl.DrawTextEx(shared.Font, "Press ESC to continue to title or R to try again", rl.Vector2{
 		X: float32(rl.GetScreenWidth())/2 - continueSize.X/2,
 		Y: float32(rl.GetScreenHeight())/2 - continueSize.Y/2 + youLostSize.Y,
 	}, shared.FontBigTextSize, 0, rl.Fade(rg.TextColor(), float32(textAlpha)))

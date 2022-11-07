@@ -20,6 +20,7 @@ var optionsRect rl.Rectangle
 var logoRectangle rl.Rectangle
 
 // Keyboard & gamepad navtiation variables
+var keyboardMode bool
 var selectedButton int
 var buttonPressed int
 
@@ -41,28 +42,35 @@ func Init() {
 	optionsRect = rl.NewRectangle(rectangleXPos, float32(rl.GetScreenHeight()/2+baseRectY+4*baseOffsetY), rectangleWidths, 60)
 
 	// Make the logo
-	logoRectangle = rl.NewRectangle(
-		float32(rl.GetScreenWidth())/4,
-		50,
-		float32(rl.GetScreenWidth()/2), 175)
+	logoRectangle = rl.NewRectangle(float32(rl.GetScreenWidth())/4, 50, float32(rl.GetScreenWidth()/2), 175)
 
 	rl.SetExitKey(rl.KeyEscape)
+
+	// Keyboard & gamepad variables
+	keyboardMode = false
+	selectedButton = 0
+	buttonPressed = 0
 }
 
 // Update title screen
 func Update() {
 	// Check the movement (keyboard/gamepad)
 	selectedButton, buttonPressed = shared.UpdateMovement(selectedButton, 3)
+	if buttonPressed != shared.ButtonUnchanged {
+		keyboardMode = true
+	}
 
 	// If the confirm button was pressed, we need to enter a new screen
-	if buttonPressed == shared.ButtonConfirm {
-		switch selectedButton {
-		case 0:
-			ScreenState = shared.Gameplay
-		case 1:
-			ScreenState = shared.Leaderboard
-		case 2:
-			ScreenState = shared.Options
+	if keyboardMode {
+		if buttonPressed == shared.ButtonConfirm {
+			switch selectedButton {
+			case 0:
+				ScreenState = shared.Gameplay
+			case 1:
+				ScreenState = shared.Leaderboard
+			case 2:
+				ScreenState = shared.Options
+			}
 		}
 	}
 }
@@ -88,13 +96,15 @@ func Draw() {
 	}
 
 	// Draw the selected button outline
-	switch selectedButton {
-	case 0:
-		rl.DrawRectangleLinesEx(startGameRect, 4, rg.TextColor())
-	case 1:
-		rl.DrawRectangleLinesEx(leaderboardRect, 4, rg.TextColor())
-	case 2:
-		rl.DrawRectangleLinesEx(optionsRect, 4, rg.TextColor())
+	if keyboardMode {
+		switch selectedButton {
+		case 0:
+			rl.DrawRectangleLinesEx(startGameRect, 4, rg.TextColor())
+		case 1:
+			rl.DrawRectangleLinesEx(leaderboardRect, 4, rg.TextColor())
+		case 2:
+			rl.DrawRectangleLinesEx(optionsRect, 4, rg.TextColor())
+		}
 	}
 }
 

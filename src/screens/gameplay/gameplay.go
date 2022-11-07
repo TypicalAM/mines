@@ -58,6 +58,7 @@ var clockTextXPos float32
 var clockIconXPos int32
 
 // Keyboard & gamepad navtiation variables
+var keyboardMode bool
 var selectedButton int
 var buttonPressed int
 var cursorPosCol int
@@ -133,6 +134,8 @@ func Init() {
 
 	isPlaying = false
 
+	// Keyboard & gamepad variables
+	keyboardMode = false
 	selectedButton = 0
 	buttonPressed = 0
 	cursorPosCol = 0
@@ -177,12 +180,15 @@ func Update() {
 		}
 	}
 
-	//if mineBoard.CheckIfWon() && GameState == Playing {
-	if true {
+	if mineBoard.CheckIfWon() && GameState == Playing {
 		InitWinning()
 	}
 
 	_, buttonPressed = shared.UpdateMovement(0, 0)
+	if buttonPressed != shared.ButtonUnchanged {
+		keyboardMode = true
+	}
+
 	switch buttonPressed {
 	case shared.ButtonUp:
 		cursorPosRow--
@@ -205,11 +211,13 @@ func Update() {
 			cursorPosCol = 0
 		}
 	case shared.ButtonConfirm:
-		if mineBoard.TileState[cursorPosRow][cursorPosCol] != mines.Flagged {
+		if keyboardMode && mineBoard.TileState[cursorPosRow][cursorPosCol] != mines.Flagged {
 			uncoverTile(cursorPosRow, cursorPosCol)
 		}
 	case shared.ButtonFlag:
-		flagTile(cursorPosRow, cursorPosCol)
+		if keyboardMode {
+			flagTile(cursorPosRow, cursorPosCol)
+		}
 	case shared.ButtonRestart:
 		ScreenState = shared.Gameplay
 	case shared.ButtonGoBack:
@@ -256,7 +264,7 @@ func Draw() {
 			)
 
 			// Draw the cursor if on this tile
-			if row == cursorPosRow && col == cursorPosCol {
+			if keyboardMode && row == cursorPosRow && col == cursorPosCol {
 				rl.DrawRectangleLinesEx(tile, 4, rg.TextColor())
 			}
 		}

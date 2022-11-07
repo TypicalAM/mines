@@ -221,7 +221,7 @@ func (board *MineBoard) CheckAndMove(x int, y int) {
 		if posX+pos.X < len(board.Board) && posX+pos.X >= 0 && posY+pos.Y < len(board.Board[0]) && posY+pos.Y >= 0 {
 			// Increment the value if it isn't a bomb
 			if board.Board[posX+pos.X][posY+pos.Y] != Bomb {
-				board.Board[x+pos.X][y+pos.Y]++
+				board.Board[posX+pos.X][posX+pos.Y]++
 			}
 		}
 	}
