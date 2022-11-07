@@ -163,7 +163,12 @@ func (scores *Scores) LoadFromFile() error {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	err = json.Unmarshal(byteValue, scores)
 	if err != nil {
-		// If we cant the scores, write the default ones to the file
+		// Remove the contents of the file
+		if err := os.Truncate(leaderboardsFilepath, 0); err != nil {
+			return err
+		}
+
+		// Write the default scores to the file
 		jsonData, _ := json.MarshalIndent(defaultScores, "", "")
 		if _, err = jsonFile.Write(jsonData); err != nil {
 			return err
@@ -176,6 +181,11 @@ func (scores *Scores) LoadFromFile() error {
 
 // Write the changed scores into the file
 func (scores *Scores) WriteToFile() error {
+	// Remove the contents of the file
+	if err := os.Truncate(leaderboardsFilepath, 0); err != nil {
+		return errors.New("couldn't truccate the file")
+	}
+
 	// Open the jsonFile
 	jsonFile, err := os.OpenFile(leaderboardsFilepath, os.O_WRONLY, os.ModeAppend)
 	if err != nil {

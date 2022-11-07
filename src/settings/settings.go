@@ -49,6 +49,11 @@ func (settings *Settings) LoadFromFile() error {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	err = json.Unmarshal(byteValue, settings)
 	if err != nil {
+		// Remove the contents of the file
+		if err := os.Truncate(settingsFilepath, 0); err != nil {
+			return errors.New("couldn't truccate the file")
+		}
+
 		// Write the default settings into the file
 		*settings = DefaultSettings
 		jsonData, _ := json.MarshalIndent(settings, "", "")
@@ -67,6 +72,11 @@ func (settings *Settings) WriteToFile(newSettings Settings) error {
 	_, err := mines.GenerateBoard(newSettings.Width, newSettings.Height, newSettings.Bombs)
 	if err != nil {
 		return err
+	}
+
+	// Remove the contents of the file
+	if err := os.Truncate(settingsFilepath, 0); err != nil {
+		return errors.New("couldn't truccate the file")
 	}
 
 	// Open the jsonFile
