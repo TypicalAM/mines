@@ -1,7 +1,7 @@
 {
 "settings_path": "data/settings.json",
 "theme": "solarized_light",
-"width": 8,
-"height": 8,
-"bombs": 15
+"width": 30,
+"height": 16,
+"bombs": 38
 }

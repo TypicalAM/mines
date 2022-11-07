@@ -19,10 +19,18 @@ This mines game allows you to:
 git clone --depth=1 https://github.com/TypicalAM/Mines-go/ && cd Mines-go
 ```
 
-### 2. Build and run the program
+### 2.1 Build and run the program (linux)
 
 ```sh
 go build -o main.go -o mines
+```
+
+### 2.2 Build and run the program (linux - windows)
+
+You have to install the [Mingw](https://www.mingw-w64.org/downloads/) toolchain and link the library with the `CC` enviroment variable
+
+```sh
+GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=/bin/x86_64-w64-mingw32-gcc go build -o mines.exe main.go
 ```
 
 ### 3. Playing time!
