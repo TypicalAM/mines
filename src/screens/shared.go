@@ -82,24 +82,30 @@ func LoadSharedAssets() error {
 // A function used to navigate the UI using keyboard buttons
 func UpdateMovement(current int, availableButtons int) (int, int) {
 	if gamepadButtonCooldown <= 0.0 {
+		if rl.GetGamepadButtonPressed() != -1 {
+			gamepadButtonCooldown = 0.1
+		}
+
 		switch rl.GetGamepadButtonPressed() {
 		case 3: // PS3 gamepad down
 			current++
 			if current == availableButtons {
 				current = 0
 			}
+			return current, ButtonDown
 		case 1: // PS3 gamepad up
 			current--
 			if current == -1 {
 				current = availableButtons - 1
 			}
-		case 98: // PS3 gamepad flag
+			return current, ButtonUp
+		case 8: // PS3 gamepad flag
 			return current, ButtonFlag
-		case 99: // PS3 gamepad restart
+		case 15: // PS3 gamepad restart
 			return current, ButtonRestart
-		case 100: // PS3 gamepad left
+		case 4: // PS3 gamepad left
 			return current, ButtonLeft
-		case 101: // PS3 gamepad right
+		case 2: // PS3 gamepad right
 			return current, ButtonRight
 		case 7: // PS3 gamepad confirm
 			return current, ButtonConfirm
@@ -107,11 +113,8 @@ func UpdateMovement(current int, availableButtons int) (int, int) {
 			return current, ButtonGoBack
 		}
 
-		gamepadButtonCooldown = 0.2
 	} else {
-		if gamepadButtonCooldown > 0 {
-			gamepadButtonCooldown -= 0.01
-		}
+		gamepadButtonCooldown -= 0.01
 	}
 
 	switch rl.GetKeyPressed() {
