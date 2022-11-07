@@ -71,14 +71,18 @@ func InitWinning() {
 
 		// Iterate over the slice and add the results to the displayed scores
 		for pos, entry := range slice {
-			displayedScores[pos] = fmt.Sprintf("%s - %d", entry.Name, entry.Time)
+			minutes := entry.Time / 60
+			seconds := entry.Time - minutes * 60
+			displayedScores[pos] = fmt.Sprintf("%s - %dm %ds", entry.Name, minutes, seconds)
 		}
 	} else {
 		// Crewate the displayedscores array and add the only results that we have
 		displayedScores = make([]string, len(scoreboardEntries))
 
 		for pos, entry := range scoreboardEntries {
-			displayedScores[pos] = fmt.Sprintf("%s - %d", entry.Name, entry.Time)
+			minutes := entry.Time / 60
+			seconds := entry.Time - minutes * 60
+			displayedScores[pos] = fmt.Sprintf("%s - %dm %ds", entry.Name, minutes, seconds)
 		}
 	}
 	newScoreName = ""

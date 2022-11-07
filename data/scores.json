@@ -1,0 +1,140 @@
+{
+"Entries": [
+{
+"date": 1667832024,
+"name": "Liam",
+"time": 220,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 21
+},
+{
+"date": 1667834161,
+"name": "Noah",
+"time": 230,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 21
+},
+{
+"date": 1667832147,
+"name": "Oliver",
+"time": 240,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 21
+},
+{
+"date": 1667832147,
+"name": "Elijah",
+"time": 250,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 21
+},
+{
+"date": 1667832147,
+"name": "James",
+"time": 260,
+"board_width": 30,
+"board_height": 16,
+"board_mines": 21
+},
+{
+"date": 1667832024,
+"name": "Liam",
+"time": 200,
+"board_width": 16,
+"board_height": 16,
+"board_mines": 15
+},
+{
+"date": 1667834161,
+"name": "Noah",
+"time": 210,
+"board_width": 16,
+"board_height": 16,
+"board_mines": 15
+},
+{
+"date": 1667832147,
+"name": "Oliver",
+"time": 220,
+"board_width": 16,
+"board_height": 16,
+"board_mines": 15
+},
+{
+"date": 1667832147,
+"name": "Elijah",
+"time": 230,
+"board_width": 16,
+"board_height": 16,
+"board_mines": 15
+},
+{
+"date": 1667832147,
+"name": "James",
+"time": 240,
+"board_width": 16,
+"board_height": 16,
+"board_mines": 15
+},
+{
+"date": 1667832024,
+"name": "Liam",
+"time": 140,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
+},
+{
+"date": 1667834161,
+"name": "Noah",
+"time": 150,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
+},
+{
+"date": 1667832147,
+"name": "Oliver",
+"time": 160,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
+},
+{
+"date": 1667832147,
+"name": "Elijah",
+"time": 170,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
+},
+{
+"date": 1667832147,
+"name": "James",
+"time": 180,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
+},
+{
+"date": 1667832076,
+"name": "This is my new score",
+"time": 18,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
+},
+{
+"date": 1667832253,
+"name": "My new new score",
+"time": 10,
+"board_width": 8,
+"board_height": 8,
+"board_mines": 15
+}
+]
+}
