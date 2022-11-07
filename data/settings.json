@@ -1,7 +1,7 @@
 {
 "settings_path": "data/settings.json",
-"theme": "hello_kitty",
-"width": 16,
-"height": 16,
-"bombs": 4
+"theme": "zahnrad",
+"width": 21,
+"height": 12,
+"bombs": 6
 }

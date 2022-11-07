@@ -60,6 +60,10 @@ var saveOptionsRect rl.Rectangle
 var activeThemeIndex int
 var themes = []string{"default_dark", "candy", "hello_kitty", "monokai", "obsidian", "solarized", "solarized_light", "zahnrad"}
 
+// Keyboard & gamepad navtiation variables
+var selectedButton int
+var buttonPressed int
+
 // Options screen initialization logic
 func Init() {
 	// Basic variables
@@ -156,11 +160,6 @@ func Init() {
 
 // Update Options screen
 func Update() {
-	// Go back to title
-	if rl.IsKeyPressed(rl.KeyEscape) {
-		ScreenState = shared.Title
-	}
-
 	// Update the sliders if the preset was pressed
 	for _, preset := range presets {
 		if preset.isPressed {
@@ -173,6 +172,61 @@ func Update() {
 			bombsEntry := options[keyBombs]
 			bombsEntry.value = fmt.Sprint(preset.bombs)
 			options[keyBombs] = bombsEntry
+		}
+	}
+
+	// Check the movement (keyboard/gamepad)
+	selectedButton, buttonPressed = shared.UpdateMovement(selectedButton, 9)
+	if buttonPressed == shared.ButtonGoBack {
+		ScreenState = shared.Title
+	}
+
+	// Move the slider if hovered over slider options
+	if buttonPressed == shared.ButtonLeft || buttonPressed == shared.ButtonRight {
+		var key string
+
+		switch selectedButton {
+		case 3:
+			key = keyWidth
+		case 4:
+			key = keyHeight
+		case 5:
+			key = keyBombs
+		}
+
+		if key != "" {
+			opt := options[key]
+			value, _ := strconv.Atoi(opt.value)
+			if buttonPressed == shared.ButtonLeft && value-1 >= int(opt.minValue) {
+				opt.value = fmt.Sprint(value - 1)
+			} else if buttonPressed == shared.ButtonRight && value+1 >= int(opt.minValue) {
+				opt.value = fmt.Sprint(value + 1)
+			}
+			options[key] = opt
+		}
+	}
+
+	// Check the confirmed button action
+	if buttonPressed == shared.ButtonConfirm {
+		switch selectedButton {
+		case 0, 1, 2:
+			widthEntry := options[keyWidth]
+			widthEntry.value = fmt.Sprint(presets[selectedButton].width)
+			options[keyWidth] = widthEntry
+			heightEntry := options[keyHeight]
+			heightEntry.value = fmt.Sprint(presets[selectedButton].height)
+			options[keyHeight] = heightEntry
+			bombsEntry := options[keyBombs]
+			bombsEntry.value = fmt.Sprint(presets[selectedButton].bombs)
+			options[keyBombs] = bombsEntry
+		case 7:
+			activeThemeIndex++
+			if activeThemeIndex == len(themes) {
+				activeThemeIndex = 0
+			}
+			rg.LoadGuiStyle(fmt.Sprintf("resources/styles/%s.style", themes[activeThemeIndex]))
+		case 8:
+			saveAndExit = true
 		}
 	}
 
@@ -218,6 +272,25 @@ func Draw() {
 	}
 
 	saveAndExit = gui.ButtonEx(shared.Font, saveOptionsRect, "SAVE", shared.FontBigTextSize)
+
+	// Draw the selection box
+	switch selectedButton {
+	case 0, 1, 2:
+		rl.DrawRectangleLinesEx(presets[selectedButton].bounds, 4, rg.TextColor())
+	case 3:
+		rl.DrawRectangleLinesEx(options[keyWidth].bounds, 4, rg.TextColor())
+	case 4:
+		rl.DrawRectangleLinesEx(options[keyHeight].bounds, 4, rg.TextColor())
+	case 5:
+		rl.DrawRectangleLinesEx(options[keyBombs].bounds, 4, rg.TextColor())
+	case 6:
+		rl.DrawRectangleLinesEx(options[keySettingsPath].bounds, 4, rg.TextColor())
+	case 7:
+		rl.DrawRectangleLinesEx(options[keyColorscheme].bounds, 4, rg.TextColor())
+	case 8:
+		rl.DrawRectangleLinesEx(saveOptionsRect, 4, rg.TextColor())
+	}
+
 	if saveWrongData {
 		rl.DrawRectangleRec(saveOptionsRect, rl.Fade(rl.Red, 0.50))
 	}

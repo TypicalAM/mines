@@ -53,8 +53,8 @@ func InitalizeGame() {
 	rg.LoadGuiStyle(fmt.Sprintf("resources/styles/%s.style", shared.AppSettings.Theme))
 
 	// Setup first screen
-	currentScreen = shared.Title
-	title.Init()
+	currentScreen = shared.Options
+	options.Init()
 
 	rl.SetTargetFPS(60)
 

@@ -65,7 +65,6 @@ func Update() {
 			ScreenState = shared.Options
 		}
 	}
-
 }
 
 // Title screen draw logic
