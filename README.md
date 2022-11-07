@@ -30,7 +30,11 @@ go build -o main.go -o mines
 You have to install the [Mingw](https://www.mingw-w64.org/downloads/) toolchain and link the library with the `CC` enviroment variable
 
 ```sh
-GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=/bin/x86_64-w64-mingw32-gcc go build -o mines.exe main.go
+GOOS=windows
+GOARCH=amd64
+CGO_ENABLED=1
+CC=/bin/x86_64-w64-mingw32-gcc
+go build -o mines.exe main.go
 ```
 
 ### 3. Playing time!

@@ -50,7 +50,7 @@ func InitalizeGame() {
 	rl.SetWindowIcon(*rl.LoadImageFromTexture(shared.LogoIcon))
 
 	// Load the app-wide gui style
-	rg.LoadGuiStyle(fmt.Sprintf("resources/styles/%s.style", shared.AppSettings.Theme))
+	rg.LoadGuiStyle(fmt.Sprintf("resources/themes/%s.style", shared.AppSettings.Theme))
 
 	// Setup first screen
 	currentScreen = shared.Title

@@ -1,7 +1,11 @@
 package shared
 
 import (
+	"errors"
 	"example/raylib-game/src/settings"
+	"fmt"
+	"io/ioutil"
+	"strings"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -19,6 +23,7 @@ const (
 
 var AppSettings settings.Settings
 var Scores settings.Scores
+var Themes []string
 
 // Logo variables
 var LogoIcon rl.Texture2D
@@ -62,8 +67,29 @@ func LoadSharedAssets() error {
 	rl.GenTextureMipmaps(&SecondaryFont.Texture)
 	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterBilinear)
 
+	// Iterate over the files and add them to the themes variable
+	files, err := ioutil.ReadDir("resources/themes")
+	if err != nil {
+		return err
+	}
+
+	// Iterate over the files
+	for _, file := range files {
+		splitName := strings.Split(file.Name(), ".style")
+		if !file.IsDir() && len(splitName) == 2 {
+			Themes = append(Themes, splitName[0])
+		}
+	}
+
+	// Check if we actually have any themes
+	if len(Themes) == 0 {
+		return errors.New("there are no available themes")
+	} else {
+		rl.TraceLog(rl.LogInfo, fmt.Sprintf("Loaded themes: %v", Themes))
+	}
+
 	// Load the necessary settings and scores
-	if err := AppSettings.LoadFromFile(); err != nil {
+	if err := AppSettings.LoadFromFile(Themes[0]); err != nil {
 		return err
 	}
 

@@ -58,7 +58,6 @@ var saveOptionsRect rl.Rectangle
 
 // What theme are we using?
 var activeThemeIndex int
-var themes = []string{"default_dark", "candy", "hello_kitty", "monokai", "obsidian", "solarized", "solarized_light", "zahnrad"}
 
 // Keyboard & gamepad navtiation variables
 var keyboardMode bool
@@ -152,7 +151,7 @@ func Init() {
 	)
 
 	// Active theme indexing
-	for ind, theme := range themes {
+	for ind, theme := range shared.Themes {
 		if theme == shared.AppSettings.Theme {
 			activeThemeIndex = ind
 		}
@@ -230,10 +229,10 @@ func Update() {
 			options[keyBombs] = bombsEntry
 		case 7:
 			activeThemeIndex++
-			if activeThemeIndex == len(themes) {
+			if activeThemeIndex == len(shared.Themes) {
 				activeThemeIndex = 0
 			}
-			rg.LoadGuiStyle(fmt.Sprintf("resources/styles/%s.style", themes[activeThemeIndex]))
+			rg.LoadGuiStyle(fmt.Sprintf("resources/themes/%s.style", shared.Themes[activeThemeIndex]))
 		case 8:
 			saveAndExit = true
 		}
@@ -270,9 +269,9 @@ func Draw() {
 			opt.value = gui.FilePicker(shared.LogoIcon, shared.Font, opt.bounds, opt.value, shared.FontBigTextSize)
 		case Combo:
 			textToDisplay = fmt.Sprint(key)
-			activeThemeIndex = gui.ComboBoxEx(shared.Font, opt.bounds, themes, activeThemeIndex, shared.FontBigTextSize)
-			opt.value = fmt.Sprint(themes[activeThemeIndex])
-			rg.LoadGuiStyle(fmt.Sprintf("resources/styles/%s.style", opt.value))
+			activeThemeIndex = gui.ComboBoxEx(shared.Font, opt.bounds, shared.Themes, activeThemeIndex, shared.FontBigTextSize)
+			opt.value = fmt.Sprint(shared.Themes[activeThemeIndex])
+			rg.LoadGuiStyle(fmt.Sprintf("resources/themes/%s.style", opt.value))
 		}
 
 		options[key] = opt

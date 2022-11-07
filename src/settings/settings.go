@@ -23,14 +23,14 @@ type Settings struct {
 // The default settings for the app
 var defaultSettings = Settings{
 	SettingsPath: "data/settings.json",
-	Theme:        "hello_kitty",
+	Theme:        "",
 	Width:        30,
 	Height:       16,
 	Bombs:        50,
 }
 
 // Load the settings from a file
-func (settings *Settings) LoadFromFile() error {
+func (settings *Settings) LoadFromFile(defaultTheme string) error {
 	// Try to open the jsonFile
 	jsonFile, err := os.Open(settingsFilepath)
 	if err != nil {
@@ -55,6 +55,7 @@ func (settings *Settings) LoadFromFile() error {
 		}
 
 		// Write the default settings into the file
+		defaultSettings.Theme = defaultTheme
 		*settings = defaultSettings
 		jsonData, _ := json.MarshalIndent(settings, "", "")
 		if _, err := jsonFile.Write(jsonData); err != nil {
