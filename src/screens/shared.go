@@ -98,7 +98,7 @@ func LoadSharedAssets() error {
 	}
 
 	// Logo textures
-	LogoIcon = rl.LoadTexture("resources/icons/logo_old.png")
+	LogoIcon = rl.LoadTexture("resources/icons/logo.png")
 	IconRect = rl.NewRectangle(30, 25, 45, 45)
 	TextRect = rl.NewRectangle(82, 27, 250, 50)
 
