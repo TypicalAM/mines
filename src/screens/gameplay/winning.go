@@ -1,9 +1,9 @@
 package gameplay
 
 import (
-	"example/raylib-game/src/gui"
-	shared "example/raylib-game/src/screens"
-	"example/raylib-game/src/settings"
+	"github.com/TypicalAM/mines/src/gui"
+	shared "github.com/TypicalAM/mines/src/screens"
+	"github.com/TypicalAM/mines/src/settings"
 	"fmt"
 	"strconv"
 	"strings"

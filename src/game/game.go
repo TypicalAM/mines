@@ -1,13 +1,13 @@
 package game
 
 import (
-	shared "example/raylib-game/src/screens"
-	"example/raylib-game/src/screens/ending"
-	"example/raylib-game/src/screens/gameplay"
-	"example/raylib-game/src/screens/leaderboard"
-	"example/raylib-game/src/screens/logo"
-	"example/raylib-game/src/screens/options"
-	"example/raylib-game/src/screens/title"
+	shared "github.com/TypicalAM/mines/src/screens"
+	"github.com/TypicalAM/mines/src/screens/ending"
+	"github.com/TypicalAM/mines/src/screens/gameplay"
+	"github.com/TypicalAM/mines/src/screens/leaderboard"
+	"github.com/TypicalAM/mines/src/screens/logo"
+	"github.com/TypicalAM/mines/src/screens/options"
+	"github.com/TypicalAM/mines/src/screens/title"
 	"fmt"
 	"math/rand"
 	"path/filepath"

@@ -2,7 +2,7 @@ package settings
 
 import (
 	"encoding/json"
-	"example/raylib-game/src/mines"
+	"github.com/TypicalAM/mines/src/mines"
 	"os"
 	"path/filepath"
 )

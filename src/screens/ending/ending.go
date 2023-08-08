@@ -1,7 +1,7 @@
 package ending
 
 import (
-	shared "example/raylib-game/src/screens"
+	shared "github.com/TypicalAM/mines/src/screens"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )

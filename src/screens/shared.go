@@ -3,7 +3,7 @@ package shared
 import (
 	"embed"
 	"errors"
-	"example/raylib-game/src/settings"
+	"github.com/TypicalAM/mines/src/settings"
 	"fmt"
 	"os"
 	"path/filepath"

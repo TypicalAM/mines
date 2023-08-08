@@ -1,8 +1,8 @@
 package title
 
 import (
-	"example/raylib-game/src/gui"
-	shared "example/raylib-game/src/screens"
+	"github.com/TypicalAM/mines/src/gui"
+	shared "github.com/TypicalAM/mines/src/screens"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"

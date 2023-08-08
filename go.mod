@@ -1,4 +1,4 @@
-module example/raylib-game
+module github.com/TypicalAM/mines
 
 go 1.18
 

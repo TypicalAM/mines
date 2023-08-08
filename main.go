@@ -2,8 +2,8 @@ package main
 
 import (
 	"embed"
-	"example/raylib-game/src/game"
-	shared "example/raylib-game/src/screens"
+	"github.com/TypicalAM/mines/src/game"
+	shared "github.com/TypicalAM/mines/src/screens"
 )
 
 //go:embed resources/*
