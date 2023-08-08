@@ -4,7 +4,7 @@ import (
 	"errors"
 	"example/raylib-game/src/settings"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -68,7 +68,7 @@ func LoadSharedAssets() error {
 	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterBilinear)
 
 	// Iterate over the files and add them to the themes variable
-	files, err := ioutil.ReadDir("resources/themes")
+	files, err := os.ReadDir("resources/themes")
 	if err != nil {
 		return err
 	}

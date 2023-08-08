@@ -3,7 +3,6 @@ package settings
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"os"
 	"sort"
 	"time"
@@ -19,8 +18,8 @@ const (
 
 // Hold the data for one entry
 type Entry struct {
-	Date        int64  `json:"date"`
 	Name        string `json:"name"`
+	Date        int64  `json:"date"`
 	Time        int    `json:"time"`
 	BoardWidth  int    `json:"board_width"`
 	BoardHeight int    `json:"board_height"`
@@ -145,33 +144,12 @@ var defaultScores = Scores{
 
 // Load the entires data from a file
 func (scores *Scores) LoadFromFile() error {
-	// Try to open the jsonFile
-	jsonFile, err := os.Open(leaderboardsFilepath)
-	if err != nil {
-		// Try to create the file because it doesn't exist
-		jsonFile, err = os.Create(leaderboardsFilepath)
-
-		if err != nil {
-			return errors.New("couldn't open the file for writing")
-		}
-	}
-
-	// Close the file after usage
-	defer jsonFile.Close()
-
-	// Try to load the json from the file
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	err = json.Unmarshal(byteValue, scores)
-	if err != nil {
-		// Remove the contents of the file
-		if err := os.Truncate(leaderboardsFilepath, 0); err != nil {
-			return err
-		}
-
+	byteValue, _ := os.ReadFile(leaderboardsFilepath)
+	if err := json.Unmarshal(byteValue, scores); err != nil {
 		// Write the default scores to the file
 		*scores = defaultScores
 		jsonData, _ := json.MarshalIndent(defaultScores, "", "")
-		if _, err = jsonFile.Write(jsonData); err != nil {
+		if err = os.WriteFile(leaderboardsFilepath, jsonData, 0644); err != nil {
 			return err
 		}
 	}
@@ -268,9 +246,9 @@ func (scores *Scores) FilterScores(category int) []Entry {
 				entries = append(entries, entry)
 			}
 		case Custom:
-			if !(entry.BoardWidth == 8 && entry.BoardHeight == 8 && entry.BoardMines == 15) &&
-				!(entry.BoardWidth == 16 && entry.BoardHeight == 16 && entry.BoardMines == 15) &&
-				!(entry.BoardWidth == 30 && entry.BoardHeight == 16 && entry.BoardMines == 21) {
+			if (entry.BoardWidth != 8 || entry.BoardHeight != 8 || entry.BoardMines != 15) &&
+				(entry.BoardWidth != 16 || entry.BoardHeight != 16 || entry.BoardMines != 15) &&
+				(entry.BoardWidth != 30 || entry.BoardHeight != 16 || entry.BoardMines != 21) {
 				entries = append(entries, entry)
 			}
 		}

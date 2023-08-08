@@ -2,9 +2,7 @@ package settings
 
 import (
 	"encoding/json"
-	"errors"
 	"example/raylib-game/src/mines"
-	"io/ioutil"
 	"os"
 )
 
@@ -31,40 +29,21 @@ var defaultSettings = Settings{
 
 // Load the settings from a file
 func (settings *Settings) LoadFromFile(defaultTheme string) error {
-	// Try to open the jsonFile
-	jsonFile, err := os.Open(settingsFilepath)
+	data, err := os.ReadFile(settingsFilepath)
 	if err != nil {
-		// Try to create the file because it doesn't exist
-		jsonFile, err = os.Create(settingsFilepath)
-
-		if err != nil {
-			return errors.New("couldn't open the file for writing")
-		}
-	}
-
-	// Close the file after usage
-	defer jsonFile.Close()
-
-	// Try to load the json from the file
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	err = json.Unmarshal(byteValue, settings)
-	if err != nil {
-		// Remove the contents of the file
-		if err := os.Truncate(settingsFilepath, 0); err != nil {
-			return errors.New("couldn't truccate the file")
-		}
-
-		// Write the default settings into the file
 		defaultSettings.Theme = defaultTheme
 		*settings = defaultSettings
-		jsonData, _ := json.MarshalIndent(settings, "", "")
-		if _, err := jsonFile.Write(jsonData); err != nil {
+		data, err := json.MarshalIndent(settings, "  ", "")
+		if err != nil {
+			return err
+		}
+
+		if err := os.WriteFile(settingsFilepath, data, 0644); err != nil {
 			return err
 		}
 	}
 
-	// Return no errors
-	return nil
+	return json.Unmarshal(data, settings)
 }
 
 // Write the changed settigs into the file
@@ -75,27 +54,17 @@ func (settings *Settings) WriteToFile(newSettings Settings) error {
 		return err
 	}
 
-	// Remove the contents of the file
-	if err := os.Truncate(settingsFilepath, 0); err != nil {
-		return errors.New("couldn't truccate the file")
-	}
-
-	// Open the jsonFile
-	jsonFile, err := os.OpenFile(settingsFilepath, os.O_WRONLY, os.ModeAppend)
-	if err != nil {
-		return errors.New("couldn't open the file")
-	}
-
 	// Marshall the json data and write it to the file
-	jsonData, _ := json.MarshalIndent(newSettings, "", "")
-	_, err = jsonFile.Write(jsonData)
+	data, err := json.MarshalIndent(newSettings, "", "")
 	if err != nil {
-		return errors.New("couldn't write the json data to the file")
+		return err
+	}
+
+	if err = os.WriteFile(settingsFilepath, data, 0644); err != nil {
+		return err
 	}
 
 	// Make the newsettings be the new settings
 	*settings = newSettings
-
-	// Return no errors
 	return nil
 }
