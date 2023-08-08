@@ -16,7 +16,6 @@ var ResourcesFS embed.FS
 
 var Font rl.Font
 var SecondaryFont rl.Font
-var FxClick rl.Sound
 
 const (
 	FontSmallTextSize  float32 = 16
@@ -29,12 +28,10 @@ var AppSettings settings.Settings
 var Scores settings.Scores
 var Themes []string
 
-// Logo variables
 var LogoIcon rl.Texture2D
 var IconRect rl.Rectangle
 var TextRect rl.Rectangle
 
-// Gamepad variables
 var gamepadButtonCooldown float32
 
 const (
@@ -62,28 +59,11 @@ const Unchanged int = -1
 
 // Load the shared assets
 func LoadSharedAssets() error {
-	// Set up the font
-	data, err := ResourcesFS.ReadFile("resources/fonts/montserrat_semibold.ttf")
-	if err != nil {
-		return err
-	}
-
-	// IMPORTANT: Since we are using embed we need to load the font from memory and frankly, I have no clue how to
-	// figure out the font size/char info, let's just asume the users don't use any weird characters
-	Font = rl.LoadFontFromMemory(".ttf", data, int32(len(data)), 100, nil, 100)
-	rl.GenTextureMipmaps(&Font.Texture)
-	rl.SetTextureFilter(Font.Texture, rl.FilterBilinear)
-
-	data, err = ResourcesFS.ReadFile("resources/fonts/cartograph_cf_italic.ttf")
-	if err != nil {
-		return err
-	}
-
-	SecondaryFont = rl.LoadFontFromMemory(".ttf", data, int32(len(data)), 100, nil, 100)
-	rl.GenTextureMipmaps(&SecondaryFont.Texture)
-	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterBilinear)
-
 	if err := writeThemesToConfig(); err != nil {
+		return err
+	}
+
+	if err := loadFonts(); err != nil {
 		return err
 	}
 
@@ -123,7 +103,7 @@ func LoadSharedAssets() error {
 	}
 
 	// Logo textures
-	data, err = ResourcesFS.ReadFile("resources/icons/logo.png")
+	data, err := ResourcesFS.ReadFile("resources/icons/logo.png")
 	if err != nil {
 		return err
 	}
@@ -132,6 +112,30 @@ func LoadSharedAssets() error {
 	IconRect = rl.NewRectangle(30, 25, 45, 45)
 	TextRect = rl.NewRectangle(82, 27, 250, 50)
 
+	return nil
+}
+
+// loadFonts tries to load the fonts from the embed filesystem
+func loadFonts() error {
+	data, err := ResourcesFS.ReadFile("resources/fonts/montserrat_semibold.ttf")
+	if err != nil {
+		return err
+	}
+
+	// IMPORTANT: Since we are using embed we need to load the font from memory and frankly, I have no clue how to
+	// figure out the font size/char info, let's just asume the users don't use any weird characters
+	Font = rl.LoadFontFromMemory(".ttf", data, int32(len(data)), 100, nil, 100)
+	rl.GenTextureMipmaps(&Font.Texture)
+	rl.SetTextureFilter(Font.Texture, rl.FilterBilinear)
+
+	data, err = ResourcesFS.ReadFile("resources/fonts/cartograph_cf_italic.ttf")
+	if err != nil {
+		return err
+	}
+
+	SecondaryFont = rl.LoadFontFromMemory(".ttf", data, int32(len(data)), 100, nil, 100)
+	rl.GenTextureMipmaps(&SecondaryFont.Texture)
+	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterBilinear)
 	return nil
 }
 

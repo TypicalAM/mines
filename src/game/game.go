@@ -130,24 +130,23 @@ func Transition(screen int) {
 
 // Udpate the transition effect
 func UpdateTransition() {
-	if !transFadeOut {
-		transAlpha += 0.05
-
-		if transAlpha > 1.01 {
-			transAlpha = 1.0
-
-			ChangeToScreen(transToScreen)
-			transFadeOut = true
-		}
-	} else {
-		transAlpha -= 0.02
-
+	if transFadeOut {
+		transAlpha -= 0.05
 		if transAlpha < -0.01 {
 			transAlpha = 0.0
 			transFadeOut = false
 			onTransition = false
 			transToScreen = shared.Unchanged
 		}
+
+		return
+	}
+
+	transAlpha += 0.05
+	if transAlpha > 1.01 {
+		transAlpha = 1.0
+		ChangeToScreen(transToScreen)
+		transFadeOut = true
 	}
 }
 
