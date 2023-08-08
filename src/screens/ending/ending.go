@@ -1,7 +1,7 @@
 package ending
 
 import (
-	"example/raylib-game/src/screens"
+	shared "example/raylib-game/src/screens"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -17,10 +17,9 @@ func Init() {
 
 // Update Ending screen
 func Update() {
-
 	if rl.IsKeyPressed(rl.KeyEnter) || rl.IsGestureDetected(rl.GestureTap) {
 		ScreenState = shared.Title
-//		rl.PlaySound(game.FxClick)
+		//		rl.PlaySound(game.FxClick)
 	}
 }
 

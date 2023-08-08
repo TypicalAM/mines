@@ -84,9 +84,9 @@ func LoadSharedAssets() error {
 	// Check if we actually have any themes
 	if len(Themes) == 0 {
 		return errors.New("there are no available themes")
-	} else {
-		rl.TraceLog(rl.LogInfo, fmt.Sprintf("Loaded themes: %v", Themes))
 	}
+
+	rl.TraceLog(rl.LogInfo, fmt.Sprintf("Loaded themes: %v", Themes))
 
 	// Load the necessary settings and scores
 	if err := AppSettings.LoadFromFile(Themes[0]); err != nil {
@@ -138,7 +138,6 @@ func UpdateMovement(current int, availableButtons int) (int, int) {
 		case 6: // PS3 gamepad go back
 			return current, ButtonGoBack
 		}
-
 	} else {
 		gamepadButtonCooldown -= 0.01
 	}

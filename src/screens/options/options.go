@@ -266,7 +266,7 @@ func Draw() {
 			opt.value = fmt.Sprintf("%d", int(rg.Slider(opt.bounds, float32(currentValue), opt.minValue, opt.maxValue)))
 		case FilePicker:
 			textToDisplay = fmt.Sprint(key)
-			opt.value = gui.FilePicker(shared.LogoIcon, shared.Font, opt.bounds, opt.value, shared.FontBigTextSize)
+			opt.value = gui.FilePicker(shared.Font, opt.bounds, opt.value, shared.FontBigTextSize)
 		case Combo:
 			textToDisplay = fmt.Sprint(key)
 			activeThemeIndex = gui.ComboBoxEx(shared.Font, opt.bounds, shared.Themes, activeThemeIndex, shared.FontBigTextSize)

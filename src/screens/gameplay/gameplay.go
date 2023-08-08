@@ -159,7 +159,6 @@ func Update() {
 		for col, tile := range boardRectangles[row] {
 			// Check if the mouse is at the tile
 			if rl.CheckCollisionPointRec(rl.GetMousePosition(), tile) {
-
 				// Set the currently hovered tile as hovered
 				tileHoverState = hover{
 					isHovered: true,
@@ -277,7 +276,6 @@ func Draw() {
 	// Draw the current time playing amount and the clock icon
 	rl.DrawTextEx(shared.Font, clockText, rl.Vector2{X: clockTextXPos, Y: 25}, shared.FontMediumTextSize, 0, rg.TextColor())
 	rl.DrawTexture(clockIconTexture, clockIconXPos, 25, rl.White)
-
 }
 
 // Gameplay screen unload logic
@@ -313,10 +311,12 @@ func uncoverTile(row int, col int) {
 // Flag the tile
 func flagTile(row int, col int) {
 	// If the tile is flagged, unflag it and if it is covered, flag it
-	if mineBoard.TileState[row][col] == mines.Flagged {
+	switch mineBoard.TileState[row][col] {
+	case mines.Flagged:
 		mineBoard.TileState[row][col] = mines.Covered
 		mineBoard.Flags--
-	} else if mineBoard.TileState[row][col] == mines.Covered {
+
+	case mines.Covered:
 		mineBoard.TileState[row][col] = mines.Flagged
 		mineBoard.Flags++
 	}

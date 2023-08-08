@@ -51,10 +51,9 @@ func ComboBoxEx(font rl.Font, bounds rl.Rectangle, textChoices []string, activeC
 		activeChoice = (activeChoice + 1) % comboCount
 	}
 
-	newBounds := rl.NewRectangle(bounds.X, bounds.Y, bounds.Width-bounds.Height, bounds.Height) //rg.ComboboxDefaultBorderColor, rg.ComboboxDefaultInsideColor
+	newBounds := rl.NewRectangle(bounds.X, bounds.Y, bounds.Width-bounds.Height, bounds.Height)
 	rg.DrawBorderedRectangle(newBounds.ToInt32(), rg.GetStyle32(rg.ComboboxBorderWidth), rg.GetStyleColor(rg.ComboboxDefaultBorderColor), rg.GetStyleColor(rg.ComboboxDefaultInsideColor))
 	rl.DrawTextEx(font, activeText, rl.Vector2{X: bounds.X + newBounds.Width/2 - textWidth/2, Y: bounds.Y + bounds.Height/2 - textHeight/2}, size, 0, rg.GetStyleColor(rg.ComboboxDefaultTextColor))
-	//rl.DrawRectangleRec(rl.NewRectangle(newBounds.X+newBounds.Width/2, newBounds.Y, 2, newBounds.Height), rl.White)
 
 	// Render the accompanying "clicks" box showing the element counter.
 	rg.DrawBorderedRectangle(counter.ToInt32(), rg.GetStyle32(rg.ButtonBorderWidth), rg.GetStyleColor(colors.Border), rg.GetStyleColor(colors.Inside))

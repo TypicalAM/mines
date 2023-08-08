@@ -41,14 +41,15 @@ func InitWinning() {
 	// Filter the scores by the settings
 	var filter int
 
-	if shared.AppSettings.Width == 8 && shared.AppSettings.Height == 8 && shared.AppSettings.Bombs == 15 {
+	switch {
+	case shared.AppSettings.Width == 8 && shared.AppSettings.Height == 8 && shared.AppSettings.Bombs == 15:
 		filter = settings.Beginner
-	} else if shared.AppSettings.Width == 16 && shared.AppSettings.Height == 16 && shared.AppSettings.Bombs == 15 {
+
+	case shared.AppSettings.Width == 16 && shared.AppSettings.Height == 16 && shared.AppSettings.Bombs == 15:
 		filter = settings.Intermediate
-	} else if shared.AppSettings.Width == 30 && shared.AppSettings.Height == 16 && shared.AppSettings.Bombs == 21 {
+
+	case shared.AppSettings.Width == 30 && shared.AppSettings.Height == 16 && shared.AppSettings.Bombs == 21:
 		filter = settings.Expert
-	} else {
-		filter = settings.Custom
 	}
 
 	newScoreName = "Anonymous"
@@ -72,7 +73,7 @@ func InitWinning() {
 		// Iterate over the slice and add the results to the displayed scores
 		for pos, entry := range slice {
 			minutes := entry.Time / 60
-			seconds := entry.Time - minutes * 60
+			seconds := entry.Time - minutes*60
 			displayedScores[pos] = fmt.Sprintf("%s - %dm %ds", entry.Name, minutes, seconds)
 		}
 	} else {
@@ -81,7 +82,7 @@ func InitWinning() {
 
 		for pos, entry := range scoreboardEntries {
 			minutes := entry.Time / 60
-			seconds := entry.Time - minutes * 60
+			seconds := entry.Time - minutes*60
 			displayedScores[pos] = fmt.Sprintf("%s - %dm %ds", entry.Name, minutes, seconds)
 		}
 	}

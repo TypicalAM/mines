@@ -86,27 +86,12 @@ func GenerateBoard(width int, height int, bombsPercent int) (MineBoard, error) {
 
 // Write the mineboard to a file
 func WriteMineBoard(filepath string, board *MineBoard) error {
-
-	// Try to marshall the board data
-	jsonData, err := json.MarshalIndent(*board, " ", "\t")
+	data, err := json.MarshalIndent(*board, " ", "\t")
 	if err != nil {
 		return errors.New("couldn't convert the board into json")
 	}
 
-	// Try to open the file for writing
-	file, err := os.Open(filepath)
-	if err != nil {
-		return errors.New("couldn't open the file for writing")
-	}
-
-	// Try to write the data to the file
-	_, err = file.Write(jsonData)
-	if err != nil {
-		return errors.New("couldn't write the json data to the file")
-	}
-
-	// All good
-	return nil
+	return os.WriteFile(filepath, data, 0644)
 }
 
 // Check the clicked value, return true if the player has lost.
@@ -132,10 +117,8 @@ func (board *MineBoard) UncoverValues(firstRun bool, x int, y int) (isLost bool)
 	for _, pos := range neighbours {
 		// Check if the position is valid
 		if x+pos.X < len(board.Board) && x+pos.X >= 0 && y+pos.Y < len(board.Board[0]) && y+pos.Y >= 0 {
-
 			// Check if the tile is covered, and its position is not 0
 			if boardValue.TileState[x+pos.X][y+pos.Y] == Covered && board.Board[x+pos.X][y+pos.Y] != -1 {
-
 				// Set the tile state to uncovered
 				boardValue.TileState[x+pos.X][y+pos.Y] = Uncovered
 

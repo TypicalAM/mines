@@ -157,7 +157,6 @@ func DrawTransition() {
 
 // Update and draw one frame
 func UpdateDrawFrame() {
-
 	if !onTransition {
 		switch currentScreen {
 		case shared.Logo:

@@ -27,7 +27,7 @@ func InitLosing() {
 	textAlpha = 0.0
 	bgAlpha = 0.0
 
-	// Load the bomb explosion texutres
+	// Load the bomb explosion textures
 	for i := range bombExplosion {
 		bombExplosion[i] = rl.LoadTexture(fmt.Sprintf("resources/icons/explosion/frame%d.png", i+1))
 	}
@@ -77,9 +77,11 @@ func UpdateLosing() {
 
 	// Check the movement (keyboard/gamepad)
 	_, buttonPressed = shared.UpdateMovement(selectedButton, 0)
-	if buttonPressed == shared.ButtonGoBack {
+	switch buttonPressed {
+	case shared.ButtonGoBack:
 		ScreenState = shared.Title
-	} else if buttonPressed == shared.ButtonRestart {
+
+	case shared.ButtonRestart:
 		ScreenState = shared.Gameplay
 	}
 }

@@ -9,14 +9,16 @@ import (
 )
 
 // Pick a file and show it in the text box
-func FilePicker(icon rl.Texture2D, font rl.Font, bound rl.Rectangle, text string, size float32) string {
+func FilePicker(font rl.Font, bound rl.Rectangle, text string, size float32) string {
 	textSize := rl.MeasureTextEx(font, text, size, 0)
 	textBound := rl.NewRectangle(bound.X, bound.Y, bound.Width-bound.Height, bound.Height)
 
 	rg.DrawBorderedRectangle(textBound.ToInt32(), rg.GetStyle32(rg.ComboboxBorderWidth), rg.GetStyleColor(rg.ComboboxDefaultBorderColor), rg.GetStyleColor(rg.ComboboxDefaultInsideColor))
 	if textSize.X > bound.Width {
 		var chars int
-		for chars = 0; rl.MeasureTextEx(font, text[chars:], size, 0).X > bound.Width-bound.Height-30; chars++ {}
+		for i := 0; rl.MeasureTextEx(font, text[i:], size, 0).X > bound.Width-bound.Height-30; i++ {
+			chars++
+		}
 		textSize = rl.MeasureTextEx(font, text[chars:], size, 0)
 		rl.DrawTextEx(font, fmt.Sprint("...", text[chars:][3:]), rl.Vector2{X: textBound.X + textBound.Width/2 - textSize.X/2, Y: textBound.Y + textBound.Height/2 - textSize.Y/2}, size, 0, rg.GetStyleColor(rg.ComboboxDefaultTextColor))
 	} else {

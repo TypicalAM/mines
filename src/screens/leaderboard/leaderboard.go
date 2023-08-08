@@ -96,7 +96,6 @@ func Update() {
 		col1[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2-width*3/2, 100+70, width, 60)
 		col2[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2-width/2, 100+70, width, 60)
 		col3[0] = rl.NewRectangle(float32(rl.GetScreenWidth())/2+width/2, 100+70, width, 60)
-
 	}
 
 	selectedButton, buttonPressed = shared.UpdateMovement(selectedButton, 5)

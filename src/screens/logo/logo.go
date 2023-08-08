@@ -1,7 +1,7 @@
 package logo
 
 import (
-	"example/raylib-game/src/screens"
+	shared "example/raylib-game/src/screens"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -40,63 +40,71 @@ func Init() {
 
 // Logo screen update
 func Update() {
-	if state == 0 {
+	switch state {
+	case 0:
 		framesCounter++
-
 		if framesCounter == 80 {
 			state = 1
 			framesCounter = 0
 		}
-	} else if state == 1 {
+
+	case 1:
 		topRecWidth += 8
 		leftRecHeight += 8
-
 		if topRecWidth == 256 {
 			state = 2
 		}
-	} else if state == 2 {
 
+	case 2:
 		bottomRecWidth += 8
 		rightRecHeight += 8
-
 		if bottomRecWidth == 256 {
 			state = 3
 		}
-	} else if state == 3 {
+
+	case 3:
 		framesCounter++
 		if lettersCount < 6 {
 			if framesCounter/12 == 1 {
 				lettersCount++
 				framesCounter = 0
 			}
-		} else {
-			if framesCounter > 200 {
-				alpha -= 0.02
-				if alpha <= 0.0 {
-					alpha = 0.0
-					ScreenState = shared.Title
-				}
-			}
+
+			break
+		}
+
+		if framesCounter <= 200 {
+			break
+		}
+
+		alpha -= 0.02
+		if alpha <= 0.0 {
+			alpha = 0.0
+			ScreenState = shared.Title
 		}
 	}
 }
 
 // Logo Screen Draw Logic
 func Draw() {
-	if state == 0 { // Draw blinking top-left square corner
+	switch state {
+	case 0:
 		if (framesCounter/10)%2 == 1 {
 			rl.DrawRectangle(logoPositionX, logoPositionY, 16, 16, rl.Black)
 		}
-	} else if state == 1 { // Draw bars animation: top and left
-		rl.DrawRectangle(logoPositionX, logoPositionY, int32(topRecWidth), 16, rl.Black)
-		rl.DrawRectangle(logoPositionX, logoPositionY, 16, int32(leftRecHeight), rl.Black)
-	} else if state == 2 { // Draw bars animation: bottom and right
+
+	case 1: // Draw bars animation: top and left
+		rl.DrawRectangle(logoPositionX, logoPositionY, topRecWidth, 16, rl.Black)
+		rl.DrawRectangle(logoPositionX, logoPositionY, 16, leftRecHeight, rl.Black)
+
+	case 2: // Draw bars animation: bottom and right
 		rl.DrawRectangle(logoPositionX, logoPositionY, topRecWidth, 16, rl.Black)
 		rl.DrawRectangle(logoPositionX, logoPositionY, 16, leftRecHeight, rl.Black)
 
 		rl.DrawRectangle(logoPositionX+240, logoPositionY, 16, rightRecHeight, rl.Black)
 		rl.DrawRectangle(logoPositionX, logoPositionY+240, bottomRecWidth, 16, rl.Black)
-	} else if state == 3 { // Draw "raylib" text-write animation + "powered by"
+
+	case 3: // Draw "raylib" text-write animation + "powered by"
 		rl.DrawRectangle(logoPositionX, logoPositionY, topRecWidth, 16, rl.Fade(rl.Black, alpha))
 		rl.DrawRectangle(logoPositionX, logoPositionY+16, 16, leftRecHeight-32, rl.Fade(rl.Black, alpha))
 

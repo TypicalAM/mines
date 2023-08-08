@@ -15,16 +15,14 @@ func ToggleGroupEx(font rl.Font, bounds rl.Rectangle, toggleText []string, activ
 				true,
 				size,
 			)
-		} else {
-			if ToggleButtonEx(
-				font,
-				rl.NewRectangle(bounds.X+float32(i)*(bounds.Width), bounds.Y, bounds.Width, bounds.Height),
-				toggleText[i],
-				false,
-				size,
-			) {
-				active = i
-			}
+		} else if ToggleButtonEx(
+			font,
+			rl.NewRectangle(bounds.X+float32(i)*(bounds.Width), bounds.Y, bounds.Width, bounds.Height),
+			toggleText[i],
+			false,
+			size,
+		) {
+			active = i
 		}
 	}
 	return active
