@@ -4,15 +4,13 @@ import (
 	"encoding/json"
 	"example/raylib-game/src/mines"
 	"os"
+	"path/filepath"
 )
-
-// The settings filepath
-const settingsFilepath string = "data/settings.json"
 
 // The settings structure
 type Settings struct {
-	SettingsPath string `json:"settings_path"`
 	Theme        string `json:"theme"`
+	SettingsPath string `json:"-"`
 	Width        int    `json:"width"`
 	Height       int    `json:"height"`
 	Bombs        int    `json:"bombs"`
@@ -20,47 +18,65 @@ type Settings struct {
 
 // The default settings for the app
 var defaultSettings = Settings{
-	SettingsPath: "data/settings.json",
-	Theme:        "",
-	Width:        30,
-	Height:       16,
-	Bombs:        50,
+	Theme:  "",
+	Width:  30,
+	Height: 16,
+	Bombs:  50,
 }
 
 // Load the settings from a file
 func (settings *Settings) LoadFromFile(defaultTheme string) error {
-	data, err := os.ReadFile(settingsFilepath)
+	cfgDir, err := os.UserConfigDir()
 	if err != nil {
-		defaultSettings.Theme = defaultTheme
-		*settings = defaultSettings
-		data, err := json.MarshalIndent(settings, "  ", "")
-		if err != nil {
-			return err
-		}
-
-		if err := os.WriteFile(settingsFilepath, data, 0644); err != nil {
-			return err
-		}
+		return err
 	}
 
-	return json.Unmarshal(data, settings)
+	path := filepath.Join(cfgDir, "gomines", "settings.json")
+	settings.SettingsPath = path
+	data, err := os.ReadFile(path)
+	if err == nil {
+		return json.Unmarshal(data, settings)
+	}
+
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		return err
+	}
+
+	defaultSettings.Theme = defaultTheme
+	*settings = defaultSettings
+	data, err = json.MarshalIndent(settings, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	if err := os.WriteFile(path, data, 0644); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Write the changed settigs into the file
 func (settings *Settings) WriteToFile(newSettings Settings) error {
 	// Try to check if the settings are actually valid
-	_, err := mines.GenerateBoard(newSettings.Width, newSettings.Height, newSettings.Bombs)
-	if err != nil {
+	if _, err := mines.GenerateBoard(newSettings.Width, newSettings.Height, newSettings.Bombs); err != nil {
 		return err
 	}
 
 	// Marshall the json data and write it to the file
-	data, err := json.MarshalIndent(newSettings, "", "")
+	data, err := json.MarshalIndent(newSettings, "", "  ")
 	if err != nil {
 		return err
 	}
 
-	if err = os.WriteFile(settingsFilepath, data, 0644); err != nil {
+	cfgDir, err := os.UserConfigDir()
+	if err != nil {
+		return err
+	}
+
+	path := filepath.Join(cfgDir, "gomines", "settings.json")
+	settings.SettingsPath = path
+	if err = os.WriteFile(path, data, 0644); err != nil {
 		return err
 	}
 

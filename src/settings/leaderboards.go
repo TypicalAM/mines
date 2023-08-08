@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"path/filepath"
 	"sort"
 	"time"
 )
 
 const (
-	leaderboardsFilepath string = "data/scores.json"
-	Beginner             int    = iota
+	Beginner int = iota
 	Intermediate
 	Expert
 	Custom
@@ -144,41 +144,54 @@ var defaultScores = Scores{
 
 // Load the entires data from a file
 func (scores *Scores) LoadFromFile() error {
-	byteValue, _ := os.ReadFile(leaderboardsFilepath)
-	if err := json.Unmarshal(byteValue, scores); err != nil {
-		// Write the default scores to the file
-		*scores = defaultScores
-		jsonData, _ := json.MarshalIndent(defaultScores, "", "")
-		if err = os.WriteFile(leaderboardsFilepath, jsonData, 0644); err != nil {
-			return err
-		}
+	cfgDir, err := os.UserConfigDir()
+	if err != nil {
+		return err
 	}
 
-	// Return no errors
+	path := filepath.Join(cfgDir, "gomines", "leaderboards.json")
+	data, err := os.ReadFile(path)
+	if err == nil {
+		return json.Unmarshal(data, scores)
+	}
+
+	if err = os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		return err
+	}
+
+	// Write the default scores to the file
+	*scores = defaultScores
+	jsonData, _ := json.MarshalIndent(defaultScores, "", "  ")
+	if err = os.WriteFile(path, jsonData, 0644); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 // Write the changed scores into the file
 func (scores *Scores) WriteToFile() error {
-	// Remove the contents of the file
-	if err := os.Truncate(leaderboardsFilepath, 0); err != nil {
-		return errors.New("couldn't truccate the file")
-	}
-
-	// Open the jsonFile
-	jsonFile, err := os.OpenFile(leaderboardsFilepath, os.O_WRONLY, os.ModeAppend)
+	cfgDir, err := os.UserConfigDir()
 	if err != nil {
-		return errors.New("couldn't open the file")
+		return err
 	}
 
-	// Marshall the json data and write it to the file
-	jsonData, _ := json.MarshalIndent(scores, "", "")
-	_, err = jsonFile.Write(jsonData)
+	path := filepath.Join(cfgDir, "gomines", "leaderboards.json")
+	data, err := json.MarshalIndent(scores, "", "  ")
 	if err != nil {
-		return errors.New("couldn't write the json data to the file")
+		return errors.New("couldn't marshal the json data")
 	}
 
-	// Return no errors
+	if err := os.WriteFile(path, data, 0644); err != nil {
+		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+			return err
+		}
+
+		if err := os.WriteFile(path, data, 0644); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 

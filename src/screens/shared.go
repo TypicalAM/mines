@@ -1,14 +1,20 @@
 package shared
 
 import (
+	"embed"
 	"errors"
 	"example/raylib-game/src/settings"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
+
+var FontsFS embed.FS
+var IconsFS embed.FS
+var ThemesFS embed.FS
 
 var Font rl.Font
 var SecondaryFont rl.Font
@@ -59,25 +65,49 @@ const Unchanged int = -1
 // Load the shared assets
 func LoadSharedAssets() error {
 	// Set up the font
-	Font = rl.LoadFont("resources/fonts/montserrat_semibold.ttf")
-	rl.GenTextureMipmaps(&Font.Texture)
-	rl.SetTextureFilter(Font.Texture, rl.FilterBilinear)
-
-	SecondaryFont = rl.LoadFont("resources/fonts/cartograph_cf_italic.ttf")
-	rl.GenTextureMipmaps(&SecondaryFont.Texture)
-	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterBilinear)
-
-	// Iterate over the files and add them to the themes variable
-	files, err := os.ReadDir("resources/themes")
+	data, err := FontsFS.ReadFile("resources/fonts/montserrat_semibold.ttf")
 	if err != nil {
 		return err
 	}
 
-	// Iterate over the files
-	for _, file := range files {
+	// IMPORTANT: Since we are using embed we need to load the font from memory and frankly, I have no clue how to
+	// figure out the font size/char info, let's just asume the users don't use any weird characters
+	Font = rl.LoadFontFromMemory(".ttf", data, int32(len(data)), 100, nil, 100)
+	rl.GenTextureMipmaps(&Font.Texture)
+	rl.SetTextureFilter(Font.Texture, rl.FilterBilinear)
+
+	data, err = FontsFS.ReadFile("resources/fonts/cartograph_cf_italic.ttf")
+	if err != nil {
+		return err
+	}
+
+	SecondaryFont = rl.LoadFontFromMemory(".ttf", data, int32(len(data)), 100, nil, 100)
+	rl.GenTextureMipmaps(&SecondaryFont.Texture)
+	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterBilinear)
+
+	// Iterate over the embedFiles and add them to the themes variable
+	embedFiles, err := ThemesFS.ReadDir("resources/themes")
+	if err != nil {
+		return err
+	}
+
+	// Iterate over the embed files
+	for _, file := range embedFiles {
 		splitName := strings.Split(file.Name(), ".style")
 		if !file.IsDir() && len(splitName) == 2 {
 			Themes = append(Themes, splitName[0])
+		}
+	}
+
+	// Iterate over the user themes
+	if config, err := os.UserConfigDir(); err == nil {
+		if files, err := os.ReadDir(filepath.Join(config, "gomines")); err == nil {
+			for _, file := range files {
+				splitName := strings.Split(file.Name(), ".style")
+				if !file.IsDir() && len(splitName) == 2 {
+					Themes = append(Themes, splitName[0])
+				}
+			}
 		}
 	}
 
@@ -98,7 +128,12 @@ func LoadSharedAssets() error {
 	}
 
 	// Logo textures
-	LogoIcon = rl.LoadTexture("resources/icons/logo.png")
+	data, err = IconsFS.ReadFile("resources/icons/logo.png")
+	if err != nil {
+		return err
+	}
+
+	LogoIcon = rl.LoadTextureFromImage(rl.LoadImageFromMemory(".png", data, int32(len(data))))
 	IconRect = rl.NewRectangle(30, 25, 45, 45)
 	TextRect = rl.NewRectangle(82, 27, 250, 50)
 
