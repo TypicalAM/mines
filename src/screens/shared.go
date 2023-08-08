@@ -12,9 +12,7 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-var FontsFS embed.FS
-var IconsFS embed.FS
-var ThemesFS embed.FS
+var ResourcesFS embed.FS
 
 var Font rl.Font
 var SecondaryFont rl.Font
@@ -65,7 +63,7 @@ const Unchanged int = -1
 // Load the shared assets
 func LoadSharedAssets() error {
 	// Set up the font
-	data, err := FontsFS.ReadFile("resources/fonts/montserrat_semibold.ttf")
+	data, err := ResourcesFS.ReadFile("resources/fonts/montserrat_semibold.ttf")
 	if err != nil {
 		return err
 	}
@@ -76,7 +74,7 @@ func LoadSharedAssets() error {
 	rl.GenTextureMipmaps(&Font.Texture)
 	rl.SetTextureFilter(Font.Texture, rl.FilterBilinear)
 
-	data, err = FontsFS.ReadFile("resources/fonts/cartograph_cf_italic.ttf")
+	data, err = ResourcesFS.ReadFile("resources/fonts/cartograph_cf_italic.ttf")
 	if err != nil {
 		return err
 	}
@@ -85,29 +83,26 @@ func LoadSharedAssets() error {
 	rl.GenTextureMipmaps(&SecondaryFont.Texture)
 	rl.SetTextureFilter(SecondaryFont.Texture, rl.FilterBilinear)
 
-	// Iterate over the embedFiles and add them to the themes variable
-	embedFiles, err := ThemesFS.ReadDir("resources/themes")
+	if err := writeThemesToConfig(); err != nil {
+		return err
+	}
+
+	// Iterate over the user themes
+	cfgDir, err := os.UserConfigDir()
 	if err != nil {
 		return err
 	}
 
-	// Iterate over the embed files
-	for _, file := range embedFiles {
+	// Try to load the themes
+	files, err := os.ReadDir(filepath.Join(cfgDir, "gomines", "themes"))
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
 		splitName := strings.Split(file.Name(), ".style")
 		if !file.IsDir() && len(splitName) == 2 {
 			Themes = append(Themes, splitName[0])
-		}
-	}
-
-	// Iterate over the user themes
-	if config, err := os.UserConfigDir(); err == nil {
-		if files, err := os.ReadDir(filepath.Join(config, "gomines")); err == nil {
-			for _, file := range files {
-				splitName := strings.Split(file.Name(), ".style")
-				if !file.IsDir() && len(splitName) == 2 {
-					Themes = append(Themes, splitName[0])
-				}
-			}
 		}
 	}
 
@@ -128,7 +123,7 @@ func LoadSharedAssets() error {
 	}
 
 	// Logo textures
-	data, err = IconsFS.ReadFile("resources/icons/logo.png")
+	data, err = ResourcesFS.ReadFile("resources/icons/logo.png")
 	if err != nil {
 		return err
 	}
@@ -205,4 +200,37 @@ func UpdateMovement(current int, availableButtons int) (int, int) {
 	}
 
 	return current, ButtonUnchanged
+}
+
+// write all the themes to the cfg dir
+func writeThemesToConfig() error {
+	// Write all the themes to the cfg dir
+	builtin, err := ResourcesFS.ReadDir("resources/themes")
+	if err != nil {
+		return err
+	}
+
+	cfgDir, err := os.UserConfigDir()
+	if err != nil {
+		return err
+	}
+
+	themeDir := filepath.Join(cfgDir, "gomines", "themes")
+	if err := os.MkdirAll(themeDir, 0755); err != nil && !os.IsExist(err) {
+		return err
+	}
+
+	for _, file := range builtin {
+		Themes = append(Themes, strings.Split(file.Name(), ".style")[0])
+		data, err := ResourcesFS.ReadFile(filepath.Join("resources/themes", file.Name()))
+		if err != nil {
+			return err
+		}
+
+		if err := os.WriteFile(filepath.Join(themeDir, file.Name()), data, 0644); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

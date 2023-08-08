@@ -5,6 +5,7 @@ import (
 	shared "example/raylib-game/src/screens"
 	"example/raylib-game/src/settings"
 	"fmt"
+	"path/filepath"
 	"strconv"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
@@ -232,7 +233,8 @@ func Update() {
 			if activeThemeIndex == len(shared.Themes) {
 				activeThemeIndex = 0
 			}
-			rg.LoadGuiStyle(fmt.Sprintf("resources/themes/%s.style", shared.Themes[activeThemeIndex]))
+
+			rg.LoadGuiStyle(filepath.Join(shared.AppSettings.ThemePath, shared.Themes[activeThemeIndex]+".style"))
 		case 8:
 			saveAndExit = true
 		}
@@ -271,7 +273,7 @@ func Draw() {
 			textToDisplay = fmt.Sprint(key)
 			activeThemeIndex = gui.ComboBoxEx(shared.Font, opt.bounds, shared.Themes, activeThemeIndex, shared.FontBigTextSize)
 			opt.value = fmt.Sprint(shared.Themes[activeThemeIndex])
-			rg.LoadGuiStyle(fmt.Sprintf("resources/themes/%s.style", opt.value))
+			rg.LoadGuiStyle(filepath.Join(shared.AppSettings.ThemePath, opt.value+".style"))
 		}
 
 		options[key] = opt

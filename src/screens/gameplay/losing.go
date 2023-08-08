@@ -29,7 +29,12 @@ func InitLosing() {
 
 	// Load the bomb explosion textures
 	for i := range bombExplosion {
-		bombExplosion[i] = rl.LoadTexture(fmt.Sprintf("resources/icons/explosion/frame%d.png", i+1))
+		data, err := shared.ResourcesFS.ReadFile(fmt.Sprintf("resources/icons/explosion/frame%d.png", i+1))
+		if err != nil {
+			rl.TraceLog(rl.LogFatal, fmt.Sprint("Failed to load the texture: ", err))
+		}
+
+		bombExplosion[i] = rl.LoadTextureFromImage(rl.LoadImageFromMemory("png", data, int32(len(data))))
 	}
 
 	// Initialize the bomb explosion variables

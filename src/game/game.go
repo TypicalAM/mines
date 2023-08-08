@@ -10,6 +10,7 @@ import (
 	"example/raylib-game/src/screens/title"
 	"fmt"
 	"math/rand"
+	"path/filepath"
 	"time"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
@@ -50,7 +51,7 @@ func InitalizeGame() {
 	rl.SetWindowIcon(*rl.LoadImageFromTexture(shared.LogoIcon))
 
 	// Load the app-wide gui style
-	rg.LoadGuiStyle(fmt.Sprintf("resources/themes/%s.style", shared.AppSettings.Theme))
+	rg.LoadGuiStyle(filepath.Join(shared.AppSettings.ThemePath, shared.AppSettings.Theme+".style"))
 
 	// Setup first screen
 	currentScreen = shared.Title

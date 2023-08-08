@@ -1,6 +1,7 @@
 package gameplay
 
 import (
+	shared "example/raylib-game/src/screens"
 	"fmt"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
@@ -9,35 +10,28 @@ import (
 
 // Adapt the numbers textures to the current colorscheme
 func loadThemeTextureNums(filepath string) rl.Texture2D {
-	// First, load the image from the texture
-	img := rl.LoadImage(filepath)
+	data, err := shared.ResourcesFS.ReadFile(filepath)
+	if err != nil {
+		rl.TraceLog(rl.LogFatal, fmt.Sprint("Failed to load the texture: ", err))
+	}
 
-	// Replace blue with the background color
+	img := rl.LoadImageFromMemory(".png", data, int32(len(data)))
 	rl.ImageColorReplace(img, rl.NewColor(0, 0, 255, 255), rg.BackgroundColor())
-
-	// Replace green with text color
 	rl.ImageColorReplace(img, rl.NewColor(0, 255, 0, 255), rg.TextColor())
-
-	// Replace red with button pressed background
 	rl.ImageColorReplace(img, rl.NewColor(255, 0, 0, 255), rg.GetStyleColor(rg.TogglePressedTextColor))
-
-	// Replace organge with uncovered background
 	rl.ImageColorReplace(img, rl.NewColor(255, 128, 0, 255), rg.GetStyleColor(rg.ButtonDefaultBorderColor))
-
 	return rl.LoadTextureFromImage(img)
 }
 
 // Adapt the clock/bomb textures to the current colorscheme
 func loadThemeTextureIcons(filepath string) rl.Texture2D {
-	// Load img from file
-	img := rl.LoadImage(filepath)
+	data, err := shared.ResourcesFS.ReadFile(filepath)
+	if err != nil {
+		rl.TraceLog(rl.LogFatal, fmt.Sprint("Failed to load the texture: ", err))
+	}
 
-	// Replace the blue color with the background
+	img := rl.LoadImageFromMemory(".png", data, int32(len(data)))
 	rl.ImageColorReplace(img, rl.NewColor(0, 0, 255, 255), rg.BackgroundColor())
-
-	// Replace the black color with the text color
 	rl.ImageColorReplace(img, rl.Black, rg.TextColor())
-	fmt.Println("test: ", filepath, rl.GetImageColor(*img, 24, 24))
-
 	return rl.LoadTextureFromImage(img)
 }

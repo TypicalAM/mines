@@ -10,6 +10,7 @@ import (
 // The settings structure
 type Settings struct {
 	Theme        string `json:"theme"`
+	ThemePath    string `json:"-"`
 	SettingsPath string `json:"-"`
 	Width        int    `json:"width"`
 	Height       int    `json:"height"`
@@ -33,6 +34,7 @@ func (settings *Settings) LoadFromFile(defaultTheme string) error {
 
 	path := filepath.Join(cfgDir, "gomines", "settings.json")
 	settings.SettingsPath = path
+	settings.ThemePath = filepath.Join(cfgDir, "gomines", "themes")
 	data, err := os.ReadFile(path)
 	if err == nil {
 		return json.Unmarshal(data, settings)
@@ -81,6 +83,8 @@ func (settings *Settings) WriteToFile(newSettings Settings) error {
 	}
 
 	// Make the newsettings be the new settings
+	newSettings.ThemePath = settings.ThemePath
+	newSettings.SettingsPath = settings.SettingsPath
 	*settings = newSettings
 	return nil
 }
