@@ -1,0 +1,22 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.20.0'
+      - name: Release dry-run
+        run: make release-dry-run
+      - name: Create dotenv for release
+        run: echo 'GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}' > .env-release
+      - name: Release publish
+        run: make release
