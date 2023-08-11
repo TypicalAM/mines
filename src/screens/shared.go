@@ -3,11 +3,12 @@ package shared
 import (
 	"embed"
 	"errors"
-	"github.com/TypicalAM/mines/src/settings"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/TypicalAM/mines/src/settings"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -123,7 +124,7 @@ func loadFonts() error {
 	}
 
 	// IMPORTANT: Since we are using embed we need to load the font from memory and frankly, I have no clue how to
-	// figure out the font size/char info, let's just asume the users don't use any weird characters
+	// figure out the font size/char info, let's just assume the users don't use any weird characters
 	Font = rl.LoadFontFromMemory(".ttf", data, int32(len(data)), 100, nil, 100)
 	rl.GenTextureMipmaps(&Font.Texture)
 	rl.SetTextureFilter(Font.Texture, rl.FilterBilinear)
@@ -215,6 +216,7 @@ func writeThemesToConfig() error {
 	}
 
 	cfgDir, err := os.UserConfigDir()
+	rl.TraceLog(rl.LogInfo, fmt.Sprintf("Writing themes to %s", cfgDir))
 	if err != nil {
 		return err
 	}
@@ -225,8 +227,7 @@ func writeThemesToConfig() error {
 	}
 
 	for _, file := range builtin {
-		Themes = append(Themes, strings.Split(file.Name(), ".style")[0])
-		data, err := ResourcesFS.ReadFile(filepath.Join("resources/themes", file.Name()))
+		data, err := ResourcesFS.ReadFile("resources/themes/" + file.Name())
 		if err != nil {
 			return err
 		}

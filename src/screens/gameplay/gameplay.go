@@ -1,10 +1,11 @@
 package gameplay
 
 import (
-	"github.com/TypicalAM/mines/src/mines"
-	shared "github.com/TypicalAM/mines/src/screens"
 	"fmt"
 	"time"
+
+	"github.com/TypicalAM/mines/src/mines"
+	shared "github.com/TypicalAM/mines/src/screens"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"

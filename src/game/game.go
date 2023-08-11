@@ -1,6 +1,11 @@
 package game
 
 import (
+	"fmt"
+	"math/rand"
+	"path/filepath"
+	"time"
+
 	shared "github.com/TypicalAM/mines/src/screens"
 	"github.com/TypicalAM/mines/src/screens/ending"
 	"github.com/TypicalAM/mines/src/screens/gameplay"
@@ -8,10 +13,6 @@ import (
 	"github.com/TypicalAM/mines/src/screens/logo"
 	"github.com/TypicalAM/mines/src/screens/options"
 	"github.com/TypicalAM/mines/src/screens/title"
-	"fmt"
-	"math/rand"
-	"path/filepath"
-	"time"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"

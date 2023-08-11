@@ -162,11 +162,7 @@ func (scores *Scores) LoadFromFile() error {
 	// Write the default scores to the file
 	*scores = defaultScores
 	jsonData, _ := json.MarshalIndent(defaultScores, "", "  ")
-	if err = os.WriteFile(path, jsonData, 0644); err != nil {
-		return err
-	}
-
-	return nil
+	return os.WriteFile(path, jsonData, 0644)
 }
 
 // Write the changed scores into the file

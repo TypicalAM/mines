@@ -1,8 +1,9 @@
 package gameplay
 
 import (
-	shared "github.com/TypicalAM/mines/src/screens"
 	"fmt"
+
+	shared "github.com/TypicalAM/mines/src/screens"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"

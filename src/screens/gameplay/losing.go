@@ -1,11 +1,12 @@
 package gameplay
 
 import (
-	"github.com/TypicalAM/mines/src/mines"
-	shared "github.com/TypicalAM/mines/src/screens"
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/TypicalAM/mines/src/mines"
+	shared "github.com/TypicalAM/mines/src/screens"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -34,7 +35,7 @@ func InitLosing() {
 			rl.TraceLog(rl.LogFatal, fmt.Sprint("Failed to load the texture: ", err))
 		}
 
-		bombExplosion[i] = rl.LoadTextureFromImage(rl.LoadImageFromMemory("png", data, int32(len(data))))
+		bombExplosion[i] = rl.LoadTextureFromImage(rl.LoadImageFromMemory(".png", data, int32(len(data))))
 	}
 
 	// Initialize the bomb explosion variables

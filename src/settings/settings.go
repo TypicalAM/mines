@@ -2,9 +2,10 @@ package settings
 
 import (
 	"encoding/json"
-	"github.com/TypicalAM/mines/src/mines"
 	"os"
 	"path/filepath"
+
+	"github.com/TypicalAM/mines/src/mines"
 )
 
 // The settings structure
@@ -45,17 +46,14 @@ func (settings *Settings) LoadFromFile(defaultTheme string) error {
 	}
 
 	defaultSettings.Theme = defaultTheme
+	defaultSettings.ThemePath = filepath.Join(cfgDir, "gomines", "themes")
 	*settings = defaultSettings
 	data, err = json.MarshalIndent(settings, "", "  ")
 	if err != nil {
 		return err
 	}
 
-	if err := os.WriteFile(path, data, 0644); err != nil {
-		return err
-	}
-
-	return nil
+	return os.WriteFile(path, data, 0644)
 }
 
 // Write the changed settigs into the file

@@ -1,10 +1,11 @@
 package leaderboard
 
 import (
+	"fmt"
+
 	"github.com/TypicalAM/mines/src/gui"
 	shared "github.com/TypicalAM/mines/src/screens"
 	"github.com/TypicalAM/mines/src/settings"
-	"fmt"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
