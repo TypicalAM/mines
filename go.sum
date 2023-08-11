@@ -7,8 +7,6 @@ github.com/dchest/jsmin v0.0.0-20220218165748-59f39799265f/go.mod h1:Dv9D0NUlAsa
 github.com/gen2brain/raylib-go/raygui v0.0.0-20221023125634-dfbb5ab75453 h1:tXOxBvTSiMslpAqQ7SEIhNk/JAWzHhPOSqjs66x22QM=
 github.com/gen2brain/raylib-go/raygui v0.0.0-20221023125634-dfbb5ab75453/go.mod h1:PdIDpFApFZazMjaf1mVuSgzTrMIdyC1e4vL98Euzgkw=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20211111173445-914ca1ffdc4d/go.mod h1:+NbsqGlEQqGqrsgJFF5Yj2dkvn0ML2SQb8RqM2hJsPU=
-github.com/gen2brain/raylib-go/raylib v0.0.0-20221023125634-dfbb5ab75453 h1:DUUHWiodnUG1g2WCgHygGy5X+27hBkBhGxuimp+UzwM=
-github.com/gen2brain/raylib-go/raylib v0.0.0-20221023125634-dfbb5ab75453/go.mod h1:+NbsqGlEQqGqrsgJFF5Yj2dkvn0ML2SQb8RqM2hJsPU=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20230719211022-1083eace2049 h1:fJeDPYJDyT+KeWKsIMbRlNcSgsQ2nZ4bJLwBraVA/xU=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20230719211022-1083eace2049/go.mod h1:AwtGA3aTtYdezNxEVbfchaLw/z+CuRDh2Mlxy0FbBro=
 github.com/josephspurrier/goversioninfo v1.4.0 h1:Puhl12NSHUSALHSuzYwPYQkqa2E1+7SrtAPJorKK0C8=
